@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --color-primary: 0, 0, 0;
+    --color-primary-text: 255, 255, 255;
+
+    --color-secondary: 44, 44, 44;
+    --color-secondary-text: 255, 255, 255;
+    
+    --color-header: 31, 41, 55;
+    --color-header-text: 255, 255, 255;
+    
+    --color-footer: 44, 44, 44;
+    --color-footer-text: 184, 184, 184;
+    
+    --color-tab-selected: 217, 217, 217;
+    --color-tab-selected-text: 0, 0, 0;
+    --color-tab-regular-text: 255, 255, 255;
+  }
+
+  [data-theme='dark'] {
+    --color-primary: 0, 0, 0;
+    --color-primary-text: 255, 255, 255;
+  
+    --color-secondary: 44, 44, 44;
+    --color-secondary-text: 255, 255, 255;
+    
+    --color-header: 31, 41, 55;
+    --color-header-text: 255, 255, 255;
+    
+    --color-footer: 44, 44, 44;
+    --color-footer-text: 184, 184, 184;
+    
+    --color-tab-selected: 217, 217, 217;
+    --color-tab-selected-text: 0, 0, 0;
+    --color-tab-regular-text: 255, 255, 255;
+    }
+    
+  [data-theme='light'] {
+      --color-primary: 250, 250, 250;
+      --color-primary-text: 0, 0, 0;
+  
+      --color-secondary: 215, 215, 215;
+      --color-secondary-text: 0, 0, 0;
+      
+      --color-header: 31, 41, 55;
+      --color-header-text: 255, 255, 255;
+      
+      --color-footer: 44, 44, 44;
+      --color-footer-text: 184, 184, 184;
+      
+      --color-tab-selected: 60, 60, 60;
+      --color-tab-selected-text: 255, 255, 255;
+      --color-tab-regular-text: 0, 0, 0;
+    }
+  
+  body {
+    background-color: rgb(var(--color-primary));
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Edge */
+  }
+
+  .svg-mask {
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-position: center;
+    -webkit-mask-position: center;
+  }
+
+  .dark-theme-icon {
+    -webkit-mask-image: url("../src/images/icons/theme-dark.svg");
+    mask-image: url("../src/images/icons/theme-dark.svg");
+  }
+
+  .light-theme-icon {
+    -webkit-mask-image: url("../src/images/icons/theme-light.svg");
+    mask-image: url("../src/images/icons/theme-light.svg");
+  }
+
+  .phone-icon {
+    -webkit-mask-image: url("../src/images/icons/phone.svg");
+    mask-image: url("../src/images/icons/phone.svg");
+  }
+  .location-icon {
+    -webkit-mask-image: url("../src/images/icons/location.svg");
+    mask-image: url("../src/images/icons/location.svg");
+  }
+  .email-icon {
+    -webkit-mask-image: url("../src/images/icons/email.svg");
+    mask-image: url("../src/images/icons/email.svg");
+  }
+  .tg-icon {
+    -webkit-mask-image: url("../src/images/icons/telegram.svg");
+    mask-image: url("../src/images/icons/telegram.svg");
+  }
+  .ig-icon {
+    -webkit-mask-image: url("../src/images/icons/instagram.svg");
+    mask-image: url("../src/images/icons/instagram.svg");
+  }
+  .lin-icon {
+    -webkit-mask-image: url("../src/images/icons/linkedin.svg");
+    mask-image: url("../src/images/icons/linkedin.svg");
+  }
+  .ytb-icon {
+    -webkit-mask-image: url("../src/images/icons/youtube.svg");
+    mask-image: url("../src/images/icons/youtube.svg");
+  }
+
+  .multi-select-dropdown {
+    width: 200px;
+  }
+  
+  .dropdown {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #fff;
+  }
+  
+  .dropdown-item {
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .dropdown-item.selected {
+    background-color: #007bff;
+    color: #fff;
+  }
