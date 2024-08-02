@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Set the base URL for the API
 const API_URL = process.env.REACT_APP_API_URL;
@@ -9,10 +9,10 @@ const api = axios.create({
 // Function to get all photos
 export const getPhotos = async () => {
   try {
-    const response = await api.get('/photos');
+    const response = await api.get("/photos");
     return response.data;
   } catch (error) {
-    console.error('Error fetching photos', error);
+    console.error("Error fetching photos", error);
     throw error;
   }
 };
@@ -20,40 +20,42 @@ export const getPhotos = async () => {
 // Function to get recent photos
 export const getRecentPhotos = async () => {
   try {
-    const response = await api.get('/photos/recent');
+    const response = await api.get("/photos/recent");
     return response.data;
   } catch (error) {
-    console.error('Error fetching recent photos', error);
+    console.error("Error fetching recent photos", error);
     throw error;
   }
 };
 
-//Function to get the photo url by ID 
+//Function to get the photo url by ID
 export const getPhotoUrl = (id: number) => {
-
   return `${API_URL}/api/photos/${id}`;
-}
+};
 
 // Function to get photos by category ID
 export const getPhotoByCategoryId = async (categoryId: number) => {
-  try{
+  try {
     const response = await api.get(`/photos/byCategory/${categoryId}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching recent photos with the categoryId: ${categoryId}`, error);
+    console.error(
+      `Error fetching recent photos with the categoryId: ${categoryId}`,
+      error
+    );
     throw error;
   }
-}
+};
 
-export const getPhotoCategories = async () => {
+export const getPhotoCategoriesToDisplay = async () => {
   try {
-    const response = await api.get(`/categories/get`);
+    const response = await api.get(`/categories/categoriesToDisplay`);
     return response.data;
-  } catch(error) {
-    console.error('Error fetching photo categories', error);
+  } catch (error) {
+    console.error("Error fetching photo categories", error);
     throw error;
   }
-}
+};
 
 // Function to get a photo by ID
 export const getPhotoById = async (id: number) => {

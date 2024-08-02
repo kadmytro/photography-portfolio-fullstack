@@ -76,7 +76,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({ items, se
       <div className="fixed top-0 left-0 w-screen h-screen backdrop-blur-lg bg-primary bg-opacity-70 flex justify-center items-center z-50">
         <div className="relative flex items-center justify-center h-full w-full">
           <button 
-            className="w-5% bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
+            className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
             onClick={handlePrev}>‹</button>
           <div className="w-90% h-95% flex justify-center items-center my-0 mx-5">
             <img src={items[currentIndex].image}
@@ -86,7 +86,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({ items, se
             />
           </div>
           <button 
-            className="w-5% bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none" 
+            className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none" 
             onClick={handleNext}>›</button>
         </div>
         <button 

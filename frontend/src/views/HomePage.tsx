@@ -1,23 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { Tab, TabView } from "../components/TabView";
 import { Gallery } from "../components/Gallery";
 import AboutMe from "../components/AboutMe";
 import Contacts from "../components/Contacts";
-import { getPhotoCategories, getPhotoByCategoryId, getPhotoUrl, getRecentPhotos } from "../services/galleryApi";
+import { getPhotoUrl, getRecentPhotos } from "../services/galleryApi";
 import LoadingWheel from "../components/LoadingWheel";
 
 function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const initialWidth = containerRef.current?.clientWidth || window.innerWidth;
-  const [tabs, setTabs] = useState<Tab[]>([]);
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const categories = await getPhotoCategories();
         const photos = await getRecentPhotos();
         const items = photos.map((photo: any) => ({
           image: getPhotoUrl(photo.id),

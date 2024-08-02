@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { Photo } from "./entity/Photo";
 import dotenv from "dotenv";
 import { PhotoCategory } from "./entity/PhotoCategory";
+import { User } from "./entity/User";
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   synchronize: false,
   logging: true,
-  entities: [Photo, PhotoCategory],
+  entities: [Photo, PhotoCategory, User],
   migrations: ["src/migration/**/*.ts"],
   subscribers: [],
 });

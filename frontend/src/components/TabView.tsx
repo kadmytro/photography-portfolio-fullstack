@@ -41,23 +41,33 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
   }, []);
 
   const switchToTab = (tabIndex: number): void => {
-    const bannerHeight = hasBanner ? 304 : 0;
-    const titleHeight = title ? 104 : 0;
-    const galleryPadding = title ? 16 : 0;
-    const totalScroll = bannerHeight + titleHeight + galleryPadding;
-    if (window.scrollY > totalScroll) {
-      window.scrollTo({ top: totalScroll, behavior: "smooth" });
+    if (tabViewRef.current) {
+      const titleHeight = title ? 104 : 0;
+      const galleryPadding = title ? 16 : 0;
+      const stickynessCompensation = -80;
+      const titleCompensation = title ? titleHeight + galleryPadding : 0;
+      const topPosition =
+        tabViewRef.current.getBoundingClientRect().top +
+        window.scrollY +
+        stickynessCompensation +
+        titleCompensation;
+      if (window.scrollY > topPosition) {
+        window.scrollTo({ top: topPosition, behavior: "smooth" });
+      }
+      setTimeout(() => {
+        if (window.scrollY != topPosition) {
+          window.scrollTo({ top: topPosition, behavior: "auto" });
+        }
+        setActiveTab(tabIndex);
+      }, 150);
     }
-    setTimeout(() => {
-      setActiveTab(tabIndex);
-    }, 150);
   };
 
   return (
     <div ref={tabViewRef}>
       <div
         className={
-          "flex flex-col transition-all w-full bg-primary text-primaryText sticky" +
+          "flex flex-col w-full bg-primary text-primaryText sticky z-10" +
           (title
             ? isSticky
               ? " -top-6"
@@ -72,11 +82,11 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
             {title}
           </div>
         )}
-        <div className="flex py-2 place-content-center">
+        <div className="flex py-2 transition-all place-content-center">
           {tabs.map((tab, index) => (
             <button
               key={index}
-              className={`px-8 py-2 text-lg cursor-pointer transition-colors rounded-full font-semibold w-36 ${
+              className={`px-8 py-2  text-lg cursor-pointer transition-colors rounded-full font-semibold min-w-150px w-fit ${
                 index === activeTab
                   ? "bg-tabSelected bg-opacity-40 text-tabSelectedText"
                   : "bg-transparent text-tabRegularText text-opacity-70 hover:text-opacity-100"

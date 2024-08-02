@@ -1,0 +1,20 @@
+[
+  {
+    "type": "phone",
+    "label": "Phone",
+    "value": "+4 55 23 254",
+    "displayValue": "+4 55 23 254"
+  },
+  {
+    "type": "location",
+    "label": "Location",
+    "value": "London, UK",
+    "displayValue": "London, UK"
+  },
+  {
+    "type": "email",
+    "label": "Email",
+    "value": "another.email@email.com",
+    "displayValue": "another.email@email.com"
+  }
+]

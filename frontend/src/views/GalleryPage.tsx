@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Gallery } from "../components/Gallery";
 import { Tab, TabView } from "../components/TabView";
-import { getPhotoByCategoryId, getPhotoCategories, getPhotos, getPhotoUrl, getRecentPhotos } from "../services/galleryApi";
-import PhotoUploadForm from "../components/PhotoUploadForm";
-import CategoryForm from "../components/CategoryForm";
+import {
+  getPhotoByCategoryId,
+  getPhotoCategoriesToDisplay,
+  getPhotoUrl,
+} from "../services/galleryApi";
 import LoadingWheel from "../components/LoadingWheel";
 
 function GalleryPage() {
@@ -16,30 +18,32 @@ function GalleryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const categories = await getPhotoCategories();
-        const newTabs = await Promise.all(categories.map(async (category: any) => {
-          const photos = await getPhotoByCategoryId(category.id);
-          const items = photos.map((photo: any) => ({
-            image: getPhotoUrl(photo.id),
-            description: photo.caption,
-            height: photo.height,
-            width: photo.width,
-            id: photo.id,
-          }));
+        const categories = await getPhotoCategoriesToDisplay();
+        const newTabs = await Promise.all(
+          categories.map(async (category: any) => {
+            const photos = await getPhotoByCategoryId(category.id);
+            const items = photos.map((photo: any) => ({
+              image: getPhotoUrl(photo.id),
+              description: photo.caption,
+              height: photo.height,
+              width: photo.width,
+              id: photo.id,
+            }));
 
-          return {
-            title: category.name,
-            content: (
-              <div key={category.id}>
-                <Gallery items={items} initialWidth={initialWidth} />
-              </div>
-            ),
-          };
-        }));
+            return {
+              title: category.name,
+              content: (
+                <div key={category.id}>
+                  <Gallery items={items} initialWidth={initialWidth} />
+                </div>
+              ),
+            };
+          })
+        );
 
         setTabs(newTabs);
       } catch (error) {
-        console.error('Error fetching data for tabs', error);
+        console.error("Error fetching data for tabs", error);
       } finally {
         setLoading(false);
       }
@@ -50,11 +54,9 @@ function GalleryPage() {
 
   return (
     <div className="Content">
-      {!loading && <TabView tabs={tabs} hasBanner={false}></TabView> || <LoadingWheel/>}
-      {/* <PhotoUploadForm></PhotoUploadForm>
-
-      <h1>Create a New Category</h1>
-      <CategoryForm /> */}
+      {(!loading && <TabView tabs={tabs} hasBanner={false}></TabView>) || (
+        <LoadingWheel />
+      )}
     </div>
   );
 }

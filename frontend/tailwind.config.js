@@ -7,6 +7,9 @@ module.exports = {
     {
       pattern: /bg-opacity-(0|10|20|30|40|50|60|70|80|90|100)/,
     },
+    {
+      pattern: /mx-(1|2|3|4|5|6|7|8|9|10)/,
+    },
   ],
   theme: {
     extend: {
@@ -111,6 +114,9 @@ module.exports = {
           return `rgb(var(--color-tab-regular-text))`
         },
       },
+      borderWidth: {
+        '1': '1px',
+      },
       height: {
         'fit': 'fit-content',
         '100px': '100px',
@@ -124,6 +130,7 @@ module.exports = {
         '5%': '5%',
         '90%': '90%',
         '95%': '95%',
+        '80%': '80%',
       },
       width: {
        'fit': 'fit-content',
@@ -152,6 +159,7 @@ module.exports = {
        },
        minWidth: {
         '100px': '100px',
+        '150px': '150px',
         '200px': '200px',
         '300px': '300px',
         '400px': '400px',

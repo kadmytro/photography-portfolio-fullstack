@@ -1,3 +1,0 @@
-for some reason, this is how the migration worked:
-
-npx typeorm-ts-node-commonjs migration:generate src/migration/CreatePhotoTable -d src/data-source.ts

@@ -4,6 +4,9 @@ export interface PhotoCardProps {
   id: number;
   image: string;
   description?: string;
+  categoriesIds?: number[];
+  location?: string;
+  date?: string;
   height: number;
   width: number;
 }
