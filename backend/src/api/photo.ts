@@ -1,11 +1,8 @@
 import { Router } from "express";
-import fs from "fs";
 import multer from "multer";
 import { AppDataSource } from "../data-source";
 import { Photo } from "../entity/Photo";
-import { checkAdminRole, checkAuth, verifyToken } from "./authMiddleware";
-import path from "path";
-import { isValidSettingsObject, Settings } from "@shared/types/Settings";
+import { checkAuth } from "./authMiddleware";
 import { readSettings } from "../helpers/settingsReader";
 
 const router = Router();
@@ -91,7 +88,6 @@ router.get("/:id", async (req, res) => {
     if (!photo) {
       return res.status(404).send("Photo not found");
     }
-
     const imageBuffer = photo.photo;
 
     res.set("Content-Type", photo.mimeType);

@@ -53,9 +53,9 @@ function GalleryPage() {
   }, [initialWidth]);
 
   return (
-    <div className="Content">
+    <div className="Content" style={{ minHeight: "calc(100vh - 224px)" }}>
       {(!loading && <TabView tabs={tabs} hasBanner={false}></TabView>) || (
-        <LoadingWheel />
+        <LoadingWheel style={{ height: "calc(100vh - 224px)" }}/>
       )}
     </div>
   );

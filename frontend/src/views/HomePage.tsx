@@ -26,7 +26,7 @@ function HomePage() {
 
         setItems(items);
       } catch (error) {
-        console.error('Error fetching data for tabs', error);
+        console.error("Error fetching data for tabs", error);
       } finally {
         setLoading(false);
       }
@@ -35,11 +35,16 @@ function HomePage() {
     fetchData();
   }, [initialWidth]);
   return (
-    <div className="Content relative text-primaryText">
+    <div
+      className="Content relative text-primaryText"
+      style={{ minHeight: "calc(100vh - 224px)" }}
+    >
       <div className="m-auto font-normal text-4xl tracking-wider my-8  w-fit">
         Latest works
       </div>
-      { !loading && <Gallery items={items} initialWidth={initialWidth}></Gallery> || <LoadingWheel/>}
+      {(!loading && (
+        <Gallery items={items} initialWidth={initialWidth}></Gallery>
+      )) || <LoadingWheel style={{ height: "calc(100vh - 224px)" }} />}
       <AboutMe></AboutMe>
       <Contacts></Contacts>
     </div>

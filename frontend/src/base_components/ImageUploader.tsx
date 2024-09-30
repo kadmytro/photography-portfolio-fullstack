@@ -1,0 +1,173 @@
+import React, { useEffect, useRef, useState } from "react";
+import Button from "./Button";
+
+interface ImageUploaderProps {
+  initialSource?: string | null;
+  imageChangeCallback?: (file?: File) => void | undefined;
+  editing?: boolean | undefined;
+  showFileDetails?: boolean;
+  hideDeleteButton?: boolean;
+}
+
+const ImageUploader: React.FC<ImageUploaderProps> = ({
+  initialSource = null,
+  imageChangeCallback,
+  editing,
+  showFileDetails = false,
+  hideDeleteButton = false,
+}) => {
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialSource
+  );
+  const [width, setWidth] = useState<number | null>(null);
+  const [height, setHeight] = useState<number | null>(null);
+  const [mimeType, setMimeType] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleFileChange(file?: File) {
+    if (imageChangeCallback === undefined) {
+      return;
+    }
+
+    if (file === undefined) {
+      resetUploader();
+    } else {
+      setImagePreview(URL.createObjectURL(file!));
+      setMimeType(file.type);
+      setFile(file);
+    }
+
+    imageChangeCallback(file);
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      handleFileChange(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileChange(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const handleRemoveFile = () => {
+    handleFileChange();
+    setImagePreview(null);
+  };
+
+  const resetUploader = () => {
+    setImagePreview(initialSource);
+    setFile(null);
+    setHeight(null);
+    setWidth(null);
+    setMimeType(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  useEffect(() => {
+    if (imagePreview != null) {
+      const image = new Image();
+      image.src = imagePreview;
+
+      image.onload = () => {
+        setWidth(image.naturalWidth);
+        setHeight(image.naturalHeight);
+      };
+    }
+  }, [imagePreview]);
+
+  useEffect(() => {
+    if (!editing) {
+      resetUploader();
+    }
+  }, [editing]);
+
+  useEffect(() => {
+    resetUploader();
+  }, [initialSource]);
+
+  return (
+    <div
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      className={`flex-1 mb-4 p-4 ${
+        editing ? "border-dashed border-2 border-gray-400 rounded-md" : ""
+      } ${!imagePreview && " cursor-pointer"}`}
+      onClick={() => editing && !imagePreview && fileInputRef.current?.click()}
+    >
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleImageChange}
+        className="hidden"
+      />
+      {!imagePreview && (
+        <div>
+          <div className="svg-mask image-placeholder w-6 h-6 bg-gray-400 mx-auto" />
+          <p className="text-gray-400 text-center">
+            Drag and drop a file here or click to select a file
+          </p>
+        </div>
+      )}
+      {imagePreview && (
+        <div className="mt-4">
+          <img
+            src={
+              editing
+                ? imagePreview!
+                : initialSource != null
+                ? initialSource
+                : undefined
+            }
+            alt="Preview"
+            className="w-full h-auto shadow"
+          />
+          {showFileDetails && file && (
+            <p className="text-gray-600 mt-2">Selected File: {file.name}</p>
+          )}
+          {showFileDetails && width && height && (
+            <p className="text-gray-600">
+              Dimensions: {width} x {height}
+            </p>
+          )}
+          <div
+            className="w-full flex items-center justify-center mt-2"
+            style={{
+              display: editing ? "flex" : "none",
+            }}
+          >
+            <Button
+              buttonType="normal"
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              text="Change file"
+            />
+            {!hideDeleteButton && (
+              <Button
+                buttonType="danger"
+                onClick={handleRemoveFile}
+                className="ml-4"
+                text="Remove file"
+              />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ImageUploader;

@@ -3,15 +3,15 @@ import React, { useState, useEffect, useRef } from "react";
 export interface PhotoCardProps {
   id: number;
   image: string;
-  description?: string;
-  categoriesIds?: number[];
+  caption?: string;
+  categoriesIds?: (number | string)[];
   location?: string;
   date?: string;
   height: number;
   width: number;
 }
 
-export const PhotoCard = ({ image, description }: PhotoCardProps) => {
+export const PhotoCard = ({ image, caption: caption }: PhotoCardProps) => {
   const [height, setHeight] = useState<number | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,7 +43,7 @@ export const PhotoCard = ({ image, description }: PhotoCardProps) => {
       <img
         ref={imgRef}
         src={image}
-        alt={description}
+        alt={caption}
         onLoad={handleImageLoad}
         className="h-auto w-full object-cover cursor-pointer"
       />

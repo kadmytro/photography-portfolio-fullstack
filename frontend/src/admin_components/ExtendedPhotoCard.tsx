@@ -19,6 +19,14 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
     setShowEditPopup(true);
   };
 
+  useEffect(() => {
+    if (showEditPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [showEditPopup]);
+
   const handleDeleteClick = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this photo?"
@@ -63,23 +71,20 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
   return (
     <div className="relative">
       <PhotoCard {...photoDetails} />
-      <div className="absolute bottom-0 left-0 w-full flex justify-between p-2 bg-primary bg-opacity-30 shadow-md">
-        <button
+      <div className="absolute top-1 right-1 flex gap-2 bg-primary bg-opacity-30 p-3 hover:bg-opacity-50 rounded-xl">
+        <div
+          className="svg-mask edit-icon w-7 h-7 bg-cardText right-0 cursor-pointer hover:scale-125 transition-all"
           onClick={handleEditClick}
-          className="py-1 px-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-        >
-          Edit
-        </button>
-        <button
+        />
+        <div
+          className="svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 cursor-pointer hover:scale-125 transition-all"
           onClick={handleDeleteClick}
-          className="py-1 px-2 bg-red-500 text-white rounded hover:bg-red-700"
-        >
-          Delete
-        </button>
+        />
       </div>
+
       {showEditPopup && (
-        <div className="fixed inset-0 w-screen h-screen overflow-auto flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
-          <div className="bg-white p-4 rounded shadow-lg">
+        <div className="fixed inset-0 w-screen h-screen overflow-auto flex items-center justify-center backdrop-blur bg-primary bg-opacity-30 z-50">
+          <div className="rounded shadow-lg">
             <PhotoEditForm
               photo={photoDetails}
               onUpdate={handlePhotoUpdate}

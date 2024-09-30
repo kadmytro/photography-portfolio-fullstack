@@ -41,9 +41,9 @@ export function Navbar({
     const topNavBannerHeight: number = displayBannerImage ? 384 : 0;
     let opacity = 0;
     if (!displayBannerImage || offset > topNavBannerHeight - topNavHeight) {
-      opacity = 100;
+      opacity = 50;
     } else {
-      opacity = (offset * 100) / (topNavBannerHeight - topNavHeight);
+      opacity = (offset * 50) / (topNavBannerHeight - topNavHeight);
       opacity = opacity - (opacity % 10);
     }
 
@@ -62,6 +62,7 @@ export function Navbar({
     let displayBanner = !(
       location.pathname == "/gallery" ||
       location.pathname == "/login" ||
+      location.pathname == "/prices" ||
       location.pathname.includes("/admin")
     );
     setDisplayBannerImage(displayBanner);
@@ -92,9 +93,19 @@ export function Navbar({
   return (
     <nav className={"bg-header" + (!displayBannerImage ? " h-20" : "")}>
       <div
-        className={`w-full fixed top-0 py-5 bg-header z-20 bg-opacity-${
-          displayBannerImage ? topNavOpacity : 100
-        } ${topNavOpacity == 100 ? "" : " transition-colors"}`}
+        className={`w-full fixed top-0 py-5 bg-header z-50 backdrop-blur-${
+          !displayBannerImage
+            ? "xl"
+            : topNavOpacity < 10
+            ? "none"
+            : topNavOpacity < 20
+            ? "sm"
+            : topNavOpacity < 30
+            ? "md"
+            : topNavOpacity < 40
+            ? "lg"
+            : "xl"
+        } bg-opacity-${displayBannerImage ? topNavOpacity : 50}`}
       >
         <div className="container mx-auto flex justify-between items-center text-lg px-10">
           <ul className="flex space-x-10 w-1/3 items-center justify-start">

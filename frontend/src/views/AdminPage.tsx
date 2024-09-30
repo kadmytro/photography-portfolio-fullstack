@@ -9,14 +9,15 @@ import HorizontalDrawer from "../components/HorizontalDrawer";
 import { PhotoCardProps } from "../components/PhotoCard";
 import Pager from "../components/Pager";
 import CategoryList from "../admin_components/CategoryList";
-import MultiSelectDropdown from "../admin_components/Category";
 import SettingsForm from "../admin_components/SettingsForm";
+import ServiceList from "../admin_components/ServiceList";
+import TagBox from "../base_components/TagBox";
 
 function AdminPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const initialWidth = containerRef.current?.clientWidth || window.innerWidth;
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<(number | string)[]>([]);
 
   const getEndPoint = () => {
     let result = "/api/photos/all";
@@ -32,7 +33,7 @@ function AdminPage() {
     return Object.values(data).map((photo: any) => ({
       id: photo.id,
       image: getPhotoUrl(photo.id),
-      description: photo.caption,
+      caption: photo.caption,
       location: photo.location,
       categoriesIds: photo.categoriesIds,
       height: photo.height,
@@ -44,19 +45,19 @@ function AdminPage() {
     {
       title: "Content Management",
       items: [
-        { id: 1, title: "Add new photo", content: <PhotoUploadForm /> },
+        { id: 11, title: "Add new photo", content: <PhotoUploadForm /> },
         {
-          id: 2,
+          id: 12,
           title: "Manage photos",
           content: (
             <>
               <div className="flex mx-10">
                 <div className="px-5 text-center self-center">Categories:</div>
-                <MultiSelectDropdown
-                  onSelectionChange={(categories) =>
-                    setSelectedCategories(categories)
-                  }
-                  initialSelection={selectedCategories}
+                <TagBox
+                dataSource="/api/categories"
+                initialSelection={selectedCategories}
+                placeholder="Select categories"
+                onSelectionChange={(categories => setSelectedCategories(categories))}
                 />
               </div>
               <Pager
@@ -75,24 +76,32 @@ function AdminPage() {
           ),
         },
         {
-          id: 3,
+          id: 13,
           title: "Manage Categories",
           content: <CategoryList />,
         },
       ],
     },
     {
+      title: "Products Management",
+      items: [
+        {
+          id: 21,
+          title: "Manage Services",
+          content: <ServiceList />,
+        },
+      ],
+    },
+    {
       title: "Website Management",
       items: [
-        { id: 21, title: "Contacts", content: <ContactsForm /> },
-        { id: 22, title: "Links", content: <LinksForm /> },
-        { id: 23, title: "AboutMe", content: <AboutMeForm /> },
+        { id: 31, title: "Contacts", content: <ContactsForm /> },
+        { id: 32, title: "Links", content: <LinksForm /> },
+        { id: 33, title: "AboutMe", content: <AboutMeForm /> },
         {
-          id: 24,
+          id: 34,
           title: "Settings",
-          content: (
-            <SettingsForm/>
-          ),
+          content: <SettingsForm />,
         },
       ],
     },

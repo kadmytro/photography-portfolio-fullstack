@@ -6,8 +6,10 @@ import { readSettings } from "../helpers/settingsReader";
 
 const router = Router();
 
-router.get("/get", async (req, res) => {
-  const categories = await AppDataSource.getRepository(PhotoCategory).find();
+router.get("/", async (req, res) => {
+  const categories = await AppDataSource.getRepository(PhotoCategory).find({
+    order: { ordinal: "ASC" },
+  });
   res.json(categories);
 });
 
@@ -15,13 +17,14 @@ router.get("/categoriesToDisplay", async (req, res) => {
   const settings = await readSettings();
   const gallerySelectedCategories = settings?.gallerySelectedCategories;
   try {
-    let categories = await AppDataSource.getRepository(PhotoCategory).find();
+    let categories = await AppDataSource.getRepository(PhotoCategory).find({
+      order: { ordinal: "ASC" },
+    });
 
     if (
       Array.isArray(gallerySelectedCategories) &&
       gallerySelectedCategories.length > 0
     ) {
-      console.log(gallerySelectedCategories);
       categories = categories.filter((category) =>
         gallerySelectedCategories.includes(category.id)
       );
@@ -34,9 +37,9 @@ router.get("/categoriesToDisplay", async (req, res) => {
   }
 });
 
-router.post("/post", checkAuth, async (req, res) => {
+router.post("/", checkAuth, async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, ordinal } = req.body;
 
     if (!name) {
       return res.status(400).json({ error: "No name provided" });
@@ -45,6 +48,7 @@ router.post("/post", checkAuth, async (req, res) => {
     const category = new PhotoCategory();
     category.name = name;
     category.description = description;
+    category.ordinal = ordinal === "" ? null : ordinal;
 
     const categoryRepository = AppDataSource.getRepository(PhotoCategory);
     await categoryRepository.save(category);
@@ -56,22 +60,29 @@ router.post("/post", checkAuth, async (req, res) => {
   }
 });
 
-router.put("/put/:id", checkAuth, async (req, res) => {
+router.put("/:id", checkAuth, async (req, res) => {
   const categoryRepository = await AppDataSource.getRepository(PhotoCategory);
   const category = await categoryRepository.findOneBy({
     id: parseInt(req.params.id),
   });
 
   if (category) {
-    categoryRepository.merge(category, req.body);
-    const result = await categoryRepository.save(category);
-    res.json(result);
+    const updatedData = {
+      ...req.body,
+      ordinal:
+        req.body.ordinal === "" || req.body.ordinal === "null"
+          ? null
+          : req.body.ordinal,
+    };
+    categoryRepository.merge(category, updatedData);
+    await categoryRepository.save(category);
+    res.json("Successfully updated the category");
   } else {
     res.status(404).send("Category not found");
   }
 });
 
-router.delete("/delete/:id", checkAuth, async (req, res) => {
+router.delete("/:id", checkAuth, async (req, res) => {
   const categoryRepository = await AppDataSource.getRepository(PhotoCategory);
   const result = await categoryRepository.delete(req.params.id);
 

@@ -5,6 +5,8 @@ import categoryRouter from "./api/photoCategory";
 import adminRouter from "./api/admin"
 import authRouter from "./api/auth";
 import detailsRouter from "./api/details";
+import servicesRouter from './api/service';
+import contactUsRouter from './api/contactUs';
 import { AppDataSource } from "./data-source";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -28,6 +30,8 @@ AppDataSource.initialize()
     app.use('/auth', authRouter);
     app.use('/api/admin', adminRouter);
     app.use('/api/details', detailsRouter);
+    app.use('/api/services', servicesRouter);
+    app.use('/api/contactUs', contactUsRouter);
 
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);

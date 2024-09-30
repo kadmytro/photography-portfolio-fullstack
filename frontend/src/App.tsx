@@ -10,6 +10,7 @@ import NotFoundPage from "./views/NotFoundPage";
 import AdminPage from "./views/AdminPage";
 import PrivateRoute from "./views/PrivateRoute";
 import { AuthProvider } from "./context/AuthContextType";
+import PricesPage from "./views/PricesPage";
 
 const navbarProps: NavbarProps = {
   homeText: "Home",
@@ -19,10 +20,10 @@ const navbarProps: NavbarProps = {
   pricesText: "Prices",
   pricesUrl: "/prices",
   contactsText: "Contacts",
-};  
+};
 function App() {
   return (
-    <div className="App min-h-screen">
+    <div className="App min-h-screen bg-primary">
       <Router>
         <AuthProvider>
           <Navbar {...navbarProps} />
@@ -30,8 +31,12 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/login" element={<LoginPage />}/>
-            <Route path="/admin" element={<PrivateRoute element={<AdminPage />} />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/admin"
+              element={<PrivateRoute element={<AdminPage />} />}
+            />
+            <Route path="prices" element={<PricesPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </AuthProvider>

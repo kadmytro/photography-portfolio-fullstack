@@ -1,29 +1,23 @@
 import React, { useEffect, useState } from "react";
 import api from "../services/api";
 import LoadingWheel from "../components/LoadingWheel";
-
-interface CategoryItem {
-  id: number;
-  name: string;
-  description?: string;
-}
+import CategoryItem from "../types/CategoryItem";
+import CategoryListItem from "./CategoryListItem";
+import Button from "../base_components/Button";
 
 const ListComponent: React.FC = () => {
   const [items, setItems] = useState<CategoryItem[]>([]);
-  const [editingItem, setEditingItem] = useState<CategoryItem | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [newItem, setNewItem] = useState<CategoryItem | null>(null);
   const [error, setError] = useState<string | null>(null); // For error messages
 
-  // State to track original values for modified input highlight
-  const [originalValues, setOriginalValues] = useState<{
-    [key: number]: CategoryItem;
-  }>({});
-
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await api.get("api/categories/get");
+        const response = await api.get("api/categories");
         setItems(response.data);
       } catch (error) {
         console.error("Failed to fetch items:", error);
@@ -35,87 +29,49 @@ const ListComponent: React.FC = () => {
     fetchItems();
   }, []);
 
-  const handleEdit = (item: CategoryItem) => {
-    setEditingItem(item);
-    setOriginalValues((prev) => ({ ...prev, [item.id]: { ...item } }));
-  };
-
-  const handleSave = async () => {
-    if (!editingItem || editingItem.name.trim() === "") {
-      setError("Category name cannot be empty or whitespace only.");
-      return;
+  function updateCategory(category: CategoryItem): void {
+    const isOld = items.some((s) => s.id === category.id);
+    if (!isOld) {
+      setNewItem(null);
     }
+    const updatedCategories = isOld
+      ? items.map((s) => (s.id === category.id ? category : s))
+      : [...items, category];
 
-    setError(null);
-
-    try {
-      await api.put(`api/categories/put/${editingItem.id}`, editingItem);
-      setItems(
-        items.map((item) => (item.id === editingItem.id ? editingItem : item))
-      );
-      setEditingItem(null);
-    } catch (error) {
-      console.error("Failed to update item:", error);
-    }
-  };
+    setItems(updatedCategories);
+  }
 
   const handleCancel = () => {
-    setEditingItem(null);
+    setEditingCategoryId(null);
     setNewItem(null);
-    setError(null);
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
+    if (window.confirm("Are you sure you want to delete this category?")) {
       try {
-        await api.delete(`api/categories/delete/${id}`);
+        await api.delete(`api/categories/${id}`);
         setItems(items.filter((item) => item.id !== id));
       } catch (error) {
-        console.error("Failed to delete item:", error);
+        console.error("Failed to delete category:", error);
       }
     }
   };
 
   const handleAddNewItem = () => {
-    setNewItem({ id: 0, name: "", description: "" });
-  };
+    handleCancel();
+    setNewItem({
+      id: -1,
+      name: "",
+      description: "",
+    });
+    setEditingCategoryId(-1);
 
-  const handleSaveNewItem = async () => {
-    if (!newItem || newItem.name.trim() === "") {
-      setError("Category name cannot be empty or whitespace only.");
-      return;
-    }
-
-    setError(null); // Clear error message
-
-    try {
-      const response = await api.post(`api/categories/post`, newItem);
-      setItems([...items, { ...newItem, id: response.data }]);
-      setNewItem(null);
-    } catch (error) {
-      console.error("Failed to add new item:", error);
-    }
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    if (editingItem) {
-      setEditingItem({ ...editingItem, [name]: value });
-    } else if (newItem) {
-      setNewItem({ ...newItem, [name]: value });
-    }
-  };
-
-  const isModified = (field: keyof CategoryItem) => {
-    if (
-      !editingItem ||
-      !originalValues[editingItem.id] ||
-      (!originalValues[editingItem.id][field] && !editingItem[field])
-    )
-      return false;
-    return originalValues[editingItem.id][field] !== editingItem[field];
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    });
   };
 
   if (loading) {
@@ -132,123 +88,35 @@ const ListComponent: React.FC = () => {
       )}
       <ul className="space-y-4">
         {items.map((item) => (
-          <li
+          <CategoryListItem
             key={item.id}
-            className={
-              "p-4 border rounded shadow min-w-500px bg-white text-gray-900"
-            }
-          >
-            {editingItem?.id === item.id ? (
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  name="name"
-                  value={editingItem.name}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded focus:outline-none ${
-                    isModified("name") ? "bg-yellow-100" : ""
-                  }`}
-                  placeholder="Name"
-                />
-                <textarea
-                  name="description"
-                  value={editingItem.description}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded focus:outline-none ${
-                    isModified("description") ? "bg-yellow-100" : ""
-                  }`}
-                  placeholder="Description"
-                />
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={handleCancel}
-                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-semibold">{item.name}</h3>
-                  {item.description && (
-                    <p className="text-gray-600">{item.description}</p>
-                  )}
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(item)}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            )}
-          </li>
+            category={item}
+            editingCategoryId={editingCategoryId}
+            deleteCategory={handleDelete}
+            setEditingCategoryId={setEditingCategoryId}
+            updateCategory={updateCategory}
+            cancelCallback={handleCancel}
+          />
         ))}
         {newItem && (
-          <li className="p-4 border rounded shadow min-w-500px bg-white text-gray-900">
-            <div className="space-y-2">
-              <input
-                type="text"
-                name="name"
-                value={newItem.name}
-                required={true}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded focus:outline-none ${
-                  isModified("name") ? "border-blue-500" : ""
-                }`}
-                placeholder="Name"
-              />
-              <textarea
-                name="description"
-                value={newItem.description}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded focus:outline-none ${
-                  isModified("description") ? "border-blue-500" : ""
-                }`}
-                placeholder="Description"
-              />
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={handleCancel}
-                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSaveNewItem}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </li>
+          <CategoryListItem
+            key={"newCategory"}
+            category={newItem}
+            editingCategoryId={editingCategoryId}
+            deleteCategory={handleDelete}
+            setEditingCategoryId={setEditingCategoryId}
+            updateCategory={updateCategory}
+            cancelCallback={handleCancel}
+          />
         )}
       </ul>
       <div className="flex justify-center mt-4">
         {!newItem && (
-          <button
+          <Button
+            text="+ Add new"
             onClick={handleAddNewItem}
-            className="px-6 py-2 font-bold bg-blue-500 text-white rounded-full hover:bg-blue-600"
-          >
-            + Add new
-          </button>
+            className="font-bold"
+          />
         )}
       </div>
     </div>

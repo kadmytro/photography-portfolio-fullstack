@@ -54,7 +54,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="relative min-w-300px max-w-400px bg-header text-headerText p-4">
+      <div className="relative min-w-300px max-w-400px bg-primary text-headerText p-4">
         <div className="sticky top-24 w-full">
           {groups.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-4">
@@ -65,10 +65,10 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
                 {group.items.map((item) => (
                   <li
                     key={item.id}
-                    className={`cursor-pointer p-2 rounded bg-gray-700 ${
+                    className={`cursor-pointer p-2 rounded ${
                       selectedItem && selectedItem.id === item.id
-                        ? "bg-opacity-70"
-                        : "bg-opacity-0 hover:bg-opacity-40"
+                        ? "bg-tabSelected bg-opacity-40 text-tabSelectedText"
+                        : "bg-transparent text-tabRegularText text-opacity-70 hover:text-opacity-100  hover:bg-blue-500 hover:bg-opacity-20"
                     }`}
                     onClick={() => handleClick(item)}
                   >
@@ -80,7 +80,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
           ))}
         </div>
       </div>
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-8 border-l border-primaryText border-opacity-30">
         {selectedItem ? (
           <>
             <h1 className="text-2xl font-bold mb-4">{selectedItem.title}</h1>

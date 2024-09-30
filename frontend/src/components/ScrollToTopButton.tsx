@@ -27,12 +27,12 @@ export const ScrollToTopButton = () => {
   }, []);
 
   return (
-    <button
+    <div
       onClick={handleClick}
-      className={`fixed bottom-10 right-5 p-3 w-14 h-14 border-footerText border-1 rounded-full text-2xl bold bg-primary text-footerText  transition-all opacity-60 hover:opacity-100
+      className={`fixed bottom-10 z-50 text-center right-5 p-3 cursor-pointer w-14 h-14 border-footerText border-1 rounded-full text-2xl bold bg-primary text-footerText transition-all opacity-60 hover:opacity-90
         ${isVisible ? "block" : "hidden"}`}
     >
       ↑
-    </button>
+    </div>
   );
 };

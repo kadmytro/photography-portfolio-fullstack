@@ -7,13 +7,18 @@ interface FullscreenImageViewerProps {
   onClose: () => void;
 }
 
-const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({ items, selectedItemId, onClose }) => {
- 
-  const [currentIndex, setCurrentIndex] = useState(items.findIndex(p => p.id === selectedItemId));
+const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
+  items,
+  selectedItemId,
+  onClose,
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(
+    items.findIndex((p) => p.id === selectedItemId)
+  );
   const [fade, setFade] = useState(false);
 
   useEffect(() => {
-    setCurrentIndex(items.findIndex(p => p.id === selectedItemId));
+    setCurrentIndex(items.findIndex((p) => p.id === selectedItemId));
   }, [selectedItemId]);
 
   const handleNext = () => {
@@ -27,7 +32,9 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({ items, se
   const handlePrev = () => {
     setFade(true);
     setTimeout(() => {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + items.length) % items.length);
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + items.length) % items.length
+      );
       setFade(false);
     }, 150);
   };
@@ -49,7 +56,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({ items, se
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-  
+
   const calculateImageStyles = (): CSSProperties => {
     const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
     const imageHeight = items[currentIndex].height;
@@ -73,26 +80,38 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({ items, se
   };
 
   return (
-      <div className="fixed top-0 left-0 w-screen h-screen backdrop-blur-lg bg-primary bg-opacity-70 flex justify-center items-center z-50">
-        <div className="relative flex items-center justify-center h-full w-full">
-          <button 
-            className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
-            onClick={handlePrev}>‹</button>
-          <div className="w-90% h-95% flex justify-center items-center my-0 mx-5">
-            <img src={items[currentIndex].image}
-                alt={items[currentIndex].description} 
-                style={calculateImageStyles()}
-                className={`transition-opacity duration-200 ${fade ? "opacity-40" : "opacity-100"}`}
-            />
-          </div>
-          <button 
-            className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none" 
-            onClick={handleNext}>›</button>
+    <div className="fixed top-0 left-0 w-screen h-screen backdrop-blur-lg bg-primary bg-opacity-70 flex justify-center items-center z-50">
+      <div className="relative flex items-center justify-center h-full w-full">
+        <button
+          className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
+          onClick={handlePrev}
+        >
+          ‹
+        </button>
+        <div className="w-90% h-95% flex justify-center items-center my-0 mx-5">
+          <img
+            src={items[currentIndex].image}
+            alt={items[currentIndex].caption}
+            style={calculateImageStyles()}
+            className={`transition-opacity duration-200 ${
+              fade ? "opacity-40" : "opacity-100"
+            }`}
+          />
         </div>
-        <button 
-          className="w-16 h-16 absolute text-center top-1 right-2 bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
-          onClick={onClose}>×</button>
+        <button
+          className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
+          onClick={handleNext}
+        >
+          ›
+        </button>
       </div>
+      <button
+        className="w-16 h-16 absolute text-center top-1 right-2 bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
+        onClick={onClose}
+      >
+        ×
+      </button>
+    </div>
   );
 };
 

@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import api from "../services/api";
-import MultiSelectDropdown from "./Category";
 import LoadingWheel from "./../components/LoadingWheel"; // Import the LoadingWheel component
+import Input from "../base_components/Input";
+import ImageUploader from "../base_components/ImageUploader";
+import Button from "../base_components/Button";
+import TagBox from "../base_components/TagBox";
 
 interface Category {
   id: number;
@@ -16,7 +19,9 @@ const PhotoUploadForm: React.FC = () => {
   const [date, setDate] = useState("");
   const [width, setWidth] = useState<number | null>(null);
   const [height, setHeight] = useState<number | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<
+    (number | string)[]
+  >([]);
   const [mimeType, setMimeType] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +47,12 @@ const PhotoUploadForm: React.FC = () => {
     };
   }, []);
 
-  const handleFileChange = (selectedFile: File) => {
+  const handleFileChange = (selectedFile?: File) => {
+    if (!selectedFile) {
+      handleRemoveFile();
+      return;
+    }
+
     setFile(selectedFile);
     setMimeType(selectedFile.type);
 
@@ -117,7 +127,6 @@ const PhotoUploadForm: React.FC = () => {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
-      console.log("Photo uploaded successfully:", response.data);
       resetForm();
     } catch (error) {
       console.error("Failed to upload photo:", error);
@@ -130,129 +139,64 @@ const PhotoUploadForm: React.FC = () => {
     <div className="relative">
       <form
         onSubmit={handleSubmit}
-        className="max-w-xl mx-auto p-4 bg-white rounded shadow relative"
+        className="max-w-4xl mx-auto p-4 bg-card text-cardText rounded shadow relative"
       >
-        <div className="mb-4">
-          <label
-            htmlFor="caption"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Caption:
-          </label>
-          <input
-            type="text"
-            id="caption"
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            placeholder="Caption"
-            className="w-full px-3 py-2 border rounded-lg text-gray-700 focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="location"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Location:
-          </label>
-          <input
-            type="text"
-            id="location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Location"
-            className="w-full px-3 py-2 border rounded-lg text-gray-700 focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="date" className="block text-gray-700 font-bold mb-2">
-            Date:
-          </label>
-          <input
-            type="date"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg text-gray-700 focus:outline-none focus:shadow-outline cursor-auto"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="categories" className="block text-gray-700 font-bold mb-2">
-            Categories:
-          </label>
-          <MultiSelectDropdown
-            onSelectionChange={(categories) =>
-              setSelectedCategories(categories)
-            }
-          />
-        </div>
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onClick={() =>
-            !file && fileInputRef.current && fileInputRef.current.click()
-          }
-          className="mb-4 p-4 border-dashed border-2 border-gray-300 rounded cursor-pointer"
-        >
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={(e) =>
-              e.target.files && handleFileChange(e.target.files[0])
-            }
-            className="hidden"
-          />
-          {!file && (
-            <div>
-              <div className="svg-mask image-placeholder w-6 h-6 bg-gray-600 mx-auto" />
-              <p className="text-gray-600 text-center">
-                Drag and drop a file here or click to select a file
-              </p>
-            </div>
-          )}
-          {file && (
-            <div className="mt-4">
-              <img
-                src={URL.createObjectURL(file)}
-                alt="Preview"
-                className="w-full h-auto shadow"
+        <div className="w-full h-full flex gap-4 items-center">
+          <div className="flex-1 min-w-300px">
+            <ImageUploader
+              editing={true}
+              imageChangeCallback={handleFileChange}
+              showFileDetails={true}
+              initialSource={file ? URL.createObjectURL(file) : null}
+            />
+          </div>
+          <div className="flex-1">
+            <Input
+              label="Caption"
+              type="text"
+              id="caption"
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+            />
+            <Input
+              label="Location"
+              type="text"
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+            <Input
+              label="Date"
+              type="date"
+              id="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+            <div className="mb-4">
+              <label
+                htmlFor="categories"
+                className="block text-cardText font-bold mb-2"
+              >
+                Categories:
+              </label>
+              <TagBox
+                dataSource="/api/categories"
+                initialSelection={selectedCategories}
+                onSelectionChange={setSelectedCategories}
               />
-              <p className="text-gray-600 mt-2">Selected File: {file.name}</p>
-              {width && height && (
-                <p className="text-gray-600">
-                  Dimensions: {width} x {height}
-                </p>
-              )}
-              <div className="w-full flex items-center justify-center">
-                <button
-                  type="button"
-                  className="mt-2 py-1 px-2 bg-blue-300 text-white rounded hover:bg-blue-500 mx-6"
-                  onClick={() =>
-                    fileInputRef.current && fileInputRef.current.click()
-                  }
-                >
-                  Select another file
-                </button>
-                <button
-                  type="button"
-                  className="mt-2 py-1 px-2 bg-red-500 text-white rounded hover:bg-red-700 mx-6"
-                  onClick={handleRemoveFile}
-                >
-                  Remove File
-                </button>
-              </div>
             </div>
-          )}
+          </div>
         </div>
-        <button
-          type="submit"
-          className="w-full py-2 px-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
-          disabled={!file} // Disable the button if no file is selected
-        >
-          Upload Photo
-        </button>
+        <div className="w-full flex justify-center">
+          <Button
+            text="Upload Photo"
+            type={"submit"}
+            disabled={!file}
+            className="w-1/2 font-bold"
+          />
+        </div>
         {loading && (
-          <div className="absolute inset-0 bg-gray-200 bg-opacity-75 flex items-center justify-center">
+          <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
             <LoadingWheel />
           </div>
         )}

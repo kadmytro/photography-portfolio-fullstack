@@ -1,1 +1,15 @@
-{"name":"photography-portfolio","version":"1.0.0","scripts":{"start":"concurrently \"npm run start --prefix backend\" \"npm run start --prefix frontend\"","build":"concurrently \"npm run build --prefix backend\" \"npm run build --prefix frontend\""},"dependencies":{"concurrently":"^8.2.2"},"devDependencies":{"@types/node":"^20.14.12","ts-node":"^10.9.2"}}
+{
+  "name": "photography-portfolio",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run start --prefix backend\" \"npm run start --prefix frontend\"",
+    "build": "concurrently \"npm run build --prefix backend\" \"npm run build --prefix frontend\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "ts-node": "^10.9.2"
+  }
+}

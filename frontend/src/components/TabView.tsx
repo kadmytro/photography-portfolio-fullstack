@@ -44,7 +44,7 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
     if (tabViewRef.current) {
       const titleHeight = title ? 104 : 0;
       const galleryPadding = title ? 16 : 0;
-      const stickynessCompensation = -80;
+      const stickynessCompensation = -120;
       const titleCompensation = title ? titleHeight + galleryPadding : 0;
       const topPosition =
         tabViewRef.current.getBoundingClientRect().top +
@@ -67,10 +67,10 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
     <div ref={tabViewRef}>
       <div
         className={
-          "flex flex-col w-full bg-primary text-primaryText sticky z-10" +
+          "flex flex-col w-fit mx-auto text-primaryText sticky z-10" +
           (title
             ? isSticky
-              ? " -top-6"
+              ? " -top-0"
               : " -top-36"
             : isSticky
             ? " top-20"
@@ -78,18 +78,18 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
         }
       >
         {title && (
-          <div className="m-auto font-normal text-4xl tracking-wider my-8">
+          <div className="mx-auto font-normal w-full text-center px-9 py-5 text-4xl tracking-wider">
             {title}
           </div>
         )}
-        <div className="flex py-2 transition-all place-content-center">
+        <div className="flex py-2 mt-1 px-4 gap-1 backdrop-blur-sm place-content-center bg-primary bg-opacity-30 hover:bg-opacity-80 rounded-xl hover:duration-700">
           {tabs.map((tab, index) => (
             <button
               key={index}
               className={`px-8 py-2  text-lg cursor-pointer transition-colors rounded-full font-semibold min-w-150px w-fit ${
                 index === activeTab
                   ? "bg-tabSelected bg-opacity-40 text-tabSelectedText"
-                  : "bg-transparent text-tabRegularText text-opacity-70 hover:text-opacity-100"
+                  : "bg-transparent text-tabRegularText text-opacity-70 hover:text-opacity-100  hover:bg-blue-500 hover:bg-opacity-20"
               }`}
               onClick={() => switchToTab(index)}
             >

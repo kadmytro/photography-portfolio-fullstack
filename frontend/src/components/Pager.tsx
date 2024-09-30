@@ -53,6 +53,11 @@ const Pager = <T,>({
     const calcPageNumbers = () => {
       let updatedPages: (number | string)[] = [];
 
+      if (totalPages() < 2) {
+        setPageNumbers(updatedPages);
+        return;
+      }
+
       updatedPages.push(1);
 
       if (currentPage > 3) {
@@ -151,7 +156,7 @@ const Pager = <T,>({
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className="px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary"
+          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${totalPages() < 2 ? "hidden" : ""}`}
         >
           Previous
         </button>
@@ -159,7 +164,7 @@ const Pager = <T,>({
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages()}
-          className="px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary"
+          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${totalPages() < 2 ? "hidden" : ""}`}
         >
           Next
         </button>

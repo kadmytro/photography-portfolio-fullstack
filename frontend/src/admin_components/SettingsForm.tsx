@@ -3,7 +3,9 @@ import { useAuth } from "../context/AuthContextType";
 import api from "../services/api";
 import { Settings } from "@shared/types/Settings";
 import LoadingWheel from "../components/LoadingWheel";
-import MultiSelectDropdown from "./Category";
+import Input from "../base_components/Input";
+import Button from "../base_components/Button";
+import TagBox from "../base_components/TagBox";
 
 const SettingsForm: React.FC = () => {
   const [settings, setSettings] = useState<Settings>({
@@ -11,6 +13,10 @@ const SettingsForm: React.FC = () => {
     galleryMaxPhotos: 0,
     gallerySelectedCategories: [],
   });
+
+  const [changedSettings, setChangedSettings] = useState<Settings>(settings);
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
@@ -20,6 +26,7 @@ const SettingsForm: React.FC = () => {
       try {
         const response = await api.get("/api/details/settings");
         setSettings(response.data);
+        setChangedSettings(response.data);
       } catch (error) {
         console.error("Failed to fetch settings:", error);
       } finally {
@@ -36,22 +43,36 @@ const SettingsForm: React.FC = () => {
         ? Number(value)
         : value;
 
-    setSettings((prevSettings) => ({
+    setChangedSettings((prevSettings) => ({
       ...prevSettings,
       [field]: parsedValue,
     }));
   };
 
-  const handleMultiSelectChange = (categories: number[]) => {
-    setSettings((prevSettings) => ({
+  const handleMultiSelectChange = (categories: (number | string)[]) => {
+    setChangedSettings((prevSettings) => ({
       ...prevSettings,
       gallerySelectedCategories: categories,
     }));
   };
 
+  const handleEdit = () => {
+    if (isEditing) {
+      handleCancel();
+    } else {
+      setIsEditing(true);
+    }
+  };
+
+  const handleCancel = () => {
+    setChangedSettings(settings);
+    setIsEditing(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setSaving(true);
     if (
       !settings.homeMaxPhotos ||
       !settings.galleryMaxPhotos ||
@@ -64,13 +85,16 @@ const SettingsForm: React.FC = () => {
     setError(null); // Clear any previous errors
 
     try {
-      await api.put("/api/admin/settings/put", settings, {
+      await api.put("/api/admin/settings/put", changedSettings, {
         withCredentials: true,
       });
-      alert("Settings updated successfully!");
+      setSettings(changedSettings);
     } catch (error) {
       console.error("Failed to update settings:", error);
       alert("Failed to update settings");
+    } finally {
+      setIsEditing(false);
+      setSaving(false);
     }
   };
 
@@ -81,7 +105,7 @@ const SettingsForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-xl mx-auto p-4 bg-white rounded shadow"
+      className="max-w-xl mx-auto p-4 bg-card text-cardText relative rounded shadow"
     >
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
@@ -89,53 +113,55 @@ const SettingsForm: React.FC = () => {
           <span className="block sm:inline">{error}</span>
         </div>
       )}
-      <div className="mb-4">
-        <label
-          htmlFor="homeMaxPhotos"
-          className="block text-gray-700 font-bold mb-2"
-        >
-          Home max photos
-        </label>
-        <input
-          type="number"
-          id="homeMaxPhotos"
-          value={settings.homeMaxPhotos}
-          onChange={(e) => handleChange("homeMaxPhotos", e.target.value)}
-          className="w-full px-3 py-2 border rounded-lg text-gray-700 focus:outline-none focus:shadow-outline"
-        />
+      {saving && (
+        <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
+          <LoadingWheel />
+        </div>
+      )}
+      <div className="absolute right-4 top-4 flex gap-2 z-10">
+        <div
+          className="cursor-pointer svg-mask edit-icon w-7 h-7 bg-cardText right-0 hover:scale-125 transition-all"
+          onClick={handleEdit}
+        ></div>
       </div>
+      <Input
+        label="Gallery max photos"
+        placeholder="e.g.: 10"
+        type="number"
+        id="galleryMaxPhotos"
+        value={changedSettings.galleryMaxPhotos}
+        readOnly={!isEditing}
+        onChange={(e) => handleChange("galleryMaxPhotos", e.target.value)}
+      />
+      <Input
+        label="Home max photos"
+        placeholder="e.g.: 10"
+        type="number"
+        id="homeMaxPhotos"
+        value={changedSettings.homeMaxPhotos}
+        readOnly={!isEditing}
+        onChange={(e) => handleChange("homeMaxPhotos", e.target.value)}
+      />
       <div className="mb-4">
-        <label
-          htmlFor="galleryMaxPhotos"
-          className="block text-gray-700 font-bold mb-2"
-        >
-          Gallery max photos
-        </label>
-        <input
-          type="number"
-          id="galleryMaxPhotos"
-          value={settings.galleryMaxPhotos}
-          onChange={(e) => handleChange("galleryMaxPhotos", e.target.value)}
-          className="w-full px-3 py-2 border rounded-lg text-gray-700 focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <MultiSelectDropdown
-          initialSelection={settings.gallerySelectedCategories}
+        <TagBox
+          dataSource="/api/categories"
           onSelectionChange={handleMultiSelectChange}
+          initialSelection={changedSettings.gallerySelectedCategories}
+          readOnly={!isEditing}
+          placeholder="Select categories"
         />
       </div>
-      <button
-        type="submit"
-        disabled={!user}
-        className={`w-full py-2 px-4 font-bold text-white rounded ${
-          user
-            ? "bg-blue-500 hover:bg-blue-700"
-            : "bg-gray-500 cursor-not-allowed"
-        }`}
-      >
-        Update Settings
-      </button>
+      {isEditing && (
+        <div className="items-center text-center w-full justify-end flex space-x-2">
+          <Button
+            buttonType="normal"
+            type="button"
+            onClick={handleCancel}
+            text="Cancel"
+          />
+          <Button type="submit" disabled={!user} text="Save" />
+        </div>
+      )}
     </form>
   );
 };

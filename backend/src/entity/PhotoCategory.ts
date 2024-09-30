@@ -11,4 +11,7 @@ export class PhotoCategory {
 
   @Column({ nullable: true })
   description?: string;
+
+  @Column({ nullable: true })
+  ordinal!: number;
 }

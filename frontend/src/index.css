@@ -9,7 +9,7 @@
   --color-secondary: 44, 44, 44;
   --color-secondary-text: 255, 255, 255;
 
-  --color-header: 31, 41, 55;
+  --color-header: 0, 0, 0;
   --color-header-text: 255, 255, 255;
 
   --color-footer: 44, 44, 44;
@@ -18,6 +18,12 @@
   --color-tab-selected: 217, 217, 217;
   --color-tab-selected-text: 0, 0, 0;
   --color-tab-regular-text: 255, 255, 255;
+
+  --color-card: 22, 22, 22;
+  --color-card-text: 225, 225, 225;
+
+  --color-input: 15, 15, 15;
+  --color-input-text: 250, 250, 250;
 }
 
 [data-theme="dark"] {
@@ -27,7 +33,7 @@
   --color-secondary: 44, 44, 44;
   --color-secondary-text: 255, 255, 255;
 
-  --color-header: 31, 41, 55;
+  --color-header: 0, 0, 0;
   --color-header-text: 255, 255, 255;
 
   --color-footer: 44, 44, 44;
@@ -36,6 +42,12 @@
   --color-tab-selected: 217, 217, 217;
   --color-tab-selected-text: 0, 0, 0;
   --color-tab-regular-text: 255, 255, 255;
+
+  --color-card: 22, 22, 22;
+  --color-card-text: 225, 225, 225;
+
+  --color-input: 15, 15, 15;
+  --color-input-text: 250, 250, 250;
 }
 
 [data-theme="light"] {
@@ -48,16 +60,21 @@
   --color-header: 31, 41, 55;
   --color-header-text: 255, 255, 255;
 
-  --color-footer: 44, 44, 44;
-  --color-footer-text: 184, 184, 184;
+  --color-header: 250, 250, 250;
+  --color-header-text: 10, 10, 10;
 
   --color-tab-selected: 60, 60, 60;
   --color-tab-selected-text: 255, 255, 255;
   --color-tab-regular-text: 0, 0, 0;
+
+  --color-card: 250, 250, 250;
+  --color-card-text: 10, 10, 10;
+
+  --color-input: 255, 255, 255;
+  --color-input-text: 15, 15, 15;
 }
 
 body {
-  background-color: rgb(var(--color-primary));
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
@@ -107,9 +124,21 @@ body {
   -webkit-mask-image: url("../src/images/icons/linkedin.svg");
   mask-image: url("../src/images/icons/linkedin.svg");
 }
-.youtube-icon {
+.youTube-icon {
   -webkit-mask-image: url("../src/images/icons/youtube.svg");
   mask-image: url("../src/images/icons/youtube.svg");
+}
+.edit-icon {
+  -webkit-mask-image: url("../src/images/icons/edit.svg");
+  mask-image: url("../src/images/icons/edit.svg");
+}
+.delete-icon {
+  -webkit-mask-image: url("../src/images/icons/delete.svg");
+  mask-image: url("../src/images/icons/delete.svg");
+}
+.close-icon {
+  -webkit-mask-image: url("../src/images/icons/close.svg");
+  mask-image: url("../src/images/icons/close.svg");
 }
 .logout {
   -webkit-mask-image: url("../src/images/icons/logout.svg");

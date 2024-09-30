@@ -1,7 +1,7 @@
 export interface Settings {
   homeMaxPhotos?: number;
   galleryMaxPhotos?: number;
-  gallerySelectedCategories?: number[];
+  gallerySelectedCategories?: (number | string)[];
 }
 
 export const isValidSettingsObject = (settings: any): settings is Settings => {
