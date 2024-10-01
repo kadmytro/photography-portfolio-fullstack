@@ -148,14 +148,12 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
             <div className="flex-1 space-y-2 relative">
               {!isNewService && (
                 <div className="absolute right-0 flex gap-2 z-10">
-                  <div
-                    className="svg-mask edit-icon w-7 h-7 bg-cardText right-0 cursor-pointer hover:scale-125 transition-all"
-                    onClick={handleEdit}
-                  ></div>
-                  <div
-                    className="svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 cursor-pointer hover:scale-125 transition-all"
-                    onClick={handleDelete}
-                  ></div>
+                  <div onClick={handleEdit} data-tooltip="Edit the service">
+                    <div className="svg-mask edit-icon w-7 h-7 bg-cardText right-0 cursor-pointer hover:scale-125 transition-all" />
+                  </div>
+                  <div onClick={handleDelete} data-tooltip="Delete the service">
+                    <div className="svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 cursor-pointer hover:scale-125 transition-all" />
+                  </div>
                 </div>
               )}
               <Input

@@ -158,14 +158,12 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
           <div className="flex justify-between items-center relative">
             {!isNewCategory && (
               <div className="absolute right-0 flex gap-2 z-10">
-                <div
-                  className="cursor-pointer svg-mask edit-icon w-7 h-7 bg-cardText right-0 hover:scale-125 transition-all"
-                  onClick={handleEdit}
-                ></div>
-                <div
-                  className="cursor-pointer svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 hover:scale-125 transition-all"
-                  onClick={handleDelete}
-                ></div>
+                <div data-tooltip="Edit the category" onClick={handleEdit}>
+                  <div className="cursor-pointer svg-mask edit-icon w-7 h-7 bg-cardText right-0 hover:scale-125 transition-all" />
+                </div>
+                <div data-tooltip="Delete the category" onClick={handleDelete}>
+                  <div className="cursor-pointer svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 hover:scale-125 transition-all" />
+                </div>
               </div>
             )}
             <div className="w-5/6">

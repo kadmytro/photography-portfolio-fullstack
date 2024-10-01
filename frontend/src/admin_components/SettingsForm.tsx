@@ -119,10 +119,9 @@ const SettingsForm: React.FC = () => {
         </div>
       )}
       <div className="absolute right-4 top-4 flex gap-2 z-10">
-        <div
-          className="cursor-pointer svg-mask edit-icon w-7 h-7 bg-cardText right-0 hover:scale-125 transition-all"
-          onClick={handleEdit}
-        ></div>
+        <div data-tooltip="Edit the settings" onClick={handleEdit}>
+          <div className="cursor-pointer svg-mask edit-icon w-7 h-7 bg-cardText right-0 hover:scale-125 transition-all" />
+        </div>
       </div>
       <Input
         label="Gallery max photos"

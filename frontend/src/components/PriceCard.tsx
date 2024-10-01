@@ -1,4 +1,3 @@
-// src/components/PriceCard.tsx
 import React from "react";
 import Button from "../base_components/Button";
 import ContactUsForm from "./ContactUsForm";

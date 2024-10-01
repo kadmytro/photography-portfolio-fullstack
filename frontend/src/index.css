@@ -24,6 +24,9 @@
 
   --color-input: 15, 15, 15;
   --color-input-text: 250, 250, 250;
+
+  --color-tooltip: 121, 121, 121;
+  --color-tooltip-text: 255, 255, 255;
 }
 
 [data-theme="dark"] {
@@ -48,6 +51,9 @@
 
   --color-input: 15, 15, 15;
   --color-input-text: 250, 250, 250;
+
+  --color-tooltip: 121, 121, 121;
+  --color-tooltip-text: 255, 255, 255;
 }
 
 [data-theme="light"] {
@@ -72,6 +78,9 @@
 
   --color-input: 255, 255, 255;
   --color-input-text: 15, 15, 15;
+
+  --color-tooltip: 215, 215, 215;
+  --color-tooltip-text: 22, 22, 22;
 }
 
 body {
@@ -179,4 +188,52 @@ body {
 .dropdown-item.selected {
   background-color: #007bff;
   color: #fff;
+}
+
+/* global.css or tailwind.css */
+[data-tooltip] {
+  position: relative;
+  cursor: pointer;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 150%; /* Position the tooltip above the element */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(
+    var(--color-tooltip),
+    0.9
+  );
+  color: rgba(var(--color-tooltip-text), 1);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  font-size: 0.75rem; /* Tailwind's text-sm */
+  line-height: 1rem;
+}
+
+[data-tooltip]::after {
+  content: "";
+  position: absolute;
+  bottom: 93%; /* Place triangle closer to the element */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0.5rem;
+  border-style: solid;
+  border-color: rgba(var(--color-tooltip), 0.9) transparent transparent
+    transparent; /* Tooltip arrow */
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
 }
