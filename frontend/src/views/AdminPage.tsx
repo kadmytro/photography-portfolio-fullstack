@@ -12,12 +12,15 @@ import CategoryList from "../admin_components/CategoryList";
 import SettingsForm from "../admin_components/SettingsForm";
 import ServiceList from "../admin_components/ServiceList";
 import TagBox from "../base_components/TagBox";
+import { Messages } from "../admin_components/Messages";
 
 function AdminPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const initialWidth = containerRef.current?.clientWidth || window.innerWidth;
-  const [selectedCategories, setSelectedCategories] = useState<(number | string)[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<
+    (number | string)[]
+  >([]);
 
   const getEndPoint = () => {
     let result = "/api/photos/all";
@@ -54,10 +57,12 @@ function AdminPage() {
               <div className="flex mx-10">
                 <div className="px-5 text-center self-center">Categories:</div>
                 <TagBox
-                dataSource="/api/categories"
-                initialSelection={selectedCategories}
-                placeholder="Select categories"
-                onSelectionChange={(categories => setSelectedCategories(categories))}
+                  dataSource="/api/categories"
+                  initialSelection={selectedCategories}
+                  placeholder="Select categories"
+                  onSelectionChange={(categories) =>
+                    setSelectedCategories(categories)
+                  }
                 />
               </div>
               <Pager
@@ -93,13 +98,33 @@ function AdminPage() {
       ],
     },
     {
+      title: "Messages Management",
+      items: [
+        {
+          id: 31,
+          title: "Regular Messages",
+          content: <Messages messagesType="regular" />,
+        },
+        {
+          id: 32,
+          title: "Archived Messages",
+          content: <Messages messagesType="archived" />,
+        },
+        {
+          id: 33,
+          title: "Trash",
+          content: <Messages messagesType="deleted" />,
+        },
+      ],
+    },
+    {
       title: "Website Management",
       items: [
-        { id: 31, title: "Contacts", content: <ContactsForm /> },
-        { id: 32, title: "Links", content: <LinksForm /> },
-        { id: 33, title: "AboutMe", content: <AboutMeForm /> },
+        { id: 41, title: "Contacts", content: <ContactsForm /> },
+        { id: 42, title: "Links", content: <LinksForm /> },
+        { id: 43, title: "AboutMe", content: <AboutMeForm /> },
         {
-          id: 34,
+          id: 44,
           title: "Settings",
           content: <SettingsForm />,
         },
@@ -108,7 +133,7 @@ function AdminPage() {
   ];
 
   return (
-    <div className="Content relative text-primaryText min-h-screen">
+    <div className="Content relative text-primaryText min-h-screen w-full">
       <HorizontalDrawer groups={groups} />
     </div>
   );

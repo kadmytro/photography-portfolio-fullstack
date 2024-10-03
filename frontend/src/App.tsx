@@ -23,7 +23,7 @@ const navbarProps: NavbarProps = {
 };
 function App() {
   return (
-    <div className="App min-h-screen bg-primary">
+    <div className="App min-h-screen w-full bg-primary">
       <Router>
         <AuthProvider>
           <Navbar {...navbarProps} />

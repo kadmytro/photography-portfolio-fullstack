@@ -94,7 +94,7 @@ const Input: React.FC<InputProps> = ({
           onClick={togglePasswordVisibility}
           className={
             "absolute svg-mask bg-gray-500 h-5 w-9 right-0 bottom-2 text-sm text-gray-600 cursor-pointer" +
-            (inputType === "password" ? " show-password" : " hide-password")
+            (inputType === "password" ? " show-password-icon" : " hide-password-icon")
           }
         ></label>
       )}

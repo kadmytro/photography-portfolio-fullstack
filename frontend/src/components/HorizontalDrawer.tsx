@@ -4,6 +4,7 @@ interface Item {
   id: number;
   title: string;
   content: React.ReactNode;
+  onClose?: () => void;
 }
 
 interface Group {
@@ -36,6 +37,12 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
     }
   }, [groups]);
 
+  useEffect(() => {
+    if (selectedItem && selectedItem.onClose) {
+      selectedItem.onClose();
+    }
+  }, [selectedItem]);
+
   const handleClick = (item: Item) => {
     window.scrollTo({
       top: 0,
@@ -53,12 +60,12 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full overflow-x-clip">
       <div className="relative min-w-300px max-w-400px bg-primary text-headerText p-4">
         <div className="sticky top-24 w-full">
           {groups.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-4">
-              <h2 className="text-xl font-semibold mb-2 border-b py-2">
+              <h2 className="text-xl font-semibold mb-2 border-b py-2  border-primaryText border-opacity-20">
                 {group.title}
               </h2>
               <ul>

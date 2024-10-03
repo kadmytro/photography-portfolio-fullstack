@@ -25,6 +25,15 @@ export class ContactRequest {
   @CreateDateColumn()
   date!: Date;
 
-  @Column({ default: true })
-  isNew!: boolean;
+  @Column({ default: false })
+  isRead!: boolean;
+
+  @Column({ default: false })
+  isArchived!: boolean;
+
+  @Column({ default: false })
+  isDeleted!: boolean;
+
+  @Column({ nullable: true })
+  deletedDate!: Date;
 }

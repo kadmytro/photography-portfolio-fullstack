@@ -157,7 +157,7 @@ export function Navbar({
               <li>
                 <div
                   className={
-                    "fixed right-4 top-5 svg-mask h-10 w-10 bg-headerText cursor-pointer logout"
+                    "fixed right-4 top-5 svg-mask h-10 w-10 bg-headerText cursor-pointer logout-icon"
                   }
                   onClick={handleLogout}
                 />
