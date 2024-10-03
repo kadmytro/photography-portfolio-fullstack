@@ -103,16 +103,19 @@ function AdminPage() {
         {
           id: 31,
           title: "Regular Messages",
+          stickyTitle: true,
           content: <Messages messagesType="regular" />,
         },
         {
           id: 32,
           title: "Archived Messages",
+          stickyTitle: true,
           content: <Messages messagesType="archived" />,
         },
         {
           id: 33,
           title: "Trash",
+          stickyTitle: true,
           content: <Messages messagesType="deleted" />,
         },
       ],
@@ -133,7 +136,7 @@ function AdminPage() {
   ];
 
   return (
-    <div className="Content relative text-primaryText min-h-screen w-full">
+    <div className="Content relative text-primaryText w-full contentMinHeight">
       <HorizontalDrawer groups={groups} />
     </div>
   );

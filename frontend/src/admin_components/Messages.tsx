@@ -32,15 +32,27 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
   const [selectedMessageIds, setSelectedMessageIds] = useState<number[]>([]);
   const [initialMessages, setInitialMessages] = useState<IMessage[]>([]);
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [currentMessageIds, setCurrentMessageIds] = useState<number[]>([]);
+  const [currentPageSelectedIds, setCurrentPageSelectedIds] = useState<number[]>([]);
+  const [pageIndex, setPageIndex] = useState<number>(1);
   const [changes, setChanges] = useState<IMessageChanges[]>([]);
+  const [prevScrollPosition, setPrevScrollPosition] = useState<number | null>(
+    null
+  );
 
   const [detailedMessage, setDetailedMessage] = useState<IMessage | null>(null);
   const [hasUnreadSelectedMessages, setHasUnreadSelectedMessages] =
     useState(false);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    updateHasUnreadSelectedMessages();
+    setCurrentPageSelectedIds(
+      selectedMessageIds.filter((i) => currentMessageIds.includes(i))
+    );
   }, [selectedMessageIds]);
+
+  useEffect(() => {
+    updateHasUnreadSelectedMessages();
+  }, [currentPageSelectedIds]);
 
   useEffect(() => {
     const messagesCopy = initialMessages.map((object) => ({ ...object }));
@@ -166,10 +178,11 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
 
   const updateHasUnreadSelectedMessages = () => {
     requestAnimationFrame(() => {
-      let selectedMessages =
-        messages && messages.filter((m) => selectedMessageIds.includes(m.id));
+      let currentPageSelectedMessages = messages.filter((m) =>
+        currentPageSelectedIds.includes(m.id)
+      );
       setHasUnreadSelectedMessages(
-        selectedMessages?.some((m) => !m.isRead) ?? false
+        currentPageSelectedMessages.some((m) => !m.isRead) ?? false
       );
     });
   };
@@ -178,10 +191,9 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
     if (selectedMessageIds.includes(messageId)) {
       setSelectedMessageIds(selectedMessageIds.filter((m) => m != messageId));
     } else {
-      let selectedMessageIdsCopy = selectedMessageIds.slice();
-      selectedMessageIdsCopy.push(messageId);
-      selectedMessageIdsCopy.sort();
-      setSelectedMessageIds(selectedMessageIdsCopy);
+      setSelectedMessageIds((prevSelectedIds) =>
+        [...prevSelectedIds, messageId].sort()
+      );
     }
   };
 
@@ -208,12 +220,11 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
   }
 
   const getGlobalSelectIcon = () => {
-    if (selectedMessageIds.length === 0) {
+    if (currentPageSelectedIds.length === 0) {
       return " checkbox-empty-icon";
     }
 
-    let allIds = messages!.map((m) => m.id).sort() ?? [];
-    if (deepEqual(allIds, selectedMessageIds)) {
+    if (deepEqual(currentMessageIds, currentPageSelectedIds)) {
       return " checkbox-checked-icon";
     }
 
@@ -221,10 +232,15 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
   };
 
   const handleGlobalSelect = () => {
-    if (selectedMessageIds.length == 0) {
-      setSelectedMessageIds(messages!.map((m) => m.id).sort() ?? []);
+    if (currentPageSelectedIds.length == 0) {
+      setSelectedMessageIds((prevSelectedIds) => [
+        ...prevSelectedIds,
+        ...currentMessageIds,
+      ]);
     } else {
-      setSelectedMessageIds([]);
+      setSelectedMessageIds((prevSelectedIds) =>
+        prevSelectedIds.filter((i) => !currentMessageIds.includes(i))
+      );
     }
   };
 
@@ -236,15 +252,56 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
     );
   }
 
+  const MessageContentComponent = ({
+    items,
+    refreshData,
+  }: {
+    items: IMessage[];
+    refreshData: () => void;
+  }) => {
+    return (
+      <>
+        {items.map((message) => (
+          <Message
+            key={message.id}
+            messageObject={message}
+            isSelected={selectedMessageIds.includes(message.id)}
+            onToggleSelect={(e) => {
+              e.stopPropagation();
+              toggleSelect(message.id);
+            }}
+            onClick={(e) => {
+              setPrevScrollPosition(window.scrollY);
+              setDetailedMessage(message);
+              window.scrollTo({
+                top: 0,
+              });
+              markAs("isRead", true, [message.id]);
+            }}
+            onChange={markAs}
+          />
+        ))}
+      </>
+    );
+  };
+
   return (
-    <div className="w-full h-full">
-      <div className="pb-5 px-4">
+    <div className="w-full h-full flex flex-col relative">
+      <div className="pb-5 pt-4 px-8 border-b border-primaryText border-opacity-30 sticky top-36 w-full bg-primary z-20">
         <div className="flex gap-5 w-fit">
           {detailedMessage != null ? (
             <div
               data-tooltip="Back"
               onClick={() => {
                 setDetailedMessage(null);
+                setTimeout(() => {
+                  if (prevScrollPosition) {
+                    window.scrollTo({
+                      top: prevScrollPosition,
+                    });
+                  }
+                  setPrevScrollPosition(null);
+                }, 10);
               }}
               className="mr-4"
             >
@@ -264,17 +321,21 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
               />
             </div>
           )}
-          {!selectedMessageIds.length && detailedMessage == null ? (
+          {!currentPageSelectedIds.length && detailedMessage == null ? (
             <div data-tooltip="Refresh" onClick={refreshMessages}>
               <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all reload-icon" />
             </div>
           ) : null}
-          {!selectedMessageIds.length ||
+          {!currentPageSelectedIds.length ||
           detailedMessage ? null : messagesType == "deleted" ? (
             <div
               data-tooltip="Restore"
               onClick={() => {
-                markAs("isDeleted", false, selectedMessageIds);
+                markAs(
+                  "isDeleted",
+                  false,
+                  currentPageSelectedIds
+                );
               }}
             >
               <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all restore-icon" />
@@ -283,19 +344,27 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             <div
               data-tooltip="Delete"
               onClick={() => {
-                markAs("isDeleted", true, selectedMessageIds);
+                markAs(
+                  "isDeleted",
+                  true,
+                  currentPageSelectedIds
+                );
               }}
             >
               <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all delete-icon" />
             </div>
           )}
-          {!selectedMessageIds.length ||
+          {!currentPageSelectedIds.length ||
           detailedMessage ||
           messagesType == "deleted" ? null : messagesType === "regular" ? (
             <div
               data-tooltip="Archive"
               onClick={() => {
-                markAs("isArchived", true, selectedMessageIds);
+                markAs(
+                  "isArchived",
+                  true,
+                  currentPageSelectedIds
+                );
               }}
             >
               <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all archive-icon" />
@@ -304,19 +373,23 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             <div
               data-tooltip="Restore from Archive"
               onClick={() => {
-                markAs("isArchived", false, selectedMessageIds);
+                markAs(
+                  "isArchived",
+                  false,
+                  currentPageSelectedIds
+                );
               }}
             >
               <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all dearchive-icon" />
             </div>
           )}
-          {selectedMessageIds.length && detailedMessage == null ? (
+          {currentPageSelectedIds.length && detailedMessage == null ? (
             <div
               data-tooltip={
                 hasUnreadSelectedMessages ? "Mark as read" : "Mark as unread"
               }
               onClick={() => {
-                markAs("isRead", hasUnreadSelectedMessages, selectedMessageIds);
+                markAs("isRead", hasUnreadSelectedMessages, currentPageSelectedIds);
               }}
             >
               <div
@@ -337,7 +410,7 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
           automatically deleted
         </div>
       )}
-      <div className="w-full flex flex-col gap-1 select-text ">
+      <div className="w-full flex-1 flex flex-col gap-1 select-text ">
         {detailedMessage != null ? (
           <div className="p-4 shadow bg-card text-cardText relative">
             <div className="absolute right-6 top-6 text-cardText text-opacity-70">
@@ -355,26 +428,24 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             <p className="min-h-400px">{detailedMessage.message}</p>
           </div>
         ) : messages.length ? (
-          messages.map((message) => (
-            <Message
-              key={message.id}
-              messageObject={message}
-              isSelected={selectedMessageIds.includes(message.id)}
-              onToggleSelect={(e) => {
-                e.stopPropagation();
-                toggleSelect(message.id);
-              }}
-              onClick={(e) => {
-                setDetailedMessage(message);
-                markAs("isRead", true, [message.id]);
-              }}
-              onChange={markAs}
-            />
-          ))
+          <Pager
+            contentComponent={MessageContentComponent}
+            items={messages}
+            itemsPerPage={20}
+            initialPage={pageIndex}
+            pageChangedCallback={(page, messages) => {
+              setPageIndex(page);
+              const messageIds = messages.map((m) => m.id);
+              setCurrentMessageIds(messageIds);
+              setCurrentPageSelectedIds(
+                selectedMessageIds.filter((i) => messageIds.includes(i))
+              );
+            }}
+          />
         ) : (
           <div className="p-4 text-center border-b-1 border-primaryText border-opacity-20">
-            No {messagesType !== "deleted" ? messagesType : ""} messages{" "}
-            {messagesType !== "deleted" ? "" : "in trash"}.
+            No {messagesType !== "deleted" ? messagesType : ""} messages{""}
+            {messagesType !== "deleted" ? "." : " in trash."}
           </div>
         )}
       </div>

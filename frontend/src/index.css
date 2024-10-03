@@ -90,6 +90,10 @@ body {
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Edge */
 }
 
+.contentHeight {
+  min-height: calc(100vh - 80px);
+}
+
 .svg-mask {
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;

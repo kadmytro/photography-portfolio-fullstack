@@ -4,6 +4,7 @@ interface Item {
   id: number;
   title: string;
   content: React.ReactNode;
+  stickyTitle?: boolean;
   onClose?: () => void;
 }
 
@@ -60,7 +61,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
   };
 
   return (
-    <div className="flex min-h-screen w-full overflow-x-clip">
+    <div className="flex w-full overflow-x-clip contentHeight">
       <div className="relative min-w-300px max-w-400px bg-primary text-headerText p-4">
         <div className="sticky top-24 w-full">
           {groups.map((group, groupIndex) => (
@@ -87,17 +88,33 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
           ))}
         </div>
       </div>
-      <div className="flex-1 p-8 border-l border-primaryText border-opacity-30">
-        {selectedItem ? (
-          <>
-            <h1 className="text-2xl font-bold mb-4">{selectedItem.title}</h1>
-            <>{selectedItem.content}</>
-          </>
-        ) : (
-          <div className="text-primaryText text-opacity-70">
-            Select an item to view its content
-          </div>
-        )}
+      <div
+        className={
+          "flex-1 flex flex-col border-l border-primaryText border-opacity-30 " +
+          (selectedItem?.stickyTitle ? " pt-8" : "")
+        }
+      >
+        <div
+          className={
+            "text-2xl w-full font-bold px-8 pb-4 bg-primary " +
+            (selectedItem?.stickyTitle ? "pt-10 fixed top-14 z-20" : "pt-4")
+          }
+        >
+          {selectedItem
+            ? selectedItem.title
+            : "Select an item to view its content"}
+        </div>
+        <div className="flex-1 flex flex-col p-8">
+          {selectedItem ? (
+            <>
+              <div className="flex-1 flex flex-col">{selectedItem.content}</div>
+            </>
+          ) : (
+            <div className="text-primaryText text-opacity-70">
+              Select an item to view its content
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

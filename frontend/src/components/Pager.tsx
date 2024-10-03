@@ -4,9 +4,13 @@ import api from "../services/api";
 
 interface PagerProps<T> {
   contentComponent: React.FC<{ items: T[]; refreshData: () => void }>;
-  mapDataToItems: (data: any) => T[];
-  endpoint: string;
+  mapDataToItems?: (data: any) => T[];
+  endpoint?: string;
   itemsPerPage: number;
+  items?: T[];
+  topScrollMargin?: number;
+  initialPage?: number;
+  pageChangedCallback?: (pageIndex: number, items: T[]) => void;
 }
 
 const Pager = <T,>({
@@ -14,33 +18,46 @@ const Pager = <T,>({
   mapDataToItems,
   endpoint,
   itemsPerPage,
+  items,
+  topScrollMargin = 0,
+  initialPage = 1,
+  pageChangedCallback,
 }: PagerProps<T>) => {
-  const [data, setData] = useState<T[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const pagerRef = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<T[]>(items || []);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [loading, setLoading] = useState(!items);
   const [pageNumbers, setPageNumbers] = useState<(string | number)[]>([]);
   const [currentItems, setCurrentItems] = useState<T[]>([]);
 
   const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get(endpoint);
-      const mappedData = mapDataToItems(response.data);
-      setData(mappedData);
-      setCurrentPage(1);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    } finally {
-      setLoading(false);
+    if (endpoint && mapDataToItems) {
+      setLoading(true);
+      try {
+        const response = await api.get(endpoint);
+        const mappedData = mapDataToItems(response.data);
+        setData(mappedData);
+        setCurrentPage(1);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
+
   useEffect(() => {
-    fetchData();
+    if (!items && endpoint) {
+      fetchData();
+    }
   }, [endpoint]);
 
   const totalPages = () => Math.ceil(data.length / itemsPerPage);
 
+  useEffect(() => {
+    if (items) {
+      setData(items);
+    }
+  }, [items]);
   useEffect(() => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -49,6 +66,11 @@ const Pager = <T,>({
     setCurrentItems(newItems);
   }, [data, currentPage, itemsPerPage]);
 
+  useEffect(() => {
+    if (pageChangedCallback) {
+      pageChangedCallback(currentPage, currentItems);
+    }
+  }, [currentItems]);
   useEffect(() => {
     const calcPageNumbers = () => {
       let updatedPages: (number | string)[] = [];
@@ -87,20 +109,23 @@ const Pager = <T,>({
       setPageNumbers(updatedPages);
     };
     calcPageNumbers();
-  }, [data, itemsPerPage, endpoint, currentPage]);
+  }, [data, currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    scrollToTop(true);
+  }, [currentPage]);
 
   const scrollToTop = (instant: boolean = false) => {
-    if (pagerRef.current) {
-      var topY = pagerRef.current.getBoundingClientRect().top - 80; //compensation for the navBar sticky behaviour;
-      window.scrollTo({ top: topY, behavior: instant ? "auto" : "smooth" });
-    }
+    window.scrollTo({
+      top: topScrollMargin,
+      behavior: instant ? "auto" : "smooth",
+    });
   };
 
   const handlePreviousPage = () => {
     scrollToTop();
     const newPage = currentPage === 1 ? currentPage : currentPage - 1;
     setTimeout(() => {
-      scrollToTop(true);
       setCurrentPage(newPage);
     }, 150);
   };
@@ -110,7 +135,6 @@ const Pager = <T,>({
     const newPage =
       currentPage === totalPages() ? currentPage : currentPage + 1;
     setTimeout(() => {
-      scrollToTop(true);
       setCurrentPage(newPage);
     }, 150);
   };
@@ -118,7 +142,6 @@ const Pager = <T,>({
   const handlePageClick = (page: number) => {
     scrollToTop();
     setTimeout(() => {
-      scrollToTop(true);
       setCurrentPage(page);
     }, 150);
   };
@@ -150,13 +173,15 @@ const Pager = <T,>({
   }
 
   return (
-    <div ref={pagerRef} className="w-full p-4">
+    <div className="w-full h-full px-4 pt-4 pb-14 relative">
       <ContentComponent items={currentItems} refreshData={fetchData} />
-      <div className="flex justify-center mt-4 space-x-2">
+      <div className="flex justify-center mt-4 space-x-2 absolute bottom-0 left-1/2 -translate-x-1/2">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${totalPages() < 2 ? "hidden" : ""}`}
+          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${
+            totalPages() < 2 ? "hidden" : ""
+          }`}
         >
           Previous
         </button>
@@ -164,7 +189,9 @@ const Pager = <T,>({
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages()}
-          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${totalPages() < 2 ? "hidden" : ""}`}
+          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${
+            totalPages() < 2 ? "hidden" : ""
+          }`}
         >
           Next
         </button>

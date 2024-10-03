@@ -35,7 +35,7 @@ export const Message: React.FC<MessageProps> = ({
   return (
     <div
       className={
-        "w-full relative flex gap-2 flex-inline py-4 pl-14 pr-4 hover:pr-32 rounded-lg shadow hover:bg-blue-500 hover:bg-opacity-40 cursor-pointer parent_display_on_parent_hover " +
+        "w-full relative mb-1 flex gap-2 flex-inline py-4 pl-14 pr-4 hover:pr-32 rounded-lg shadow hover:bg-blue-500 hover:bg-opacity-40 cursor-pointer parent_display_on_parent_hover " +
         (isSelected
           ? " bg-blue-500 bg-opacity-20"
           : isRead
