@@ -10,9 +10,17 @@ interface ExtendedPhotoCardProps extends PhotoCardProps {
 const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [photoDetails, setPhotoDetails] = useState(props);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
-    setPhotoDetails(props);
+    setPhotoDetails((prevProps) => {
+      return {
+        ...prevProps,
+        imageLoadedCallback: () => {
+          setImageLoaded(true);
+        },
+      };
+    });
   }, [props]);
 
   const handleEditClick = () => {
@@ -69,16 +77,18 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative h-fit">
       <PhotoCard {...photoDetails} />
-      <div className="absolute top-1 right-1 flex gap-2 bg-primary bg-opacity-30 p-3 hover:bg-opacity-50 rounded-xl">
-        <div data-tooltip="Edit the photo" onClick={handleEditClick}>
-          <div className="svg-mask edit-icon w-7 h-7 bg-cardText right-0 cursor-pointer hover:scale-125 transition-all" />
+      {imageLoaded && (
+        <div className="absolute top-1 right-1 flex gap-2 bg-primary bg-opacity-30 p-3 hover:bg-opacity-50 rounded-xl">
+          <div data-tooltip="Edit the photo" onClick={handleEditClick}>
+            <div className="svg-mask edit-icon w-7 h-7 bg-cardText right-0 cursor-pointer hover:scale-125 transition-all" />
+          </div>
+          <div data-tooltip="Delete the photo" onClick={handleDeleteClick}>
+            <div className="svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 cursor-pointer hover:scale-125 transition-all" />
+          </div>
         </div>
-        <div data-tooltip="Delete the photo" onClick={handleDeleteClick}>
-          <div className="svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 cursor-pointer hover:scale-125 transition-all" />
-        </div>
-      </div>
+      )}
 
       {showEditPopup && (
         <div className="fixed inset-0 w-screen h-screen overflow-auto flex items-center justify-center backdrop-blur bg-primary bg-opacity-30 z-50">

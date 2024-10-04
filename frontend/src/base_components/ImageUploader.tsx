@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 
 interface ImageUploaderProps {
-  initialSource?: string | null;
+  initialSource?: string | File | null;
   imageChangeCallback?: (file?: File) => void | undefined;
   editing?: boolean | undefined;
   showFileDetails?: boolean;
@@ -16,9 +16,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   showFileDetails = false,
   hideDeleteButton = false,
 }) => {
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    initialSource
-  );
+  const init = !initialSource
+    ? null
+    : typeof initialSource === "string"
+    ? initialSource
+    : URL.createObjectURL(initialSource);
+  const [imagePreview, setImagePreview] = useState<string | null>(init);
   const [width, setWidth] = useState<number | null>(null);
   const [height, setHeight] = useState<number | null>(null);
   const [mimeType, setMimeType] = useState<string | null>(null);
@@ -67,7 +70,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   const resetUploader = () => {
-    setImagePreview(initialSource);
+    setImagePreview(init);
     setFile(null);
     setHeight(null);
     setWidth(null);
@@ -125,24 +128,20 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       {imagePreview && (
         <div className="mt-4">
           <img
-            src={
-              editing
-                ? imagePreview!
-                : initialSource != null
-                ? initialSource
-                : undefined
-            }
+            src={editing ? imagePreview! : init ?? undefined}
             alt="Preview"
             className="w-full h-auto shadow"
           />
           {showFileDetails && file && (
             <p className="text-gray-600 mt-2">Selected File: {file.name}</p>
           )}
-          {showFileDetails && width && height && (
-            <p className="text-gray-600">
-              Dimensions: {width} x {height}
-            </p>
-          )}
+
+          <p className="text-gray-600 h-6">
+            {showFileDetails &&
+              width &&
+              height &&
+              `Dimensions: ${width} x ${height}`}
+          </p>
           <div
             className="w-full flex items-center justify-center mt-2"
             style={{

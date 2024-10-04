@@ -8,6 +8,12 @@ export class Photo {
   @Column("bytea")
   photo!: Buffer;
 
+  @Column("bytea")
+  photoMobile!: Buffer;
+
+  @Column("bytea")
+  photoBlurred!: Buffer;
+
   @Column("int", { array: true })
   categoriesIds!: number[];
 
@@ -26,7 +32,7 @@ export class Photo {
   @Column("int")
   width!: number;
 
-  @Column({default: 'image/jpeg'})
+  @Column({ default: "image/jpeg" })
   mimeType!: string;
 
   getPhotoWithBase64(): any {
@@ -39,7 +45,7 @@ export class Photo {
       height: this.height,
       width: this.width,
       mimeType: this.mimeType,
-      photo: this.photo.toString('base64')
+      photo: this.photo.toString("base64"),
     };
   }
 
@@ -53,6 +59,6 @@ export class Photo {
       height: this.height,
       width: this.width,
       mimeType: this.mimeType,
-    }
+    };
   }
 }

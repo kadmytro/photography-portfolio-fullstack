@@ -147,7 +147,7 @@ const PhotoUploadForm: React.FC = () => {
               editing={true}
               imageChangeCallback={handleFileChange}
               showFileDetails={true}
-              initialSource={file ? URL.createObjectURL(file) : null}
+              initialSource={file ?? null}
             />
           </div>
           <div className="flex-1">

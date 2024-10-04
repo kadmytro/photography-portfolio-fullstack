@@ -9,43 +9,81 @@ export interface PhotoCardProps {
   date?: string;
   height: number;
   width: number;
+  imageLoadedCallback?: () => void;
 }
 
-export const PhotoCard = ({ image, caption: caption }: PhotoCardProps) => {
-  const [height, setHeight] = useState<number | null>(null);
+export const PhotoCard = ({
+  image,
+  height,
+  width,
+  caption,
+  imageLoadedCallback,
+}: PhotoCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageHeight, setImageHeight] = useState(0);
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleImageLoad = () => {
-    if (imgRef.current && containerRef.current) {
-      const aspectRatio =
-        imgRef.current.naturalWidth / imgRef.current.naturalHeight;
+  const updateImageHeight = () => {
+    if (containerRef.current) {
+      const aspectRatio = width / height;
       const containerWidth = containerRef.current.clientWidth;
-      setHeight(containerWidth / aspectRatio);
+      setImageHeight(containerWidth / aspectRatio);
+    }
+  };
+
+  const handleImageLoad = () => {
+    if (imgRef.current && imgRef.current.complete) {
+      setImageLoaded(true);
+      imgRef.current.removeEventListener("load", handleImageLoad);
+      if (imageLoadedCallback) {
+        imageLoadedCallback();
+      }
     }
   };
 
   useEffect(() => {
-    if (imgRef.current && imgRef.current.complete) {
-      handleImageLoad();
-    }
-    window.addEventListener("resize", handleImageLoad);
+    updateImageHeight();
+    window.addEventListener("resize", updateImageHeight);
     return () => {
-      window.removeEventListener("resize", handleImageLoad);
+      window.removeEventListener("resize", updateImageHeight);
     };
-  }, [image]);
+  }, [containerRef]);
+
+  useEffect(() => {
+    if (!imgRef.current) {
+      return;
+    }
+
+    if (imgRef.current.complete) {
+      handleImageLoad();
+    } else {
+      imgRef.current.addEventListener("load", handleImageLoad);
+    }
+  }, [imgRef]);
 
   return (
     <div
       ref={containerRef}
-      className="bg-white h-fit shadow-md overflow-hidden w-full"
+      className="h-fit bg-no-repeat box-content bg-contain shadow-md overflow-hidden w-full"
+      style={
+        imageLoaded
+          ? {}
+          : {
+              backgroundImage: `url(${image}/small)`,
+              height: `${imageHeight}px`,
+            }
+      }
     >
       <img
         ref={imgRef}
         src={image}
         alt={caption}
         onLoad={handleImageLoad}
-        className="h-auto w-full object-cover cursor-pointer"
+        loading="lazy"
+        className={`h-auto w-full object-cover cursor-pointer transition-opacity ease-in-out ${
+          !imageLoaded ? " opacity-0" : ""
+        }`}
       />
     </div>
   );
