@@ -39,7 +39,7 @@ function HomePage() {
       className="Content relative text-primaryText"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <div className="m-auto font-normal text-4xl tracking-wider my-8  w-fit">
+      <div className="m-auto font-normal text-4xl tracking-wider my-8 w-fit font-title">
         Latest works
       </div>
       {(!loading && (

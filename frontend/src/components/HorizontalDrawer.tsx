@@ -66,7 +66,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
         <div className="sticky top-24 w-full">
           {groups.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-4">
-              <h2 className="text-xl font-semibold mb-2 border-b py-2  border-primaryText border-opacity-20">
+              <h2 className="text-xl font-semibold mb-2 border-b py-2  border-primaryText border-opacity-20 font-title">
                 {group.title}
               </h2>
               <ul>
@@ -96,7 +96,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
       >
         <div
           className={
-            "text-2xl w-full font-bold px-8 pb-4 bg-primary " +
+            "text-2xl w-full font-bold px-8 pb-4 bg-primary font-title " +
             (selectedItem?.stickyTitle ? "pt-10 fixed top-14 z-20" : "pt-4")
           }
         >

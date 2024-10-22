@@ -91,7 +91,9 @@ export function Navbar({
   };
 
   return (
-    <nav className={"bg-header" + (!displayBannerImage ? " h-20" : "")}>
+    <nav
+      className={"bg-header font-title" + (!displayBannerImage ? " h-20" : "")}
+    >
       <div
         className={`w-full fixed top-0 py-5 bg-header z-50 backdrop-blur-${
           !displayBannerImage
@@ -107,11 +109,11 @@ export function Navbar({
             : "xl"
         } bg-opacity-${displayBannerImage ? topNavOpacity : 50}`}
       >
-        <div className="container mx-auto flex justify-between items-center text-lg px-10">
-          <ul className="flex space-x-10 w-1/3 items-center justify-start">
+        <div className="container mx-auto flex justify-between items-center text-xl px-10">
+          <ul className="flex space-x-10 w-1/3 items-center justify-start underline-offset-4">
             <li>
               <Link
-                className="text-headerText text-opacity-90 hover:text-opacity-100 hover:font-medium"
+                className="text-headerText text-opacity-90 hover:text-opacity-100 hover:underline"
                 to={homeUrl}
               >
                 {homeText}
@@ -119,25 +121,28 @@ export function Navbar({
             </li>
             <li>
               <Link
-                className="text-headerText text-opacity-90 hover:text-opacity-100 hover:font-medium"
+                className="text-headerText text-opacity-90 hover:text-opacity-100 hover:underline"
                 to={galleryUrl}
               >
                 {galleryText}
               </Link>
             </li>
           </ul>
-          <div className="text-headerText font-bold text-xl">LOGO</div>
-          <ul className="flex space-x-10  cursor-pointer w-1/3 h-fit items-center justify-end">
+          <a
+            className="text-headerText font-bold text-xl cursor-pointer svg-mask logo-image bg-primaryText w-56 h-10 hover:scale-110 transition-all"
+            href={homeUrl}
+          ></a>
+          <ul className="flex space-x-10  cursor-pointer w-1/3 h-fit items-center justify-end underline-offset-4">
             <li
               className={
-                "svg-mask h-10 w-10 bg-headerText " +
+                "svg-mask h-7 w-7 bg-headerText  hover:scale-110 transition-all " +
                 (theme == Theme.DARK ? "dark-theme-icon" : "light-theme-icon")
               }
               onClick={toggleTheme}
             />
             <li>
               <a
-                className="text-headerText text-opacity-90 hover:text-opacity-100 hover:font-medium"
+                className="text-headerText text-opacity-90 hover:text-opacity-100 hover:underline"
                 href={pricesUrl}
               >
                 {pricesText}
@@ -146,7 +151,7 @@ export function Navbar({
             {(location.pathname === "/" || location.pathname == "/home") && (
               <li>
                 <div
-                  className="text-headerText cursor-pointer text-opacity-90 hover:text-opacity-100 hover:font-medium"
+                  className="text-headerText cursor-pointer text-opacity-90 hover:text-opacity-100 hover:underline"
                   onClick={scrollToContacts}
                 >
                   {contactsText}
@@ -157,7 +162,7 @@ export function Navbar({
               <li>
                 <div
                   className={
-                    "fixed right-4 top-5 svg-mask h-10 w-10 bg-headerText cursor-pointer logout-icon"
+                    "fixed right-4 top-7 svg-mask h-7 w-7 bg-headerText cursor-pointer logout-icon  hover:scale-110 transition-all"
                   }
                   onClick={handleLogout}
                 />

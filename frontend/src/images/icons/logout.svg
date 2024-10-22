@@ -1,8 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--License: Apache. Made by bytedance: https://github.com/bytedance/IconPark-->
-<svg width="48px" height="48px" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="48" height="48" fill="white" fill-opacity="0.01"/>
-  <path d="M23.9917 6L6 6L6 42H24" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M33 33L42 24L33 15" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M16 23.9917H42" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="undefined"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>

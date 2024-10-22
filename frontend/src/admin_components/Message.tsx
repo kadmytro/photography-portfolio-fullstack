@@ -48,7 +48,7 @@ export const Message: React.FC<MessageProps> = ({
         <div data-tooltip="Select" onClick={onToggleSelect}>
           <div
             className={
-              "cursor-pointer svg-mask w-5 h-5 bg-cardText transition-all" +
+              "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all" +
               (isSelected ? " checkbox-checked-icon" : " checkbox-empty-icon")
             }
           />
@@ -80,7 +80,7 @@ export const Message: React.FC<MessageProps> = ({
         >
           <div
             className={
-              "cursor-pointer svg-mask w-5 h-5 bg-cardText transition-all " +
+              "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all " +
               (isRead ? " message-unread-icon" : " message-read-icon")
             }
           />
@@ -96,7 +96,7 @@ export const Message: React.FC<MessageProps> = ({
           >
             <div
               className={
-                "cursor-pointer svg-mask w-5 h-5 bg-cardText transition-all dearchive-icon"
+                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all unarchive-icon"
               }
             />
           </div>
@@ -111,7 +111,7 @@ export const Message: React.FC<MessageProps> = ({
           >
             <div
               className={
-                "cursor-pointer svg-mask w-5 h-5 bg-cardText transition-all archive-icon"
+                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all archive-icon"
               }
             />
           </div>
@@ -127,7 +127,7 @@ export const Message: React.FC<MessageProps> = ({
           >
             <div
               className={
-                "cursor-pointer svg-mask w-5 h-5 bg-cardText transition-all restore-icon"
+                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all restore-icon"
               }
             />
           </div>
@@ -142,7 +142,7 @@ export const Message: React.FC<MessageProps> = ({
           >
             <div
               className={
-                "cursor-pointer svg-mask w-5 h-5 bg-cardText transition-all delete-icon"
+                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all delete-icon"
               }
             />
           </div>

@@ -66,7 +66,7 @@ const PricesPage: React.FC = () => {
       className=" max-w-full px-5 box-border py-8 w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <h1 className="text-3xl pb-6 text-primaryText font-bold text-center">
+      <h1 className="text-3xl pb-6 text-primaryText font-bold text-center font-title">
         Our Prices
       </h1>
       {(!loading && <Wheel items={carouselItems} itemWidth={450} />) || (

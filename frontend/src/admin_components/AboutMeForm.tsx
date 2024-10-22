@@ -79,7 +79,7 @@ const AboutMeForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-xl mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
+      className="max-w-xl min-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
     >
       {saving && (
         <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">

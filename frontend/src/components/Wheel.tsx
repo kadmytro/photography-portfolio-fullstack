@@ -152,13 +152,13 @@ const Wheel: React.FC<WheelProps> = ({ items, itemWidth = 300 }) => {
           className="absolute font-bold  text-center hover:scale-125 transition-all duration-300 left-2 z-50 text-primaryText text-opacity-60 hover:text-opacity-100 text-4xl w-10 h-16 flex items-center justify-center transform-translate-y-1/2 top-1/2"
           onClick={() => rotateWheel("left")}
         >
-          &lt;
+          ‹
         </button>
         <button
           className="absolute font-bold text-center hover:scale-125 transition-all duration-300 right-2 z-50 text-primaryText text-opacity-60 hover:text-opacity-100 text-4xl w-10 h-16 flex items-center justify-center transform-translate-y-1/2 top-1/2"
           onClick={() => rotateWheel("right")}
         >
-          &gt;
+          ›
         </button>
 
         <div

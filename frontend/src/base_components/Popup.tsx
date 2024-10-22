@@ -22,7 +22,7 @@ export const Popup: React.FC<PopupProps> = ({
           className="absolute z-20 top-4 right-2 svg-mask close-icon w-7 h-7 bg-cardText cursor-pointer hover:scale-125 transition-all"
           onClick={onClose}
         />
-        {title && <h3 className="text-center text-2xl">{title}</h3>}
+        {title && <h3 className="text-center text-2xl font-title">{title}</h3>}
         <div className="z-10">{children}</div>
       </div>
     </div>

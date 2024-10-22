@@ -33,7 +33,9 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
   const [initialMessages, setInitialMessages] = useState<IMessage[]>([]);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [currentMessageIds, setCurrentMessageIds] = useState<number[]>([]);
-  const [currentPageSelectedIds, setCurrentPageSelectedIds] = useState<number[]>([]);
+  const [currentPageSelectedIds, setCurrentPageSelectedIds] = useState<
+    number[]
+  >([]);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [changes, setChanges] = useState<IMessageChanges[]>([]);
   const [prevScrollPosition, setPrevScrollPosition] = useState<number | null>(
@@ -57,6 +59,7 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
   useEffect(() => {
     const messagesCopy = initialMessages.map((object) => ({ ...object }));
     setMessages(messagesCopy);
+    setDetailedMessage(null);
   }, [initialMessages]);
 
   useEffect(() => {
@@ -305,7 +308,7 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
               }}
               className="mr-4"
             >
-              <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all back-icon" />
+              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all arrow-back-icon" />
             </div>
           ) : (
             <div
@@ -315,7 +318,7 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             >
               <div
                 className={
-                  "cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all" +
+                  "cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all" +
                   getGlobalSelectIcon()
                 }
               />
@@ -323,7 +326,7 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
           )}
           {!currentPageSelectedIds.length && detailedMessage == null ? (
             <div data-tooltip="Refresh" onClick={refreshMessages}>
-              <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all reload-icon" />
+              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all refresh-icon" />
             </div>
           ) : null}
           {!currentPageSelectedIds.length ||
@@ -331,27 +334,19 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             <div
               data-tooltip="Restore"
               onClick={() => {
-                markAs(
-                  "isDeleted",
-                  false,
-                  currentPageSelectedIds
-                );
+                markAs("isDeleted", false, currentPageSelectedIds);
               }}
             >
-              <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all restore-icon" />
+              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all restore-icon" />
             </div>
           ) : (
             <div
               data-tooltip="Delete"
               onClick={() => {
-                markAs(
-                  "isDeleted",
-                  true,
-                  currentPageSelectedIds
-                );
+                markAs("isDeleted", true, currentPageSelectedIds);
               }}
             >
-              <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all delete-icon" />
+              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all delete-icon" />
             </div>
           )}
           {!currentPageSelectedIds.length ||
@@ -360,27 +355,19 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             <div
               data-tooltip="Archive"
               onClick={() => {
-                markAs(
-                  "isArchived",
-                  true,
-                  currentPageSelectedIds
-                );
+                markAs("isArchived", true, currentPageSelectedIds);
               }}
             >
-              <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all archive-icon" />
+              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all archive-icon" />
             </div>
           ) : (
             <div
               data-tooltip="Restore from Archive"
               onClick={() => {
-                markAs(
-                  "isArchived",
-                  false,
-                  currentPageSelectedIds
-                );
+                markAs("isArchived", false, currentPageSelectedIds);
               }}
             >
-              <div className="cursor-pointer svg-mask w-5 h-5 bg-cardText right-0 transition-all dearchive-icon" />
+              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all unarchive-icon" />
             </div>
           )}
           {currentPageSelectedIds.length && detailedMessage == null ? (
@@ -389,12 +376,16 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
                 hasUnreadSelectedMessages ? "Mark as read" : "Mark as unread"
               }
               onClick={() => {
-                markAs("isRead", hasUnreadSelectedMessages, currentPageSelectedIds);
+                markAs(
+                  "isRead",
+                  hasUnreadSelectedMessages,
+                  currentPageSelectedIds
+                );
               }}
             >
               <div
                 className={
-                  "cursor-pointer svg-mask w-5 h-5 scale-150 bg-cardText right-0 transition-all " +
+                  "cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all " +
                   (hasUnreadSelectedMessages
                     ? " message-read-icon"
                     : " message-unread-icon")
@@ -416,7 +407,7 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             <div className="absolute right-6 top-6 text-cardText text-opacity-70">
               {new Date(detailedMessage.date).toLocaleString()}
             </div>
-            <h3 className="text-3xl mb-3 mr-36 font-semibold">
+            <h3 className="text-3xl mb-3 mr-36 font-semibold font-title">
               {detailedMessage.subject}
             </h3>
             <div className="text-xs align-middle mb-5">

@@ -22,6 +22,10 @@ module.exports = {
         primary: "0 1px 1px rgba(var(--color-primary), 0.25)",
         primaryText: "0 1px 1px rgba(var(--color-primary-text), 0.25)",
       },
+      fontFamily: {
+        title: ["Quattrocento", "sans-serif"],
+        regular: ["Lora", "sans-serif"],
+      },
       colors: {
         primary: ({ opacityVariable, opacityValue }) => {
           if (opacityValue !== undefined) {

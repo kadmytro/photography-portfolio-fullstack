@@ -93,7 +93,7 @@ const ContactsForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-6 bg-card text-cardText relative rounded shadow min-w-fit max-w-7xl mx-auto"
+      className="p-6 bg-card text-cardText relative rounded shadow min-w-500px max-w-7xl mx-auto"
     >
       {saving && (
         <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">

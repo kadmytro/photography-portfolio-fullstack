@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "Lora";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/Lora/Lora-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Quattrocento";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/Quattrocento/Quattrocento-Regular.ttf") format("truetype");
+}

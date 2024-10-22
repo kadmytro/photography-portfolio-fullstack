@@ -1,0 +1,119 @@
+.svg-mask {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
+.dark-theme-icon {
+  -webkit-mask-image: url("../../src/images/icons/theme-dark.svg");
+  mask-image: url("../../src/images/icons/theme-dark.svg");
+}
+
+.light-theme-icon {
+  -webkit-mask-image: url("../../src/images/icons/theme-light.svg");
+  mask-image: url("../../src/images/icons/theme-light.svg");
+}
+
+.phone-icon {
+  -webkit-mask-image: url("../../src/images/icons/phone.svg");
+  mask-image: url("../../src/images/icons/phone.svg");
+}
+.location-icon {
+  -webkit-mask-image: url("../../src/images/icons/location.svg");
+  mask-image: url("../../src/images/icons/location.svg");
+}
+.email-icon {
+  -webkit-mask-image: url("../../src/images/icons/email.svg");
+  mask-image: url("../../src/images/icons/email.svg");
+}
+.telegram-icon {
+  -webkit-mask-image: url("../../src/images/icons/telegram.svg");
+  mask-image: url("../../src/images/icons/telegram.svg");
+}
+.instagram-icon {
+  -webkit-mask-image: url("../../src/images/icons/instagram.svg");
+  mask-image: url("../../src/images/icons/instagram.svg");
+}
+.linkedIn-icon {
+  -webkit-mask-image: url("../../src/images/icons/linkedin.svg");
+  mask-image: url("../../src/images/icons/linkedin.svg");
+}
+.youTube-icon {
+  -webkit-mask-image: url("../../src/images/icons/youtube.svg");
+  mask-image: url("../../src/images/icons/youtube.svg");
+}
+.edit-icon {
+  -webkit-mask-image: url("../../src/images/icons/edit.svg");
+  mask-image: url("../../src/images/icons/edit.svg");
+}
+.delete-icon {
+  -webkit-mask-image: url("../../src/images/icons/delete.svg");
+  mask-image: url("../../src/images/icons/delete.svg");
+}
+.close-icon {
+  -webkit-mask-image: url("../../src/images/icons/close.svg");
+  mask-image: url("../../src/images/icons/close.svg");
+}
+.logout-icon {
+  -webkit-mask-image: url("../../src/images/icons/logout.svg");
+  mask-image: url("../../src/images/icons/logout.svg");
+}
+.show-password-icon {
+  -webkit-mask-image: url("../../src/images/icons/password-show.svg");
+  mask-image: url("../../src/images/icons/password-show.svg");
+}
+.hide-password-icon {
+  -webkit-mask-image: url("../../src/images/icons/password-hide.svg");
+  mask-image: url("../../src/images/icons/password-hide.svg");
+}
+.image-placeholder {
+  -webkit-mask-image: url("../../src/images/icons/image-placeholder.svg");
+  mask-image: url("../../src/images/icons/image-placeholder.svg");
+}
+.checkbox-checked-icon {
+  -webkit-mask-image: url("../../src/images/icons/checkbox-checked.svg");
+  mask-image: url("../../src/images/icons/checkbox-checked.svg");
+}
+.checkbox-mixed-icon {
+  -webkit-mask-image: url("../../src/images/icons/checkbox-mixed.svg");
+  mask-image: url("../../src/images/icons/checkbox-mixed.svg");
+}
+.checkbox-empty-icon {
+  -webkit-mask-image: url("../../src/images/icons/checkbox-empty.svg");
+  mask-image: url("../../src/images/icons/checkbox-empty.svg");
+}
+.message-unread-icon {
+  -webkit-mask-image: url("../../src/images/icons/mail-unread.svg");
+  mask-image: url("../../src/images/icons/mail-unread.svg");
+}
+.message-read-icon {
+  -webkit-mask-image: url("../../src/images/icons/mail-read.svg");
+  mask-image: url("../../src/images/icons/mail-read.svg");
+}
+.refresh-icon {
+  -webkit-mask-image: url("../../src/images/icons/refresh.svg");
+  mask-image: url("../../src/images/icons/refresh.svg");
+}
+.arrow-back-icon {
+  -webkit-mask-image: url("../../src/images/icons/arrow_back.svg");
+  mask-image: url("../../src/images/icons/arrow_back.svg");
+}
+.arrow-up-icon {
+  -webkit-mask-image: url("../../src/images/icons/arrow_up.svg");
+  mask-image: url("../../src/images/icons/arrow_up.svg");
+}
+.restore-icon {
+  -webkit-mask-image: url("../../src/images/icons/restore.svg");
+  mask-image: url("../../src/images/icons/restore.svg");
+}
+.archive-icon {
+  -webkit-mask-image: url("../../src/images/icons/archive.svg");
+  mask-image: url("../../src/images/icons/archive.svg");
+}
+.unarchive-icon {
+  -webkit-mask-image: url("../../src/images/icons/unarchive.svg");
+  mask-image: url("../../src/images/icons/unarchive.svg");
+}

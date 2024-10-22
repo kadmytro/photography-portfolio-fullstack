@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Navbar, NavbarProps } from "./components/Navbar";
 import Footer from "./components/Footer";
-import { ScrollToTopButton } from "./components/ScrollToTopButton";
+import { ScrollUpButton } from "./components/ScrollUpButton";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomePage from "./views/HomePage";
 import GalleryPage from "./views/GalleryPage";
@@ -41,7 +41,7 @@ function App() {
           </Routes>
         </AuthProvider>
         <Footer></Footer>
-        <ScrollToTopButton />
+        <ScrollUpButton />
       </Router>
     </div>
   );

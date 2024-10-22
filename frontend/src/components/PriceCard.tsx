@@ -27,7 +27,7 @@ const PriceCard: React.FC<PriceCardProps> = ({
         className="w-full h-80 object-cover rounded-lg mb-4"
         draggable="false"
       />
-      <h2 className="text-3xl font-bold text-center mb-2">{title}</h2>
+      <h2 className="text-3xl font-bold text-center mb-2 font-title">{title}</h2>
       <ul className="text-lg mb-2">
         {description.split("\n").map((line, index) => (
           <li key={index} className="flex items-start">

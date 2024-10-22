@@ -44,17 +44,17 @@ function Contacts() {
 
   return (
     <div className="text-primaryText py-12">
-      <h3 className="text-4xl text-center py-4 px-10">Contacts</h3>
+      <h3 className="text-4xl text-center py-4 px-10 font-title">Contacts</h3>
       { !loading && 
-        <div className="flex w-4/5 max-w-1000px place-content-center justify-between py-4 mx-auto">
+        <div className="flex w-4/5 max-w-1000px place-content-center justify-between py-4 mx-auto content-center">
           {contacts.map((contact) => (
             <div
               key={contact.type}
-              className="h-60 w-60 cursor-pointer"
+              className="h-60 w-60 cursor-pointer content-center"
               onClick={() => handleClick(contact.type, contact.value)}
             >
               <div
-                className={`svg-mask ${contact.type + "-icon"} h-40 w-40 mx-auto bg-contain bg-no-repeat bg-primaryText bg-opacity-80 hover:bg-opacity-100`}
+                className={`svg-mask ${contact.type + "-icon"} h-24 w-24 mx-auto bg-contain bg-no-repeat bg-primaryText bg-opacity-80 hover:bg-opacity-100`}
               ></div>
               <div className="text-center w-full py-4 text-lg">{contact.displayValue}</div>
             </div>

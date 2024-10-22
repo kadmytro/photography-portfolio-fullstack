@@ -25,7 +25,7 @@ function AboutMe() {
   return (
     <div className="aboutMeContainer h-96 bg-secondary text-secondaryText place-content-center">
       {loading && <LoadingWheel/>}
-      {!loading && <h2 className="m-auto pb-4 text-4xl text-center">{aboutMe?.title}</h2>}
+      {!loading && <h2 className="m-auto pb-4 text-4xl text-center font-title">{aboutMe?.title}</h2>}
       {!loading && <div className="aboutMeContent w-1/2 text-lg min-w-500px mx-auto center text-justify">{aboutMe?.text}</div>}
     </div>
   );

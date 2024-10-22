@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export const ScrollToTopButton = () => {
+export const ScrollUpButton = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const handleScroll = () => {
@@ -27,12 +27,15 @@ export const ScrollToTopButton = () => {
   }, []);
 
   return (
+    <div className="fixed bottom-10 right-5 z-10">
     <div
       onClick={handleClick}
-      className={`fixed bottom-10 z-50 text-center right-5 p-3 cursor-pointer w-14 h-14 border-footerText border-1 rounded-full text-2xl bold bg-primary text-footerText transition-all opacity-60 hover:opacity-90
+      className={`p-3 text-center content-center cursor-pointer w-14 h-14 border-footerText border-1 rounded-full text-2xl bold bg-primary text-footerText transition-all opacity-60 hover:opacity-90
         ${isVisible ? "block" : "hidden"}`}
+      data-tooltip="Scroll up"
     >
-      ↑
+      <div className="svg-mask mx-auto arrow-up-icon bg-primaryText h-6 w-6"/>
+    </div>
     </div>
   );
 };
