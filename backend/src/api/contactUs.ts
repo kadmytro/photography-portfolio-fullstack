@@ -67,6 +67,10 @@ router.put("/putMany", checkAuth, async (req, res) => {
     const updatePromises = messagesChanges.map((update) => {
       const { id, ...fieldsToUpdate } = update;
 
+      if (fieldsToUpdate.hasOwnProperty("isForeverDeleted")) {
+        return contactRequestRepository.delete(id);
+      }
+
       fieldsToUpdate["deletedDate"] =
         fieldsToUpdate.hasOwnProperty("isDeleted") &&
         fieldsToUpdate["isDeleted"]

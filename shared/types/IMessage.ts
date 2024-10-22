@@ -6,4 +6,5 @@ export interface IMessage extends ContactRequest {
   isRead: boolean;
   isDeleted: boolean;
   isArchived: boolean;
+  isForeverDeleted: boolean;
 }

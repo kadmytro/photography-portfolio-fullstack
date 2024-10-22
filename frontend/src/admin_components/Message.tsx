@@ -8,7 +8,7 @@ interface MessageProps {
   onToggleSelect: React.MouseEventHandler<HTMLDivElement> | undefined;
   onClick: React.MouseEventHandler<HTMLDivElement> | undefined;
   onChange: (
-    fieldName: "isRead" | "isDeleted" | "isArchived",
+    fieldName: "isRead" | "isDeleted" | "isArchived" | "isForeverDeleted",
     fieldValue: boolean,
     messageIds: number[]
   ) => void;
@@ -117,23 +117,39 @@ export const Message: React.FC<MessageProps> = ({
           </div>
         )}
         {isDeleted ? (
-          <div
-            data-tooltip="Restore"
-            onClick={(e) => {
-              e.stopPropagation();
-              onChange("isDeleted", false, [id]);
-            }}
-            className="h-fit self-center"
-          >
+          <>
             <div
-              className={
-                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all restore-icon"
-              }
-            />
-          </div>
+              data-tooltip="Restore"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("isDeleted", false, [id]);
+              }}
+              className="h-fit self-center"
+            >
+              <div
+                className={
+                  "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all restore-icon"
+                }
+              />
+            </div>
+            <div
+              data-tooltip="Delete forever"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("isForeverDeleted", true, [id]);
+              }}
+              className="h-fit self-center"
+            >
+              <div
+                className={
+                  "cursor-pointer svg-mask w-6 h-6 bg-red-600 transition-all delete-icon"
+                }
+              />
+            </div>
+          </>
         ) : (
           <div
-            data-tooltip="Delete"
+            data-tooltip="Move to trash"
             onClick={(e) => {
               e.stopPropagation();
               onChange("isDeleted", true, [id]);

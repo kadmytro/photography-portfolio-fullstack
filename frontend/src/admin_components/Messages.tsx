@@ -115,7 +115,7 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
   );
 
   const markAs = (
-    fieldName: "isRead" | "isDeleted" | "isArchived",
+    fieldName: "isRead" | "isDeleted" | "isArchived" | "isForeverDeleted",
     fieldValue: boolean,
     messageIds: number[]
   ) => {
@@ -135,6 +135,9 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
           case "isDeleted":
             m.isDeleted = fieldValue;
             break;
+          case "isForeverDeleted":
+            m.isForeverDeleted = fieldValue;
+            break;
         }
         updateMessageChanges(m);
         return m;
@@ -142,11 +145,17 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
 
       switch (messagesType) {
         case "regular":
-          return updatedMessages.filter((m) => !m.isArchived && !m.isDeleted);
+          return updatedMessages.filter(
+            (m) => !m.isArchived && !m.isDeleted && !m.isForeverDeleted
+          );
         case "archived":
-          return updatedMessages.filter((m) => !m.isDeleted && m.isArchived);
+          return updatedMessages.filter(
+            (m) => !m.isDeleted && m.isArchived && !m.isForeverDeleted
+          );
         case "deleted":
-          return updatedMessages.filter((m) => m.isDeleted);
+          return updatedMessages.filter(
+            (m) => m.isDeleted && !m.isForeverDeleted
+          );
       }
     });
   };
@@ -330,26 +339,6 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
             </div>
           ) : null}
           {!currentPageSelectedIds.length ||
-          detailedMessage ? null : messagesType == "deleted" ? (
-            <div
-              data-tooltip="Restore"
-              onClick={() => {
-                markAs("isDeleted", false, currentPageSelectedIds);
-              }}
-            >
-              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all restore-icon" />
-            </div>
-          ) : (
-            <div
-              data-tooltip="Delete"
-              onClick={() => {
-                markAs("isDeleted", true, currentPageSelectedIds);
-              }}
-            >
-              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all delete-icon" />
-            </div>
-          )}
-          {!currentPageSelectedIds.length ||
           detailedMessage ||
           messagesType == "deleted" ? null : messagesType === "regular" ? (
             <div
@@ -368,6 +357,36 @@ export const Messages: React.FC<MessagesProps> = ({ messagesType }) => {
               }}
             >
               <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all unarchive-icon" />
+            </div>
+          )}
+          {!currentPageSelectedIds.length ||
+          detailedMessage ? null : messagesType == "deleted" ? (
+            <>
+              <div
+                data-tooltip="Restore"
+                onClick={() => {
+                  markAs("isDeleted", false, currentPageSelectedIds);
+                }}
+              >
+                <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all restore-icon" />
+              </div>
+              <div
+                data-tooltip="Delete forever"
+                onClick={() => {
+                  markAs("isForeverDeleted", true, currentPageSelectedIds);
+                }}
+              >
+                <div className="cursor-pointer svg-mask w-6 h-6 bg-red-600 right-0 transition-all delete-icon" />
+              </div>
+            </>
+          ) : (
+            <div
+              data-tooltip="Move to trash"
+              onClick={() => {
+                markAs("isDeleted", true, currentPageSelectedIds);
+              }}
+            >
+              <div className="cursor-pointer svg-mask w-6 h-6 bg-cardText right-0 transition-all delete-icon" />
             </div>
           )}
           {currentPageSelectedIds.length && detailedMessage == null ? (
