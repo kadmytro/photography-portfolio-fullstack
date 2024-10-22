@@ -21,7 +21,7 @@ function GalleryPage() {
         const categories = await getPhotoCategoriesToDisplay();
         const newTabs = await Promise.all(
           categories.map(async (category: any) => {
-            const photos = await getPhotoByCategoryId(category.id);
+            const photos = (await getPhotoByCategoryId(category.id)) ?? [];
             const items = photos.map((photo: any) => ({
               image: getPhotoUrl(photo.id),
               description: photo.caption,
@@ -55,7 +55,7 @@ function GalleryPage() {
   return (
     <div className="Content" style={{ minHeight: "calc(100vh - 224px)" }}>
       {(!loading && <TabView tabs={tabs} hasBanner={false}></TabView>) || (
-        <LoadingWheel style={{ height: "calc(100vh - 224px)" }}/>
+        <LoadingWheel style={{ height: "calc(100vh - 224px)" }} />
       )}
     </div>
   );

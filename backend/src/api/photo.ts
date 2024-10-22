@@ -5,6 +5,8 @@ import { Photo } from "../entity/Photo";
 import { checkAuth } from "./authMiddleware";
 import { readSettings } from "../helpers/settingsReader";
 import sharp from "sharp";
+import { PhotoCategory } from "../entity/PhotoCategory";
+import { In } from "typeorm";
 
 const router = Router();
 const storage = multer.memoryStorage(); // Store files in memory
@@ -14,7 +16,9 @@ const upload = multer({
 });
 
 router.get("/", async (req, res) => {
-  const photos = await AppDataSource.getRepository(Photo).find();
+  const photos = await AppDataSource.getRepository(Photo).find({
+    relations: ["categories"],
+  });
   res.json(photos);
 });
 
@@ -25,6 +29,7 @@ router.get("/recent", async (req, res) => {
   try {
     const photos = await AppDataSource.getRepository(Photo)
       .createQueryBuilder("photo")
+      .leftJoinAndSelect("photo.categories", "category")
       .orderBy("photo.id", "DESC")
       .limit(homeMaxPhotos)
       .getMany();
@@ -39,25 +44,31 @@ router.get("/recent", async (req, res) => {
 router.get("/all", async (req, res) => {
   const photos = await AppDataSource.getRepository(Photo)
     .createQueryBuilder("photo")
+    .leftJoinAndSelect("photo.categories", "category")
     .orderBy("photo.id", "DESC")
     .getMany();
   res.json(photos.map((p) => p.getPhotoMetadata()));
 });
 
 router.get("/byCategories/:categoryIds", async (req, res) => {
-  const categoryIds = req.params.categoryIds
-    .split(",")
-    .map((id) => parseInt(id));
+  try {
+    const categoryIds = req.params.categoryIds
+      .split(",")
+      .map((id) => parseInt(id));
 
-  const photos = await AppDataSource.getTreeRepository(Photo)
-    .createQueryBuilder("photo")
-    .where("photo.categoriesIds && :categoryIds", {
-      categoryIds,
-    })
-    .orderBy("photo.id", "DESC")
-    .getMany();
+    const categories = await AppDataSource.getRepository(PhotoCategory)
+      .createQueryBuilder("category")
+      .leftJoinAndSelect("category.photos", "photo")
+      .where("category.id IN (:...categoryIds)", { categoryIds })
+      .getMany();
 
-  res.json(photos.map((p) => p.getPhotoMetadata()));
+    const photos = categories.flatMap((category) => category.photos);
+
+    res.json(photos.map((p) => p.getPhotoMetadata()));
+  } catch (error) {
+    console.error("Failed to fetch photos by categories:", error);
+    res.status(500).json({ error: "Failed to fetch photos by categories" });
+  }
 });
 
 router.get("/byCategory/:categoryId", async (req, res) => {
@@ -65,40 +76,24 @@ router.get("/byCategory/:categoryId", async (req, res) => {
   const galleryMaxPhotos = settings?.galleryMaxPhotos ?? 100;
 
   try {
-    const photos = await AppDataSource.getRepository(Photo)
-      .createQueryBuilder("photo")
-      .where(":categoryId = ANY(photo.categoriesIds)", {
-        categoryId: parseInt(req.params.categoryId),
-      })
-      .orderBy("photo.id", "DESC")
-      .limit(galleryMaxPhotos)
-      .getMany();
+    const categoryId = parseInt(req.params.categoryId);
+    const category = await AppDataSource.getRepository(PhotoCategory)
+      .createQueryBuilder("category")
+      .leftJoinAndSelect("category.photos", "photo")
+      .where("category.id = :categoryId", { categoryId })
+      .getOne();
 
+    if (!category) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    const photos = category.photos.slice(0, galleryMaxPhotos);
     res.json(photos.map((p) => p.getPhotoMetadata()));
   } catch (error) {
     console.error("Failed to fetch photos by category:", error);
     res.status(500).json({ error: "Failed to fetch photos by category" });
   }
 });
-
-// router.get("/:id", async (req, res) => {
-//   try {
-//     const photo = await AppDataSource.getRepository(Photo).findOneBy({
-//       id: parseInt(req.params.id),
-//     });
-//     if (!photo) {
-//       return res.status(404).send("Photo not found");
-//     }
-//     const imageBuffer = photo.photo;
-
-//     res.set("Content-Type", photo.mimeType);
-
-//     res.send(imageBuffer);
-//   } catch (error) {
-//     console.error("Error fetching photo", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
 
 router.get("/:id/:optimized?", async (req, res) => {
   try {
@@ -154,17 +149,98 @@ router.get("/date/:date", async (req, res) => {
 });
 
 router.put("/:id", checkAuth, async (req, res) => {
+  const { caption, location, date, categoriesIds, mimeType, height, width } =
+    req.body;
+  const data = req.file?.buffer;
+  const [maxWidth, maxHeight] = [2500, 1600];
   const photoRepository = await AppDataSource.getRepository(Photo);
-  const photo = await photoRepository.findOneBy({
-    id: parseInt(req.params.id),
-  });
+  const categoryRepository = await AppDataSource.getRepository(PhotoCategory);
 
-  if (photo) {
-    photoRepository.merge(photo, req.body);
-    const result = await photoRepository.save(photo);
+  try {
+    const photo = await photoRepository.findOne({
+      where: { id: parseInt(req.params.id) },
+      relations: ["categories"],
+    });
+
+    if (!photo) {
+      return res.status(404).send("Photo not found");
+    }
+
+    if (categoriesIds && Array.isArray(categoriesIds)) {
+      const categories = await categoryRepository.find({
+        where: { id: In(categoriesIds) },
+      });
+      if (!categories.length && categoriesIds.length) {
+        return res.status(400).send("Some categories were not found");
+      }
+      photo.categories = categories;
+    }
+
+    photo.caption = caption ?? photo.caption;
+    photo.location = location ?? photo.location;
+    photo.date = date ? new Date(date) : photo.date;
+    photo.mimeType = mimeType ?? photo.mimeType;
+
+    if (data) {
+      const metadata = await sharp(data).metadata();
+
+      const isLandscape =
+        metadata.width && metadata.height && metadata.width > metadata.height;
+
+      const shouldResize = () => {
+        return (
+          (isLandscape && metadata.width && metadata.width > maxWidth) ||
+          (!isLandscape && metadata.height && metadata.height > maxHeight)
+        );
+      };
+
+      const highQualityImage = !shouldResize()
+        ? data
+        : await sharp(data)
+            .resize({
+              width: isLandscape ? 2500 : undefined,
+              height: !isLandscape ? 1600 : undefined,
+              fit: "inside",
+              withoutEnlargement: true,
+            })
+            .jpeg({ quality: 80 })
+            .toBuffer();
+
+      const highQualityImageMetadata = await sharp(highQualityImage).metadata();
+
+      const mobileOptimizedImage = await sharp(data)
+        .resize({
+          width: isLandscape ? 1024 : undefined,
+          height: !isLandscape ? 1024 : undefined,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+
+      const blurredCoverImage = await sharp(data)
+        .resize({
+          width: isLandscape ? 100 : undefined,
+          height: !isLandscape ? 100 : undefined,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .blur()
+        .jpeg({ quality: 30 })
+        .toBuffer();
+
+      photo.photo = highQualityImage;
+      photo.photoMobile = mobileOptimizedImage;
+      photo.photoBlurred = blurredCoverImage;
+      photo.height = highQualityImageMetadata.height ?? height;
+      photo.width = highQualityImageMetadata.width ?? width;
+    }
+
+    await photoRepository.save(photo);
     res.json("Successfully updated the photo");
-  } else {
-    res.status(404).send("Photo not found");
+  } catch (error) {
+    console.error("Failed to update the photo:", error);
+    res.status(500).json({ error: "Failed to update the photo" });
   }
 });
 
@@ -197,11 +273,18 @@ router.post("/", checkAuth, upload.single("photo"), async (req, res) => {
     const photo = new Photo();
     photo.caption = caption;
     photo.location = location;
-    photo.categoriesIds = JSON.parse(categories);
     photo.date = date ? new Date(date) : null;
     photo.mimeType = mimeType;
+    if (categories) {
+      const categoryIds = JSON.parse(categories);
+      const photoCategories = await AppDataSource.getRepository(PhotoCategory)
+        .createQueryBuilder("category")
+        .where("category.id IN (:...categoryIds)", { categoryIds })
+        .getMany();
 
-    // Get image metadata (width and height)
+      photo.categories = photoCategories;
+    }
+
     const metadata = await sharp(data).metadata();
 
     const isLandscape =

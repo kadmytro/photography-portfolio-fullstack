@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
+
+import { PhotoCategory } from "./PhotoCategory";
 
 @Entity({ name: "PhotoSet" })
 export class Photo {
@@ -14,8 +22,11 @@ export class Photo {
   @Column("bytea")
   photoBlurred!: Buffer;
 
-  @Column("int", { array: true })
-  categoriesIds!: number[];
+  @ManyToMany(() => PhotoCategory, (category) => category.photos, {
+    cascade: true,
+  })
+  @JoinTable({ name: "photo_category_links" })
+  categories!: PhotoCategory[];
 
   @Column({ nullable: true })
   location?: string;
@@ -38,7 +49,7 @@ export class Photo {
   getPhotoWithBase64(): any {
     return {
       id: this.id,
-      categoriesIds: this.categoriesIds,
+      categoriesIds: this.categories?.map((category) => category.id) ?? [],
       location: this.location,
       caption: this.caption,
       date: this.date,
@@ -52,7 +63,7 @@ export class Photo {
   getPhotoMetadata() {
     return {
       id: this.id,
-      categoriesIds: this.categoriesIds,
+      categoriesIds: this.categories?.map((category) => category.id)?? [],
       location: this.location,
       caption: this.caption,
       date: this.date,

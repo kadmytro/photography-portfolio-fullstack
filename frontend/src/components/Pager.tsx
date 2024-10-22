@@ -45,6 +45,15 @@ const Pager = <T,>({
     }
   };
 
+  const refreshCallback = (keepPage?: boolean) => {
+    const page = currentPage;
+    fetchData().then(() => {
+      if (keepPage) {
+        setCurrentPage(page);
+      }
+    });
+  };
+
   useEffect(() => {
     if (!items && endpoint) {
       fetchData();
@@ -58,6 +67,7 @@ const Pager = <T,>({
       setData(items);
     }
   }, [items]);
+
   useEffect(() => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -71,6 +81,7 @@ const Pager = <T,>({
       pageChangedCallback(currentPage, currentItems);
     }
   }, [currentItems]);
+
   useEffect(() => {
     const calcPageNumbers = () => {
       let updatedPages: (number | string)[] = [];
@@ -174,7 +185,7 @@ const Pager = <T,>({
 
   return (
     <div className="w-full h-full px-4 pt-4 pb-14 relative">
-      <ContentComponent items={currentItems} refreshData={fetchData} />
+      <ContentComponent items={currentItems} refreshData={refreshCallback} />
       <div className="flex justify-center mt-4 space-x-2 absolute bottom-0 left-1/2 -translate-x-1/2">
         <button
           onClick={handlePreviousPage}

@@ -22,6 +22,7 @@ export const Gallery = ({
 
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [selectedItemId, setselectedItemId] = useState(0);
+  const [columnItems, setColumnItems] = useState<JSX.Element[][]>([]);
 
   const openViewer = (id: number) => {
     setselectedItemId(id);
@@ -45,7 +46,7 @@ export const Gallery = ({
 
   const calculateColumnsAndWidth = () => {
     const containerWidth = containerRef.current?.clientWidth || initialWidth;
-    let numColumns = getNumberOfColumns(containerWidth); // Default number of columns
+    let numColumns = getNumberOfColumns(containerWidth);
     let width = containerWidth / numColumns - getRemSize();
 
     setColumns(numColumns);
@@ -54,7 +55,7 @@ export const Gallery = ({
 
   const distributeItems = () => {
     const columnHeights: number[] = Array(columns).fill(0);
-    const columnItems: JSX.Element[][] = Array.from(
+    const updatedColumnItems: JSX.Element[][] = Array.from(
       { length: columns },
       () => []
     );
@@ -76,13 +77,17 @@ export const Gallery = ({
         );
         const cardHeight = (item.height / item.width) * columnWidth;
 
-        columnItems[minHeightIndex].push(
+        updatedColumnItems[minHeightIndex].push(
           <div
-            key={items.indexOf(item)}
+            key={item.id}
             className="mb-8"
             onClick={() => !admin && openViewer(item.id)}
           >
-            {admin ? <ExtendedPhotoCard {...item}  refreshData={refreshData} /> : <PhotoCard {...item} />}
+            {admin ? (
+              <ExtendedPhotoCard {...item} refreshData={refreshData} />
+            ) : (
+              <PhotoCard {...item} />
+            )}
           </div>
         );
 
@@ -92,7 +97,7 @@ export const Gallery = ({
       i += currentItemsNumber;
     }
 
-    return columnItems;
+    setColumnItems(updatedColumnItems);
   };
 
   useEffect(() => {
@@ -103,7 +108,9 @@ export const Gallery = ({
     };
   }, []);
 
-  const columnItems = distributeItems();
+  useEffect(() => {
+    distributeItems();
+  }, [items, columns]);
 
   return (
     <div ref={containerRef} className={"flex flex-wrap" + ` px-${2 * columns}`}>

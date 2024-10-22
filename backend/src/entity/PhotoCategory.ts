@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
 import { Photo } from "./Photo";
 
 @Entity({ name: "PhotoCategorySet" })
@@ -14,4 +14,7 @@ export class PhotoCategory {
 
   @Column({ nullable: true })
   ordinal!: number;
+  
+  @ManyToMany(() => Photo, (photo) => photo.categories)
+  photos!: Photo[];
 }

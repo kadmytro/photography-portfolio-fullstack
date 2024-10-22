@@ -1,4 +1,6 @@
 import { Router } from "express";
+import fs, { link } from "fs";
+import path from "path";
 import { AppDataSource } from "../data-source";
 import { PhotoCategory } from "../entity/PhotoCategory";
 import { checkAuth } from "./authMiddleware";
@@ -83,13 +85,47 @@ router.put("/:id", checkAuth, async (req, res) => {
 });
 
 router.delete("/:id", checkAuth, async (req, res) => {
-  const categoryRepository = await AppDataSource.getRepository(PhotoCategory);
-  const result = await categoryRepository.delete(req.params.id);
+  const categoryRepository = AppDataSource.getRepository(PhotoCategory);
 
-  if (result.affected) {
-    res.status(204).send();
-  } else {
-    res.status(404).send("Category not found");
+  try {
+    const categoryId = parseInt(req.params.id);
+
+    const category = await categoryRepository.findOne({
+      where: { id: categoryId },
+      relations: ['photos'],
+    });
+
+    if (!category) {
+      return res.status(404).send("Category not found");
+    }
+
+    if (category.photos && category.photos.length > 0) {
+      category.photos = [];
+      await categoryRepository.save(category);
+    }
+    const result = await categoryRepository.delete(categoryId);
+    const settings = await readSettings();
+    const gallerySelectedCategories = settings?.gallerySelectedCategories;
+    if (gallerySelectedCategories?.includes(categoryId) && settings) {
+      const settingsFilePath = path.join(__dirname, "..", "config", "settings.json");
+      settings.gallerySelectedCategories = gallerySelectedCategories.filter((id) => id != categoryId);
+      
+      fs.writeFile(
+        settingsFilePath,
+        JSON.stringify(settings, null, 2),
+        "utf8",
+        (err) => {}
+      );
+    }
+
+    if (result.affected) {
+      res.status(204).send();
+    } else {
+      res.status(404).send("Category not found");
+    }
+  } catch (error) {
+    console.error("Failed to delete category:", error);
+    res.status(500).json({ error: "Failed to delete category" });
   }
 });
 

@@ -4,7 +4,7 @@ import api from "../services/api";
 import PhotoEditForm from "./PhotoEditForm";
 
 interface ExtendedPhotoCardProps extends PhotoCardProps {
-  refreshData?: () => void;
+  refreshData?: (keepPage?: boolean) => void;
 }
 
 const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
@@ -44,7 +44,7 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
         await api.delete(`/api/photos/${props.id}`);
         alert("Photo deleted successfully");
         if (props.refreshData) {
-          props.refreshData();
+          props.refreshData(true);
         }
       } catch (error) {
         console.error("Failed to delete photo:", error);
@@ -68,7 +68,7 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
       }));
       setShowEditPopup(false);
       if (props.refreshData) {
-        props.refreshData();
+        props.refreshData(true);
       }
     } catch (error) {
       console.error("Failed to update the photo:", error);
