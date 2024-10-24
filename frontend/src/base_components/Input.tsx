@@ -17,6 +17,7 @@ interface InputProps {
   placeholder?: string;
   className?: string;
   style?: React.CSSProperties | undefined;
+  autocomplete? : string;
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -33,6 +34,7 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   className,
   style,
+  autocomplete,
   onChange,
 }) => {
   const [inputType, setInputType] = useState(type);
@@ -76,6 +78,7 @@ const Input: React.FC<InputProps> = ({
         readOnly={readOnly}
         required={required}
         onChange={onChange}
+        autoComplete={autocomplete ?? ""}
         className={
           "w-full px-3 py-2 bg-input text-inputText text-opacity-80 placeholder:text-inputText placeholder:text-opacity-30 border-primaryText border-opacity-20 border rounded focus:outline-none " +
           (readOnly

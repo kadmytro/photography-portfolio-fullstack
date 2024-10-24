@@ -13,6 +13,7 @@ import SettingsForm from "../admin_components/SettingsForm";
 import ServiceList from "../admin_components/ServiceList";
 import TagBox from "../base_components/TagBox";
 import { Messages } from "../admin_components/Messages";
+import ChangePasswordForm from "../admin_components/ChangePasswordForm";
 
 function AdminPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -131,6 +132,7 @@ function AdminPage() {
           title: "Settings",
           content: <SettingsForm />,
         },
+        { id: 45, title: "Account", content: <ChangePasswordForm /> },
       ],
     },
   ];
