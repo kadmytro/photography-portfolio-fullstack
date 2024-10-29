@@ -8,6 +8,8 @@ interface GalleryProps {
   items: PhotoCardProps[];
   admin?: boolean;
   refreshData?: () => void;
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
 }
 
 export const Gallery = ({
@@ -15,6 +17,8 @@ export const Gallery = ({
   initialWidth,
   admin = false,
   refreshData,
+  openPopupCallback,
+  closePopupCallback,
 }: GalleryProps) => {
   const [columns, setColumns] = useState<number>(3);
   const [columnWidth, setColumnWidth] = useState<number>(300); // Initial column width
@@ -49,8 +53,12 @@ export const Gallery = ({
     let numColumns = getNumberOfColumns(containerWidth);
     let width = containerWidth / numColumns - getRemSize();
 
-    setColumns(numColumns);
-    setColumnWidth(width);
+    if (numColumns !== columns) {
+      setColumns(numColumns);
+    }
+    if (width !== columnWidth) {
+      setColumnWidth(width);
+    }
   };
 
   const distributeItems = () => {
@@ -84,7 +92,12 @@ export const Gallery = ({
             onClick={() => !admin && openViewer(item.id)}
           >
             {admin ? (
-              <ExtendedPhotoCard {...item} refreshData={refreshData} />
+              <ExtendedPhotoCard
+                {...item}
+                refreshData={refreshData}
+                openPopupCallback={openPopupCallback}
+                closePopupCallback={closePopupCallback}
+              />
             ) : (
               <PhotoCard {...item} />
             )}

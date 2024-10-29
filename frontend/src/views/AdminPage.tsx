@@ -14,14 +14,28 @@ import ServiceList from "../admin_components/ServiceList";
 import TagBox from "../base_components/TagBox";
 import { Messages } from "../admin_components/Messages";
 import ChangePasswordForm from "../admin_components/ChangePasswordForm";
+import { Popup } from "../base_components/Popup";
 
 function AdminPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-
   const initialWidth = containerRef.current?.clientWidth || window.innerWidth;
   const [selectedCategories, setSelectedCategories] = useState<
     (number | string)[]
   >([]);
+  const [popupOpened, setPopupOpened] = useState(false);
+  const [popupContent, setPopupContent] = useState<React.ReactNode>(null);
+  const [popupTitle, setPopupTitle] = useState<string | undefined>();
+  const onPopupClose = () => {
+    setPopupContent(null);
+    setPopupTitle(undefined);
+    setPopupOpened(false);
+  };
+
+  const onPopupOpen = (content: React.ReactNode, title?: string) => {
+    setPopupContent(content);
+    setPopupTitle(title);
+    setPopupOpened(true);
+  };
 
   const getEndPoint = () => {
     let result = "/api/photos/all";
@@ -72,6 +86,8 @@ function AdminPage() {
                     {...props}
                     initialWidth={initialWidth}
                     admin={true}
+                    openPopupCallback={onPopupOpen}
+                    closePopupCallback={onPopupClose}
                   />
                 )}
                 mapDataToItems={mapDataToGalleryItems}
@@ -84,7 +100,12 @@ function AdminPage() {
         {
           id: 13,
           title: "Manage Categories",
-          content: <CategoryList />,
+          content: (
+            <CategoryList
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
         },
       ],
     },
@@ -94,7 +115,12 @@ function AdminPage() {
         {
           id: 21,
           title: "Manage Services",
-          content: <ServiceList />,
+          content: (
+            <ServiceList
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
         },
       ],
     },
@@ -132,7 +158,16 @@ function AdminPage() {
           title: "Settings",
           content: <SettingsForm />,
         },
-        { id: 45, title: "Account", content: <ChangePasswordForm /> },
+        {
+          id: 45,
+          title: "Account",
+          content: (
+            <ChangePasswordForm
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
+        },
       ],
     },
   ];
@@ -140,6 +175,16 @@ function AdminPage() {
   return (
     <div className="Content relative text-primaryText w-full contentMinHeight">
       <HorizontalDrawer groups={groups} />
+      <Popup
+        key="adminPopup"
+        isOpen={popupOpened}
+        title={popupTitle}
+        onClose={onPopupClose}
+        containerClassName="mt-20"
+        className="-top-10 min-w-fit"
+      >
+        {popupContent}
+      </Popup>
     </div>
   );
 }

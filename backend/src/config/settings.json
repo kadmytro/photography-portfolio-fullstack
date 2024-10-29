@@ -2,8 +2,8 @@
   "homeMaxPhotos": 50,
   "galleryMaxPhotos": 100,
   "gallerySelectedCategories": [
-    2,
     3,
-    1
+    1,
+    2
   ]
 }

@@ -9,6 +9,7 @@ interface TagItem {
 
 interface TagBoxProps<T extends TagItem> {
   dataSource: T[] | string;
+  label?: string;
   onSelectionChange: (selectedItems: (number | string)[]) => void;
   initialSelection?: (number | string)[];
   placeholder?: string;
@@ -17,6 +18,7 @@ interface TagBoxProps<T extends TagItem> {
 
 const TagBox = <T extends TagItem>({
   dataSource,
+  label,
   onSelectionChange,
   initialSelection = [],
   placeholder = "Select items",
@@ -87,8 +89,11 @@ const TagBox = <T extends TagItem>({
 
   return (
     <div ref={dropdownRef} className="relative min-w-400px">
+      {label && <label className="block text-cardText font-bold mb-2 pl-1">
+        {label}:
+      </label>}
       <div
-        className="p-2 h-fit flex flex-wrap gap-3 border bg-input text-inputText text-opacity-80 border-primaryText border-opacity-20 rounded focus:outline-none cursor-pointer"
+        className={"p-2 h-fit flex flex-wrap gap-3 border bg-input text-inputText text-opacity-80 border-primaryText border-opacity-20 rounded focus:outline-none cursor-pointer " + (dropdownOpen ? "border-blue-500 border-opacity-100" : "")}
         onClick={() => !readOnly && setDropdownOpen(!dropdownOpen)}
       >
         {selectedItems.length === 0 ? (

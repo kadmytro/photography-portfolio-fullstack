@@ -117,3 +117,11 @@
   -webkit-mask-image: url("../../src/images/icons/unarchive.svg");
   mask-image: url("../../src/images/icons/unarchive.svg");
 }
+.success-icon {
+  -webkit-mask-image: url("../../src/images/icons/success.svg");
+  mask-image: url("../../src/images/icons/success.svg");
+}
+.error-icon {
+  -webkit-mask-image: url("../../src/images/icons/error.svg");
+  mask-image: url("../../src/images/icons/error.svg");
+}

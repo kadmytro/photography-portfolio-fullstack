@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Navbar, NavbarProps } from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ScrollUpButton } from "./components/ScrollUpButton";
@@ -32,10 +31,12 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<LoginPage />} />
             <Route
               path="/admin"
               element={<PrivateRoute element={<AdminPage />} />}
             />
+            <Route path="reset-password/:resetToken" element={<LoginPage />} />
             <Route path="prices" element={<PricesPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

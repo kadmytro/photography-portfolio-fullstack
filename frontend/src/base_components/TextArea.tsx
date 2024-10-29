@@ -45,7 +45,7 @@ const TextArea: React.FC<TextAreaProps> = ({
           "w-full px-3 py-2 bg-input text-inputText text-opacity-80 placeholder:text-inputText placeholder:text-opacity-30 border-primaryText border-opacity-20 border rounded focus:outline-none " +
           (readOnly
             ? "resize-none cursor-default "
-            : "resize-y cursor-text focus:border-blue-500 focus:border-2 ") +
+            : "resize-y cursor-text focus:border-blue-500 ") +
           (className != undefined ? className : "")
         }
         style={style}

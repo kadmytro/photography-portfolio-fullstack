@@ -3,16 +3,45 @@ import Input from "../base_components/Input";
 import Button from "../base_components/Button";
 import { useAuth } from "../context/AuthContextType";
 import LoadingWheel from "../components/LoadingWheel";
-import axios from "axios";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
-const ChangePasswordForm: React.FC = () => {
+interface ChangePasswordFormProps {
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
+}
+
+const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
+  openPopupCallback,
+  closePopupCallback,
+}) => {
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword1, setNewPassword1] = useState<string>("");
   const [newPassword2, setNewPassword2] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth(); // Use this to get the logged-in user
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const getPopupContent = (message: string): React.ReactNode => {
+    return (
+      <div className="px-4 pb-4 pt-10 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+        <div className="svg-mask success-icon h-20 w-20 bg-green-500 bg-opacity-70 mx-auto absolute top-3 left-1/2 -translate-x-1/2"></div>
+        <p>{message}</p>
+        <Button
+          buttonType="default"
+          text="Ok"
+          className="absolute left-1/2 -translate-x-1/2 bottom-2 w-1/2"
+          onClick={() => {
+            navigate("/login");
+            if (closePopupCallback) {
+              closePopupCallback();
+            }
+          }}
+        />
+      </div>
+    );
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,7 +56,14 @@ const ChangePasswordForm: React.FC = () => {
         newPassword: newPassword1,
       });
 
-      alert("Password updated successfully!");
+      if (openPopupCallback) {
+        openPopupCallback(
+          getPopupContent(
+            "Your password has been successfully changed to a new one"
+          ),
+          "Success!"
+        );
+      }
       setOldPassword("");
       setNewPassword1("");
       setNewPassword2("");
@@ -49,7 +85,7 @@ const ChangePasswordForm: React.FC = () => {
     } else {
       setError(null);
     }
-  }, [newPassword1, newPassword2]);
+  }, [newPassword1, newPassword2, oldPassword]);
 
   return (
     <div className="relative">

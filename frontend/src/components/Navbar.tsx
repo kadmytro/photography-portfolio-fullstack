@@ -62,6 +62,8 @@ export function Navbar({
     let displayBanner = !(
       location.pathname == "/gallery" ||
       location.pathname == "/login" ||
+      location.pathname == "/forgot-password" ||
+      location.pathname.startsWith("/reset-password") ||
       location.pathname == "/prices" ||
       location.pathname.includes("/admin")
     );

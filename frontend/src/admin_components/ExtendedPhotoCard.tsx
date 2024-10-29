@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { PhotoCard, PhotoCardProps } from "../components/PhotoCard";
 import api from "../services/api";
 import PhotoEditForm from "./PhotoEditForm";
+import Button from "../base_components/Button";
 
 interface ExtendedPhotoCardProps extends PhotoCardProps {
   refreshData?: (keepPage?: boolean) => void;
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
 }
 
 const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
@@ -35,21 +38,60 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
     }
   }, [showEditPopup]);
 
-  const handleDeleteClick = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this photo?"
+  const getPopupContent = (
+    message: string,
+    onConfirmCallback: React.MouseEventHandler<HTMLButtonElement> | undefined,
+    onCancelCallback: React.MouseEventHandler<HTMLButtonElement> | undefined
+  ): React.ReactNode => {
+    return (
+      <div className="px-4 pb-12 pt-4 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+        <p className="max-w-md">{message}</p>
+        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+          <Button
+            buttonType="default"
+            text="Yes"
+            className="flex-1"
+            onClick={onConfirmCallback}
+          />
+          <Button
+            buttonType="danger"
+            text="No"
+            className="flex-1"
+            onClick={onCancelCallback}
+          />
+        </div>
+      </div>
     );
-    if (confirmDelete) {
+  };
+
+  const handleDeleteClick = async () => {
+    const deleteCallback = async () => {
       try {
         await api.delete(`/api/photos/${props.id}`);
-        alert("Photo deleted successfully");
         if (props.refreshData) {
           props.refreshData(true);
         }
+
+        if (props.closePopupCallback) {
+          props.closePopupCallback();
+        }
       } catch (error) {
         console.error("Failed to delete photo:", error);
-        alert("Failed to delete photo");
+      } finally {
+        if (props.closePopupCallback) {
+          props.closePopupCallback();
+        }
       }
+    };
+
+    const popupContent = getPopupContent(
+      "Are you sure you want to delete this photo?",
+      deleteCallback,
+      props.closePopupCallback
+    );
+
+    if (props.openPopupCallback) {
+      props.openPopupCallback(popupContent, "Please confirm the action");
     }
   };
 

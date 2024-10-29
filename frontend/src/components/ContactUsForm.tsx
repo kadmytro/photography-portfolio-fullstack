@@ -41,7 +41,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({
       await api.post("/api/contactUs/send", contactRequest);
       setContactRequest({});
     } catch (error) {
-      console.error("Failed to update settings:", error);
+      console.error("Failed to send message:", error);
       alert("Failed to update settings");
     } finally {
       setSaving(false);

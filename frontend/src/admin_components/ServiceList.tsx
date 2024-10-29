@@ -5,7 +5,15 @@ import Button from "../base_components/Button";
 import ServiceListItem from "./ServiceListItem";
 import ServiceItem from "../types/ServiceItem";
 
-const ServiceList: React.FC = () => {
+interface ServiceListProps {
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
+}
+
+const ServiceList: React.FC<ServiceListProps> = ({
+  openPopupCallback,
+  closePopupCallback,
+}) => {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,6 +35,32 @@ const ServiceList: React.FC = () => {
     fetchServices();
   }, []);
 
+  const getPopupContent = (
+    message: string,
+    onConfirmCallback: React.MouseEventHandler<HTMLButtonElement> | undefined,
+    onCancelCallback: React.MouseEventHandler<HTMLButtonElement> | undefined
+  ): React.ReactNode => {
+    return (
+      <div className="px-4 pb-12 pt-4 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+        <p className="max-w-md">{message}</p>
+        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+          <Button
+            buttonType="default"
+            text="Yes"
+            className="flex-1"
+            onClick={onConfirmCallback}
+          />
+          <Button
+            buttonType="danger"
+            text="No"
+            className="flex-1"
+            onClick={onCancelCallback}
+          />
+        </div>
+      </div>
+    );
+  };
+
   function updateService(service: ServiceItem): void {
     const isOld = services.some((s) => s.id === service.id);
     if (!isOld) {
@@ -40,13 +74,29 @@ const ServiceList: React.FC = () => {
   }
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this service?")) {
+    const deleteCallback = async () => {
       try {
         await api.delete(`api/services/${id}`);
-        setServices(services.filter((service) => service.id !== id));
+        setServices(services.filter((item) => item.id !== id));
       } catch (error) {
         console.error("Failed to delete service:", error);
+      } finally {
+        if (closePopupCallback) {
+          closePopupCallback();
+        }
       }
+    };
+
+    const popupContent = getPopupContent(
+      `Are you sure you want to delete the service "${
+        services.find((i) => i.id === id)?.title ?? ""
+      }"?`,
+      deleteCallback,
+      closePopupCallback
+    );
+
+    if (openPopupCallback) {
+      openPopupCallback(popupContent, "Please confirm the action");
     }
   };
 

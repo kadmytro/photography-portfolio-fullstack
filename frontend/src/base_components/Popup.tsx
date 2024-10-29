@@ -5,6 +5,10 @@ interface PopupProps {
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
+  containerClassName?: string;
+  containerStyle?: React.CSSProperties | undefined;
+  className?: string;
+  style?: React.CSSProperties | undefined;
 }
 
 export const Popup: React.FC<PopupProps> = ({
@@ -12,17 +16,35 @@ export const Popup: React.FC<PopupProps> = ({
   onClose,
   children,
   title,
+  containerClassName,
+  containerStyle,
+  className,
+  style,
 }) => {
   if (!isOpen || children === null) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-primary bg-opacity-20 backdrop-blur">
-      <div className="relative w-fit bg-card p-4 text-cardText rounded-lg shadow-lg">
+    <div
+      className={
+        "fixed inset-0 z-50 flex items-center justify-center bg-primary bg-opacity-20 backdrop-blur " +
+        (containerClassName != undefined ? containerClassName : "")
+      }
+      style={containerStyle}
+    >
+      <div
+        className={
+          "relative w-fit min-w-300px bg-card p-4 text-cardText rounded-lg shadow-lg " +
+          (className != undefined ? className : "")
+        }
+        style={style}
+      >
         <div
           className="absolute z-20 top-4 right-2 svg-mask close-icon w-7 h-7 bg-cardText cursor-pointer hover:scale-125 transition-all"
           onClick={onClose}
         />
-        {title && <h3 className="text-center text-2xl font-title">{title}</h3>}
+        {title && (
+          <h3 className="text-center text-2xl font-title px-5">{title}</h3>
+        )}
         <div className="z-10">{children}</div>
       </div>
     </div>

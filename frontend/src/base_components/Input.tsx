@@ -17,7 +17,7 @@ interface InputProps {
   placeholder?: string;
   className?: string;
   style?: React.CSSProperties | undefined;
-  autocomplete? : string;
+  autocomplete?: string;
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -83,7 +83,7 @@ const Input: React.FC<InputProps> = ({
           "w-full px-3 py-2 bg-input text-inputText text-opacity-80 placeholder:text-inputText placeholder:text-opacity-30 border-primaryText border-opacity-20 border rounded focus:outline-none " +
           (readOnly
             ? "cursor-default "
-            : "cursor-text focus:border-blue-500 focus:border-2 ") +
+            : "cursor-text focus:border-blue-500 ") +
           (className != undefined ? className : "") +
           (type === "number"
             ? "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -97,7 +97,9 @@ const Input: React.FC<InputProps> = ({
           onClick={togglePasswordVisibility}
           className={
             "absolute svg-mask bg-gray-500 h-5 w-9 right-0 bottom-2 text-sm text-gray-600 cursor-pointer" +
-            (inputType === "password" ? " show-password-icon" : " hide-password-icon")
+            (inputType === "password"
+              ? " show-password-icon"
+              : " hide-password-icon")
           }
         ></label>
       )}

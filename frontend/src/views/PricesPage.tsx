@@ -17,7 +17,7 @@ interface ServiceItem {
 const PricesPage: React.FC = () => {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [popupOpened, setPopupOpened] = useState(true);
+  const [popupOpened, setPopupOpened] = useState(false);
   const [popupContent, setPopupContent] = useState<React.ReactNode>(null);
   const [carouselItems, setCarouselItems] = useState<JSX.Element[]>([]);
 
@@ -72,7 +72,13 @@ const PricesPage: React.FC = () => {
       {(!loading && <Wheel items={carouselItems} itemWidth={450} />) || (
         <LoadingWheel style={{ height: "calc(100vh - 124px)" }} />
       )}
-      <Popup isOpen={popupOpened} title="Contact us" onClose={onPopupClose}>
+      <Popup
+        isOpen={popupOpened}
+        title="Contact us"
+        onClose={onPopupClose}
+        containerClassName="mt-20"
+        className="-top-10"
+      >
         {popupContent}
       </Popup>
     </div>

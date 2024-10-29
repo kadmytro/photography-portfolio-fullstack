@@ -139,7 +139,7 @@ const PhotoUploadForm: React.FC = () => {
     <div className="relative">
       <form
         onSubmit={handleSubmit}
-        className="max-w-4xl mx-auto p-4 bg-card text-cardText rounded shadow relative"
+        className="max-w-4xl min-w-fit mx-auto p-4 bg-card text-cardText rounded shadow relative"
       >
         <div className="w-full h-full flex gap-4 items-center">
           <div className="flex-1 min-w-300px">

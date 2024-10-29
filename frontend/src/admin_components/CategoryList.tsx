@@ -5,7 +5,15 @@ import CategoryItem from "../types/CategoryItem";
 import CategoryListItem from "./CategoryListItem";
 import Button from "../base_components/Button";
 
-const ListComponent: React.FC = () => {
+interface CategoryListProps {
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
+}
+
+const CategoryList: React.FC<CategoryListProps> = ({
+  openPopupCallback,
+  closePopupCallback,
+}) => {
   const [items, setItems] = useState<CategoryItem[]>([]);
   const [editingCategoryId, setEditingCategoryId] = useState<number | null>(
     null
@@ -29,6 +37,32 @@ const ListComponent: React.FC = () => {
     fetchItems();
   }, []);
 
+  const getPopupContent = (
+    message: string,
+    onConfirmCallback: React.MouseEventHandler<HTMLButtonElement> | undefined,
+    onCancelCallback: React.MouseEventHandler<HTMLButtonElement> | undefined
+  ): React.ReactNode => {
+    return (
+      <div className="px-4 pb-12 pt-4 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+        <p className="max-w-md">{message}</p>
+        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+          <Button
+            buttonType="default"
+            text="Yes"
+            className="flex-1"
+            onClick={onConfirmCallback}
+          />
+          <Button
+            buttonType="danger"
+            text="No"
+            className="flex-1"
+            onClick={onCancelCallback}
+          />
+        </div>
+      </div>
+    );
+  };
+
   function updateCategory(category: CategoryItem): void {
     const isOld = items.some((s) => s.id === category.id);
     if (!isOld) {
@@ -47,13 +81,29 @@ const ListComponent: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
+    const deleteCat = async () => {
       try {
         await api.delete(`api/categories/${id}`);
         setItems(items.filter((item) => item.id !== id));
       } catch (error) {
         console.error("Failed to delete category:", error);
+      } finally {
+        if (closePopupCallback) {
+          closePopupCallback();
+        }
       }
+    };
+
+    const popupContent = getPopupContent(
+      `Are you sure you want to delete the category "${
+        items.find((i) => i.id === id)?.name ?? ""
+      }"?`,
+      deleteCat,
+      closePopupCallback
+    );
+
+    if (openPopupCallback) {
+      openPopupCallback(popupContent, "Please confirm the action");
     }
   };
 
@@ -123,4 +173,4 @@ const ListComponent: React.FC = () => {
   );
 };
 
-export default ListComponent;
+export default CategoryList;

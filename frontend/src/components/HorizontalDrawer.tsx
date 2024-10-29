@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface Item {
   id: number;
@@ -62,7 +62,10 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
 
   return (
     <div className="flex w-full overflow-x-clip contentHeight">
-      <div className="relative min-w-300px max-w-400px bg-primary text-headerText p-4">
+      <div
+        className="relative bg-primary text-headerText p-4 min-w-300px"
+        style={{ width: "300px" }}
+      >
         <div className="sticky top-24 w-full">
           {groups.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-4">
@@ -90,9 +93,10 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
       </div>
       <div
         className={
-          "flex-1 flex flex-col border-l border-primaryText border-opacity-30 " +
+          "flex flex-col border-l border-primaryText border-opacity-30 min-w-400px " +
           (selectedItem?.stickyTitle ? " pt-8" : "")
         }
+        style={{ width: `calc(100% - 300px)` }}
       >
         <div
           className={
