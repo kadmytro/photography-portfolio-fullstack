@@ -19,6 +19,7 @@ const PricesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [popupOpened, setPopupOpened] = useState(false);
   const [popupContent, setPopupContent] = useState<React.ReactNode>(null);
+  const [popupTitle, setPopupTitle] = useState("");
   const [carouselItems, setCarouselItems] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
@@ -44,13 +45,15 @@ const PricesPage: React.FC = () => {
         image={getImageUrl(item.id)}
         description={item.description}
         price={item.price}
-        openPopupCallback={(form) => {
-          setPopupContent(form);
+        openPopupCallback={(content, title) => {
+          setPopupContent(content);
+          setPopupTitle(title ?? "");
           setPopupOpened(true);
         }}
         closePopupCallback={() => {
           setPopupOpened(false);
           setPopupContent(null);
+          setPopupTitle("");
         }}
       />
     ));
@@ -74,7 +77,7 @@ const PricesPage: React.FC = () => {
       )}
       <Popup
         isOpen={popupOpened}
-        title="Contact us"
+        title={popupTitle}
         onClose={onPopupClose}
         containerClassName="mt-20"
         className="-top-10"

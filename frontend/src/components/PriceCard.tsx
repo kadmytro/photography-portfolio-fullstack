@@ -7,7 +7,7 @@ interface PriceCardProps {
   image: string;
   description: string;
   price: string;
-  openPopupCallback?: (form: React.ReactNode) => void;
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
   closePopupCallback?: () => void;
 }
 
@@ -46,7 +46,10 @@ const PriceCard: React.FC<PriceCardProps> = ({
               <ContactUsForm
                 onFormSubmitted={closePopupCallback}
                 defaultSubject={title}
-              ></ContactUsForm>
+                openPopupCallback={openPopupCallback}
+                closePopupCallback={closePopupCallback}
+              ></ContactUsForm>,
+              "Contact us"
             )
           }
         />

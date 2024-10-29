@@ -6,7 +6,15 @@ import LoadingWheel from "../components/LoadingWheel";
 import Input from "../base_components/Input";
 import Button from "../base_components/Button";
 
-const LinksForm: React.FC = () => {
+interface LinksFormProps {
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
+}
+
+const LinksForm: React.FC<LinksFormProps> = ({
+  openPopupCallback,
+  closePopupCallback,
+}) => {
   const [links, setLinks] = useState<Links>({});
   const [changedLinks, setChangedLinks] = useState<Links>({});
   const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +37,32 @@ const LinksForm: React.FC = () => {
 
     fetchLinks();
   }, []);
+
+  const getPopupContent = (
+    message: string,
+    icon: string,
+    iconColor: string
+  ): React.ReactNode => {
+    return (
+      <div className="px-4 pb-4 pt-12 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+        <div
+          className={
+            "svg-mask h-20 w-20 bg-opacity-70 mx-auto absolute top-3 left-1/2 -translate-x-1/2 " +
+            ` ${icon}-icon bg-${iconColor}-500`
+          }
+        ></div>
+        <p className="max-w-md">{message}</p>
+        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+          <Button
+            buttonType="default"
+            text="Ok"
+            className="w-1/2 left-1/2 -translate-x-/2"
+            onClick={closePopupCallback}
+          />
+        </div>
+      </div>
+    );
+  };
 
   const handleChange = (field: keyof Links, value: string) => {
     setChangedLinks((prevChangedLinks) => ({
@@ -60,7 +94,12 @@ const LinksForm: React.FC = () => {
       setLinks(changedLinks);
     } catch (error) {
       console.error("Failed to update links:", error);
-      alert("Failed to update links");
+      if (openPopupCallback) {
+        openPopupCallback(
+          getPopupContent("Failed to update links!", "error", "red"),
+          "Something went wrong"
+        );
+      }
     } finally {
       setIsEditing(false);
       setSaving(false);

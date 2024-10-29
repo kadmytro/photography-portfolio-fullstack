@@ -9,14 +9,18 @@ import LoadingWheel from "./LoadingWheel";
 interface ContactUsFormProps {
   onFormSubmitted?: () => void;
   defaultSubject?: string;
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
 }
 
 const ContactUsForm: React.FC<ContactUsFormProps> = ({
   onFormSubmitted,
   defaultSubject,
+  openPopupCallback,
+  closePopupCallback,
 }) => {
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [contactRequest, setContactRequest] = useState<ContactRequest>({
     subject: defaultSubject,
   });
@@ -30,6 +34,23 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({
     }
   };
 
+  const getPopupContent = (message: string): React.ReactNode => {
+    return (
+      <div className="px-4 pb-4 pt-12 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+        <div className="svg-mask success-icon h-20 w-20 bg-green-500 bg-opacity-70 mx-auto absolute top-3 left-1/2 -translate-x-1/2"></div>
+        <p className="max-w-md">{message}</p>
+        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+          <Button
+            buttonType="default"
+            text="Ok"
+            className="w-1/2 left-1/2 -translate-x-/2"
+            onClick={closePopupCallback}
+          />
+        </div>
+      </div>
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -40,15 +61,17 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({
     try {
       await api.post("/api/contactUs/send", contactRequest);
       setContactRequest({});
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      alert("Failed to update settings");
-    } finally {
-      setSaving(false);
       if (onFormSubmitted) {
         onFormSubmitted();
       }
-      alert("Message sent!");
+      if (openPopupCallback) {
+        openPopupCallback(getPopupContent("Message sent!"), "Success!");
+      }
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      setError("Failed to send the message");
+    } finally {
+      setSaving(false);
     }
   };
 

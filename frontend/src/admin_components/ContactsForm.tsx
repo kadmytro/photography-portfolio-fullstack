@@ -6,7 +6,15 @@ import LoadingWheel from "../components/LoadingWheel";
 import Input from "../base_components/Input";
 import Button from "../base_components/Button";
 
-const ContactsForm: React.FC = () => {
+interface ContactsFormProps {
+  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
+  closePopupCallback?: () => void;
+}
+
+const ContactsForm: React.FC<ContactsFormProps> = ({
+  openPopupCallback,
+  closePopupCallback,
+}) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [changedContacts, setChangedContacts] = useState<Contact[]>([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +37,32 @@ const ContactsForm: React.FC = () => {
 
     fetchContacts();
   }, []);
+
+  const getPopupContent = (
+    message: string,
+    icon: string,
+    iconColor: string
+  ): React.ReactNode => {
+    return (
+      <div className="px-4 pb-4 pt-12 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+        <div
+          className={
+            "svg-mask h-20 w-20 bg-opacity-70 mx-auto absolute top-3 left-1/2 -translate-x-1/2 " +
+            ` ${icon}-icon bg-${iconColor}-500`
+          }
+        ></div>
+        <p className="max-w-md">{message}</p>
+        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+          <Button
+            buttonType="default"
+            text="Ok"
+            className="w-1/2 left-1/2 -translate-x-/2"
+            onClick={closePopupCallback}
+          />
+        </div>
+      </div>
+    );
+  };
 
   const handleChange = (index: number, field: string, value: string) => {
     const updatedContacts = contacts.map((contact, i) =>
@@ -63,7 +97,12 @@ const ContactsForm: React.FC = () => {
       setContacts(changedContacts);
     } catch (error) {
       console.error("Failed to update contacts:", error);
-      alert("Failed to update contacts");
+      if (openPopupCallback) {
+        openPopupCallback(
+          getPopupContent("Failed to update contacts!", "error", "red"),
+          "Something went wrong"
+        );
+      }
     } finally {
       setIsEditing(false);
       setSaving(false);

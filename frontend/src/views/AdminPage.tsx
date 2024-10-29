@@ -131,32 +131,82 @@ function AdminPage() {
           id: 31,
           title: "Regular Messages",
           stickyTitle: true,
-          content: <Messages messagesType="regular" />,
+          content: (
+            <Messages
+              messagesType="regular"
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
         },
         {
           id: 32,
           title: "Archived Messages",
           stickyTitle: true,
-          content: <Messages messagesType="archived" />,
+          content: (
+            <Messages
+              messagesType="archived"
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
         },
         {
           id: 33,
           title: "Trash",
           stickyTitle: true,
-          content: <Messages messagesType="deleted" />,
+          content: (
+            <Messages
+              messagesType="deleted"
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
         },
       ],
     },
     {
       title: "Website Management",
       items: [
-        { id: 41, title: "Contacts", content: <ContactsForm /> },
-        { id: 42, title: "Links", content: <LinksForm /> },
-        { id: 43, title: "AboutMe", content: <AboutMeForm /> },
+        {
+          id: 41,
+          title: "Contacts",
+          content: (
+            <ContactsForm
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
+        },
+        {
+          id: 42,
+          title: "Links",
+          content: (
+            <LinksForm
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
+        },
+        {
+          id: 43,
+          title: "AboutMe",
+          content: (
+            <AboutMeForm
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
+        },
         {
           id: 44,
           title: "Settings",
-          content: <SettingsForm />,
+          content: (
+            <SettingsForm
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
         },
         {
           id: 45,
