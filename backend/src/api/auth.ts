@@ -12,7 +12,7 @@ import { FlatCache } from "flat-cache";
 const router = Router();
 
 const transporter = nodemailer.createTransport({
-  service: "Gmail", // Or any other email service
+  service: "Gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,

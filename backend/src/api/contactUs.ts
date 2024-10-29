@@ -2,8 +2,18 @@ import { Router } from "express";
 import { AppDataSource } from "../data-source";
 import { ContactRequest } from "../entity/ContactRequest";
 import { checkAuth } from "./authMiddleware";
+import nodemailer from "nodemailer";
 
 const router = Router();
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
 router.post("/send", async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
@@ -17,6 +27,20 @@ router.post("/send", async (req, res) => {
     const contactRequestsRepo = AppDataSource.getRepository(ContactRequest);
     await contactRequestsRepo.save(contactRequest);
 
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.CONTACT_US_EMAIL,
+      subject: `Message from ${name}`,
+      html: `
+        <p>You received a new message</p>
+        <p>From: ${name} &lt;${email}&gt;</p>
+        <p>Subject: ${subject}</p>
+        <p>Message: ${message}</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "Password reset email sent" });
     res.status(201).json();
   } catch (error) {
     res.status(500).json({ error: "Failed to send the form" });
