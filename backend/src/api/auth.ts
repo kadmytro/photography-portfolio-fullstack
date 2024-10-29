@@ -123,14 +123,7 @@ router.post("/forgot-password", async (req, res) => {
     return res.status(404).json({ error: "User not found" });
   }
 
-  // Generate a unique token using crypto
   const resetToken = crypto.randomBytes(32).toString("hex");
-
-  // cache.setKey(
-  //   `resetToken:${resetToken}`,
-  //   user.id,
-  //   Date.now() + 15 * 60 * 1000
-  // );
 
   cache.setKey(`resetToken:${resetToken}`, {
     userId: user.id,
@@ -170,9 +163,6 @@ router.post("/reset-password", async (req, res) => {
   }
 
   try {
-    // Fetch the userId associated with the token from Redis
-    // const userId = await client.get(`resetToken:${token}`);
-
     const cached = cache.getKey(`resetToken:${token}`) as CacheData | undefined;
 
     if (!cached) {
