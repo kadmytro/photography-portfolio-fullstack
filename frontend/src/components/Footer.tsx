@@ -18,11 +18,12 @@ function Footer() {
         setLinks(response.data);
       } catch (error) {
         console.error("Failed to fetch the links:", error);
+        setLinks({});
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchLinks();
   }, []);
 
@@ -42,7 +43,7 @@ function Footer() {
   
   useEffect(() => {
     onResize();
-  });
+  }, []);
 
   useEffect(() => {
     window.addEventListener("resize", onResize);

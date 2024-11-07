@@ -17,6 +17,7 @@ function Contacts() {
         setContacts(response.data);
       } catch (error) {
         console.error("Failed to fetch contacts:", error);
+        setContacts([]);
       } finally {
         setLoading(false);
       }
@@ -79,37 +80,38 @@ function Contacts() {
             screenType === "mobile" ? "w-fit" : " flex w-4/5 justify-between"
           }`}
         >
-          {contacts.map((contact) =>
-            screenType === "mobile" ? (
-              <div
-                key={contact.type}
-                onClick={() => handleClick(contact.type, contact.value)}
-                className="flex gap-4 w-fit  my-4"
-              >
+          {Array.isArray(contacts) &&
+            contacts.map((contact) =>
+              screenType === "mobile" ? (
                 <div
-                  className={`svg-mask ${
-                    contact.type + "-icon"
-                  } h-10 w-10 bg-contain bg-no-repeat bg-primaryText bg-opacity-80`}
-                />
-                <div>{contact.displayValue}</div>
-              </div>
-            ) : (
-              <div
-                key={contact.type}
-                className="h-60 w-60 cursor-pointer content-center"
-                onClick={() => handleClick(contact.type, contact.value)}
-              >
-                <div
-                  className={`svg-mask ${
-                    contact.type + "-icon"
-                  } h-24 w-24 mx-auto bg-contain bg-no-repeat bg-primaryText bg-opacity-80 hover:bg-opacity-100`}
-                ></div>
-                <div className="text-center w-full py-4 text-lg">
-                  {contact.displayValue}
+                  key={contact.type}
+                  onClick={() => handleClick(contact.type, contact.value)}
+                  className="flex gap-4 w-fit  my-4"
+                >
+                  <div
+                    className={`svg-mask ${
+                      contact.type + "-icon"
+                    } h-10 w-10 bg-contain bg-no-repeat bg-primaryText bg-opacity-80`}
+                  />
+                  <div>{contact.displayValue}</div>
                 </div>
-              </div>
-            )
-          )}
+              ) : (
+                <div
+                  key={contact.type}
+                  className="h-60 w-60 cursor-pointer content-center"
+                  onClick={() => handleClick(contact.type, contact.value)}
+                >
+                  <div
+                    className={`svg-mask ${
+                      contact.type + "-icon"
+                    } h-24 w-24 mx-auto bg-contain bg-no-repeat bg-primaryText bg-opacity-80 hover:bg-opacity-100`}
+                  ></div>
+                  <div className="text-center w-full py-4 text-lg">
+                    {contact.displayValue}
+                  </div>
+                </div>
+              )
+            )}
         </div>
       )}
       {loading && <LoadingWheel />}

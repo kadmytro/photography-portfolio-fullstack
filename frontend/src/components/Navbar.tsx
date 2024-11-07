@@ -32,7 +32,7 @@ export function Navbar({
   const topNavHeight: number = 80;
   const [topNavOpacity, setTopNavOpacity] = useState(0);
   const [displayBannerImage, setDisplayBannerImage] = useState(true);
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuth() || { user: null, logout: null };
   const containerRef = useRef<HTMLInputElement>(null);
   const [screenType, setScreenType] = useState<ScreenType>("wide");
   const [menuOpen, setMenuOpen] = useState(true);
@@ -111,9 +111,11 @@ export function Navbar({
   };
 
   const handleLogout = async () => {
-    await logout();
-    if (location.pathname == "/admin") {
-      navigate("/home");
+    if (logout) {
+      await logout();
+      if (location.pathname === "/admin") {
+        navigate("/home");
+      }
     }
   };
 

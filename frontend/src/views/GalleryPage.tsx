@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Gallery } from "../components/Gallery";
 import { Tab, TabView } from "../components/TabView";
 import {
-  getPhotoByCategoryId,
+  getPhotosByCategoryId,
   getPhotoCategoriesToDisplay,
   getPhotoUrl,
 } from "../services/galleryApi";
@@ -19,9 +19,12 @@ function GalleryPage() {
     const fetchData = async () => {
       try {
         const categories = await getPhotoCategoriesToDisplay();
+
+        if (!categories || !Array.isArray(categories)) return;
+
         const newTabs = await Promise.all(
           categories.map(async (category: any) => {
-            const photos = (await getPhotoByCategoryId(category.id)) ?? [];
+            const photos = (await getPhotosByCategoryId(category.id)) ?? [];
             const items = photos.map((photo: any) => ({
               image: getPhotoUrl(photo.id),
               description: photo.caption,

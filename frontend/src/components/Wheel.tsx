@@ -206,7 +206,7 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
             containerWidth <= initialItemWidth + 56 ? " mx-7" : " mx-14"
           }`}
         >
-          {items.map((item, index) => (
+          {Array.isArray(items) && items.map((item, index) => (
             <animated.div
               key={index}
               ref={(el) => (itemsRef.current[index] = el)}
@@ -224,7 +224,7 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
       </div>
 
       <div className="flex space-x-2 my-5">
-        {items.map((_, index) => (
+        {Array.isArray(items) && items.map((_, index) => (
           <button
             key={index}
             className={classNames(

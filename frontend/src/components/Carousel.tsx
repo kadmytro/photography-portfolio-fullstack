@@ -100,7 +100,7 @@ const Carousel: React.FC<CarouselProps> = ({
         onTouchEnd={handleDragEnd}
         ref={containerRef}
       >
-        {items.map((item, index) => (
+        {Array.isArray(items) && items.map((item, index) => (
           <div
             key={index}
             className={`mx-4 cursor-pointer transition-transform duration-300 ease-in-out ${
@@ -123,7 +123,7 @@ const Carousel: React.FC<CarouselProps> = ({
         </button>
       </div>
       <div className="absolute bottom-4 flex justify-center w-full">
-        {items.map((_, index) => (
+        {Array.isArray(items) && items.map((_, index) => (
           <div
             key={index}
             className={`h-2 w-2 mx-1 rounded-full cursor-pointer ${

@@ -3,7 +3,7 @@ import axios from "axios";
 // Set the base URL for the API
 const API_URL = process.env.REACT_APP_BACKEND_APP_API_URL;
 const api = axios.create({
-  baseURL: `${API_URL}/api`, // Adjust this URL based on your backend's address
+  baseURL: `${API_URL}/api`,
 });
 
 // Function to get all photos
@@ -13,7 +13,7 @@ export const getPhotos = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching photos", error);
-    throw error;
+    return [];
   }
 };
 
@@ -24,7 +24,7 @@ export const getRecentPhotos = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching recent photos", error);
-    throw error;
+    return [];
   }
 };
 
@@ -34,7 +34,7 @@ export const getPhotoUrl = (id: number) => {
 };
 
 // Function to get photos by category ID
-export const getPhotoByCategoryId = async (categoryId: number) => {
+export const getPhotosByCategoryId = async (categoryId: number) => {
   try {
     const response = await api.get(`/photos/byCategory/${categoryId}`);
     return response.data;
@@ -43,7 +43,7 @@ export const getPhotoByCategoryId = async (categoryId: number) => {
       `Error fetching recent photos with the categoryId: ${categoryId}`,
       error
     );
-    throw error;
+    return [];
   }
 };
 
@@ -53,7 +53,7 @@ export const getPhotoCategoriesToDisplay = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching photo categories", error);
-    throw error;
+    return [];
   }
 };
 
@@ -75,6 +75,6 @@ export const getPhotosByDate = async (date: string) => {
     return response.data;
   } catch (error) {
     console.error(`Error fetching photos for date ${date}`, error);
-    throw error;
+    return [];
   }
 };

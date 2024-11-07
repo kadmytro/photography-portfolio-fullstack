@@ -13,7 +13,7 @@ interface GalleryProps {
 }
 
 export const Gallery = ({
-  items,
+  items = [],
   initialWidth,
   admin = false,
   refreshData,

@@ -83,7 +83,7 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
           </div>
         )}
         <div className="flex py-2 mt-1 w-fit px-1 narrow:px-4 gap-1 backdrop-blur-sm place-content-center bg-primary bg-opacity-30 hover:bg-opacity-80 rounded-xl hover:duration-700">
-          {tabs.map((tab, index) => (
+          {Array.isArray(tabs) && tabs.map((tab, index) => (
             <button
               key={index}
               className={`px-2 narrow:px-8 py-2 text-center text-lg cursor-pointer transition-colors rounded-full font-semibold narrow:min-w-150px w-fit ${
@@ -99,7 +99,7 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
         </div>
       </div>
       <div className={"tabContent" + (title ? " py-4 " : "")}>
-        {tabs[activeTab].content}
+        {tabs[activeTab]?.content}
       </div>
     </div>
   );

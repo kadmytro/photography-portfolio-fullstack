@@ -9,7 +9,9 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (!error.response || [500, 503].includes(error.response.status)) {
+      console.error("Server is down or unavailable", error);
+    } else if (error.response && error.response.status === 401) {
       localStorage.removeItem("authToken");
 
       if (window.location.pathname === "/admin") {

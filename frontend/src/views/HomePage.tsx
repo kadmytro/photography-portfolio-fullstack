@@ -16,6 +16,9 @@ function HomePage() {
     const fetchData = async () => {
       try {
         const photos = await getRecentPhotos();
+
+        if (!photos || !Array.isArray(photos)) return;
+
         const items = photos.map((photo: any) => ({
           image: getPhotoUrl(photo.id),
           description: photo.caption,

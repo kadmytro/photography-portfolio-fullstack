@@ -67,7 +67,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
         style={{ width: "300px" }}
       >
         <div className="sticky top-24 w-full">
-          {groups.map((group, groupIndex) => (
+          {Array.isArray(groups) && groups.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-4">
               <h2 className="text-xl font-semibold mb-2 border-b py-2  border-primaryText border-opacity-20 font-title">
                 {group.title}
