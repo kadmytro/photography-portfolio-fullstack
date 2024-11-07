@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../entity/User";
 import { AppDataSource } from "../data-source";
-import config from "../config";
 import { checkAuth, getUserId } from "./authMiddleware";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
@@ -27,18 +26,18 @@ interface CacheData {
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-
+  const jwtSecret = process.env.JWT_SECRET;
   const user = await AppDataSource.getRepository(User).findOne({
     where: { username },
   });
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
+  if (!user || !jwtSecret || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
 
   const token = jwt.sign(
     { id: user.id, username: user.username, role: user.role },
-    config.jwtSecret,
+    jwtSecret,
     {
       expiresIn: "1h",
     }
@@ -91,13 +90,14 @@ router.post("/change-password", checkAuth, async (req, res) => {
 
 router.get("/verify-token", async (req, res) => {
   const token = req.cookies.token;
+  const jwtSecret = process.env.JWT_SECRET;
 
-  if (!token) {
+  if (!token || !jwtSecret) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret);
+    const decoded = jwt.verify(token, jwtSecret);
     return res.json({ user: decoded });
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });

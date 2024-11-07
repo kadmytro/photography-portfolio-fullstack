@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import config from "../config";
 
 interface AuthRequest extends Request {
   user?: any;
@@ -12,13 +11,14 @@ export const verifyToken = (
   next: NextFunction
 ) => {
   const token = req.cookies.token;
+  const jwtSecret = process.env.JWT_SECRET;
 
-  if (!token) {
+  if (!token || !jwtSecret) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret);
+    const decoded = jwt.verify(token, jwtSecret);
     req.user = decoded;
     next();
   } catch (error) {
@@ -44,12 +44,13 @@ export const checkAuth = (
   next: NextFunction
 ) => {
   const token = req.cookies.token;
+  const jwtSecret = process.env.JWT_SECRET;
 
-  if (!token) {
+  if (!token || !jwtSecret) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   try {
-    const decoded = jwt.verify(token, config.jwtSecret);
+    const decoded = jwt.verify(token, jwtSecret);
     req.user = decoded;
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -64,12 +65,13 @@ export const checkAuth = (
 
 export const getUserId = (req: AuthRequest) => {
   const token = req.cookies.token;
+  const jwtSecret = process.env.JWT_SECRET;
 
-  if (!token) {
+  if (!token || !jwtSecret) {
     return null;
   }
   try {
-    const decoded = jwt.verify(token, config.jwtSecret);
+    const decoded = jwt.verify(token, jwtSecret);
     req.user = decoded;
   } catch (error) {
     return null;
