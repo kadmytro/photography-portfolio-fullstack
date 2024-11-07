@@ -13,7 +13,7 @@ import cron from "node-cron";
 import { cleanUpOldMessages } from "./tasks/cleanUpOldMessages";
 
 const app = express();
-const port = process.env.BACKEND_PORT;
+const port = process.env.BACKEND_PORT || 4000;
 
 app.use(
   cors({

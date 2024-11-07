@@ -69,8 +69,8 @@ export function Navbar({
     };
   }, []);
 
-  useEffect(() => {
-    let displayBanner = !(
+  const mustHaveBanner = () => {
+    let mustHaveBanner = !(
       location.pathname == "/gallery" ||
       location.pathname == "/login" ||
       location.pathname == "/forgot-password" ||
@@ -78,7 +78,12 @@ export function Navbar({
       location.pathname == "/prices" ||
       location.pathname.includes("/admin")
     );
-    setDisplayBannerImage(displayBanner);
+
+    return mustHaveBanner;
+  };
+
+  useEffect(() => {
+    setDisplayBannerImage(mustHaveBanner());
     window.scrollTo({
       top: 0,
     });
@@ -126,7 +131,7 @@ export function Navbar({
 
     if (containerWidth > 1000) {
       newScreenType = "wide";
-      hasBanner = true;
+      hasBanner = mustHaveBanner();
     } else if (containerWidth > 450) {
       newScreenType = "narrow";
       hasBanner = false;
