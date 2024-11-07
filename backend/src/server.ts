@@ -10,15 +10,14 @@ import contactUsRouter from "./api/contactUs";
 import { AppDataSource } from "./data-source";
 import cookieParser from "cookie-parser";
 import cron from "node-cron";
-import path from "path";
 import { cleanUpOldMessages } from "./tasks/cleanUpOldMessages";
 
 const app = express();
-const port = 3001;
+const port = process.env.BACKEND_PORT;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_APP_API_URL,
     credentials: true,
   })
 );
@@ -36,7 +35,7 @@ AppDataSource.initialize()
     app.use("/api/contactUs", contactUsRouter);
 
     app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
+      console.log(`Server is running on port ${port}`);
     });
 
     cron.schedule("0 0 * * *", () => {
