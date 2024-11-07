@@ -67,7 +67,7 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
     <div ref={tabViewRef}>
       <div
         className={
-          "flex flex-col w-fit mx-auto text-primaryText sticky z-10" +
+          "flex flex-col w-fit max-w-full overflow-x-auto mx-auto text-primaryText sticky z-10" +
           (title
             ? isSticky
               ? " -top-0"
@@ -82,13 +82,13 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
             {title}
           </div>
         )}
-        <div className="flex py-2 mt-1 px-4 gap-1 backdrop-blur-sm place-content-center bg-primary bg-opacity-30 hover:bg-opacity-80 rounded-xl hover:duration-700">
+        <div className="flex py-2 mt-1 w-fit px-1 narrow:px-4 gap-1 backdrop-blur-sm place-content-center bg-primary bg-opacity-30 hover:bg-opacity-80 rounded-xl hover:duration-700">
           {tabs.map((tab, index) => (
             <button
               key={index}
-              className={`px-8 py-2  text-lg cursor-pointer transition-colors rounded-full font-semibold min-w-150px w-fit ${
+              className={`px-2 narrow:px-8 py-2 text-center text-lg cursor-pointer transition-colors rounded-full font-semibold narrow:min-w-150px w-fit ${
                 index === activeTab
-                  ? "bg-tabSelected bg-opacity-40 text-tabSelectedText"
+                  ? "bg-tabSelected bg-opacity-40 text-tabSelectedText min-w-150px"
                   : "bg-transparent text-tabRegularText text-opacity-70 hover:text-opacity-100  hover:bg-blue-500 hover:bg-opacity-20"
               }`}
               onClick={() => switchToTab(index)}

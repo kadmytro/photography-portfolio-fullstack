@@ -78,7 +78,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-xl mx-auto min-w-500px p-4 text-cardText relative"
+      className="w-full mx-auto p-4 text-cardText relative"
     >
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">

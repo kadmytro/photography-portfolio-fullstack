@@ -21,7 +21,7 @@ export const Gallery = ({
   closePopupCallback,
 }: GalleryProps) => {
   const [columns, setColumns] = useState<number>(3);
-  const [columnWidth, setColumnWidth] = useState<number>(300); // Initial column width
+  const [columnWidth, setColumnWidth] = useState<number>(300);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [isViewerOpen, setIsViewerOpen] = useState(false);
@@ -50,15 +50,11 @@ export const Gallery = ({
 
   const calculateColumnsAndWidth = () => {
     const containerWidth = containerRef.current?.clientWidth || initialWidth;
-    let numColumns = getNumberOfColumns(containerWidth);
+    let numColumns = Math.round(containerWidth / 500) || 1;
     let width = containerWidth / numColumns - getRemSize();
 
-    if (numColumns !== columns) {
-      setColumns(numColumns);
-    }
-    if (width !== columnWidth) {
-      setColumnWidth(width);
-    }
+    setColumns(numColumns);
+    setColumnWidth(width);
   };
 
   const distributeItems = () => {

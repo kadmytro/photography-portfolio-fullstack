@@ -1,5 +1,7 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import { PhotoCardProps } from "./PhotoCard";
+import { useSpring } from "react-spring";
+import { useDrag } from "@use-gesture/react";
 
 interface FullscreenImageViewerProps {
   items: PhotoCardProps[];
@@ -16,6 +18,40 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
     items.findIndex((p) => p.id === selectedItemId)
   );
   const [fade, setFade] = useState(false);
+  const prevIndex = (currentIndex - 1 + items.length) % items.length;
+  const nextIndex = (currentIndex + 1) % items.length;
+
+  const [{ x }, set] = useSpring(() => ({ x: 0 }));
+
+  const bind = useDrag(
+    ({ offset: [ox], velocity, direction: [dx], cancel }) => {
+      if (Math.abs(ox) > window.innerWidth / 2 || velocity[0] > 0.5) {
+        if (dx > 0) {
+          goToPrevious();
+        } else {
+          goToNext();
+        }
+        cancel();
+      } else {
+        set({ x: ox, immediate: true });
+      }
+    },
+    { axis: 'x' }
+  );
+
+  const goToPrevious = () => {
+    setCurrentIndex((currentIndex - 1 + items.length) % items.length);
+    set({ x: 0, immediate: false });
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((currentIndex + 1) % items.length);
+    set({ x: 0, immediate: false });
+  };
+
+  const currentPhoto = items[currentIndex];
+  const prevPhoto = items[prevIndex];
+  const nextPhoto = items[nextIndex];
 
   useEffect(() => {
     setCurrentIndex(items.findIndex((p) => p.id === selectedItemId));
@@ -83,12 +119,12 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
     <div className="fixed top-0 left-0 w-screen h-screen backdrop-blur-lg bg-primary bg-opacity-70 flex justify-center items-center z-50">
       <div className="relative flex items-center justify-center h-full w-full">
         <button
-          className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
+          className="w-5% h-80% absolute left-0 text-center align-middle bg-transparent border-none text-primaryText text-opacity-0 narrow:text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
           onClick={handlePrev}
         >
           ‹
         </button>
-        <div className="w-90% h-95% flex justify-center items-center my-0 mx-5">
+        <div className="w-full narrow:w-90% h-full flex justify-center align-middle items-center my-0 narrow:mx-5">
           <img
             src={items[currentIndex].image}
             alt={items[currentIndex].caption}
@@ -99,7 +135,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
           />
         </div>
         <button
-          className="w-5% h-80% text-center align-middle bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
+          className="w-5% h-80% absolute right-0 text-center align-middle bg-transparent border-none text-primaryText text-opacity-0 narrow:text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
           onClick={handleNext}
         >
           ›

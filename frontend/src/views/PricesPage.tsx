@@ -66,13 +66,13 @@ const PricesPage: React.FC = () => {
 
   return (
     <div
-      className=" max-w-full px-5 box-border py-8 w-full"
+      className=" max-w-full box-border py-8 w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
       <h1 className="text-3xl pb-6 text-primaryText font-bold text-center font-title">
         Our Prices
       </h1>
-      {(!loading && <Wheel items={carouselItems} itemWidth={450} />) || (
+      {(!loading && <Wheel items={carouselItems} initialItemWidth={450} />) || (
         <LoadingWheel style={{ height: "calc(100vh - 124px)" }} />
       )}
       <Popup
@@ -80,7 +80,7 @@ const PricesPage: React.FC = () => {
         title={popupTitle}
         onClose={onPopupClose}
         containerClassName="mt-20"
-        className="-top-10"
+        className="-top-10 mobile:w-full narrow:w-full narrow:max-w-500px"
       >
         {popupContent}
       </Popup>

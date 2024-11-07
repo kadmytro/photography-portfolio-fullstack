@@ -125,3 +125,7 @@
   -webkit-mask-image: url("../../src/images/icons/error.svg");
   mask-image: url("../../src/images/icons/error.svg");
 }
+.menu-icon {
+  -webkit-mask-image: url("../../src/images/icons/menu.svg");
+  mask-image: url("../../src/images/icons/menu.svg");
+}

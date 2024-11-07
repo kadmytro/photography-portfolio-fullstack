@@ -17,6 +17,11 @@ module.exports = {
     },
   ],
   theme: {
+    screens: {
+      mobile: "100px",
+      narrow: "450px",
+      wide: "1000px",
+    },
     extend: {
       dropShadow: {
         primary: "0 1px 1px rgba(var(--color-primary), 0.25)",
