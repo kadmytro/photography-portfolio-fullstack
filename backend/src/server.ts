@@ -25,6 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 AppDataSource.initialize()
+  .then(ds => ds.runMigrations())
   .then(() => {
     app.use("/api/photos", photoRouter);
     app.use("/api/categories", categoryRouter);
