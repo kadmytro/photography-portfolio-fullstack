@@ -13,11 +13,11 @@ function Contacts() {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await api.get("/api/details/contacts/");
+        const response = await api.get("/api/settings/contacts/");
         setContacts(response.data);
       } catch (error) {
-        console.error("Failed to fetch contacts:", error);
         setContacts([]);
+        console.error("Failed to fetch contacts:", error);
       } finally {
         setLoading(false);
       }

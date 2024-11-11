@@ -76,6 +76,7 @@ export function Navbar({
       location.pathname == "/forgot-password" ||
       location.pathname.startsWith("/reset-password") ||
       location.pathname == "/prices" ||
+      location.pathname == "/terms" ||
       location.pathname.includes("/admin")
     );
 
@@ -183,7 +184,7 @@ export function Navbar({
         }`}
         style={{ minWidth: "325px" }}
       >
-        <div className="mobile:w-full narrow:container mx-auto relative flex justify-between items-center text-xl px-16">
+        <div className="w-full mx-auto relative flex justify-between items-center text-xl px-10 narrow:px-16 wide:px-32">
           {screenType === "wide" && (
             <ul className="flex space-x-10 w-1/3 items-center justify-start underline-offset-4">
               <li>

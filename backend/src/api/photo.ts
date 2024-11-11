@@ -3,10 +3,10 @@ import multer from "multer";
 import { AppDataSource } from "../data-source";
 import { Photo } from "../entity/Photo";
 import { checkAuth } from "./authMiddleware";
-import { readSettings } from "../helpers/settingsReader";
 import sharp from "sharp";
 import { PhotoCategory } from "../entity/PhotoCategory";
 import { In } from "typeorm";
+import { getSetting } from "../helpers/setttingsService";
 
 const router = Router();
 const storage = multer.memoryStorage(); // Store files in memory
@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/recent", async (req, res) => {
-  const settings = await readSettings();
+  const settings = await getSetting("gallerySettings");
   const homeMaxPhotos = settings?.homeMaxPhotos ?? 50;
 
   try {
@@ -72,7 +72,7 @@ router.get("/byCategories/:categoryIds", async (req, res) => {
 });
 
 router.get("/byCategory/:categoryId", async (req, res) => {
-  const settings = await readSettings();
+  const settings = await getSetting("gallerySettings");
   const galleryMaxPhotos = settings?.galleryMaxPhotos ?? 100;
 
   try {

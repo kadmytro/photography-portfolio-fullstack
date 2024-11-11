@@ -10,6 +10,7 @@ import AdminPage from "./views/AdminPage";
 import PrivateRoute from "./views/PrivateRoute";
 import { AuthProvider } from "./context/AuthContextType";
 import PricesPage from "./views/PricesPage";
+import TermsPage from "./views/TermsPage";
 
 const navbarProps: NavbarProps = {
   homeText: "Home",
@@ -38,6 +39,7 @@ function App() {
             />
             <Route path="reset-password/:resetToken" element={<LoginPage />} />
             <Route path="prices" element={<PricesPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </AuthProvider>

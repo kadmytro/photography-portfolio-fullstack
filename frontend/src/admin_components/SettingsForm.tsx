@@ -12,17 +12,19 @@ interface SettingsFormProps {
   closePopupCallback?: () => void;
 }
 
+const emptySettings: Settings = {
+  homeMaxPhotos: 0,
+  galleryMaxPhotos: 0,
+  gallerySelectedCategories: [],
+};
+
 const SettingsForm: React.FC<SettingsFormProps> = ({
   openPopupCallback,
   closePopupCallback,
 }) => {
-  const [settings, setSettings] = useState<Settings>({
-    homeMaxPhotos: 0,
-    galleryMaxPhotos: 0,
-    gallerySelectedCategories: [],
-  });
-
-  const [changedSettings, setChangedSettings] = useState<Settings>(settings);
+  const [settings, setSettings] = useState<Settings>(emptySettings);
+  const [changedSettings, setChangedSettings] =
+    useState<Settings>(emptySettings);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -58,10 +60,12 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await api.get("/api/details/settings");
+        const response = await api.get("/api/settings/gallerySettings");
         setSettings(response.data);
         setChangedSettings(response.data);
       } catch (error) {
+        setSettings(emptySettings);
+        setChangedSettings(emptySettings);
         console.error("Failed to fetch settings:", error);
       } finally {
         setLoading(false);
@@ -70,6 +74,10 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 
     fetchSettings();
   }, []);
+
+  useEffect(() => {
+    setError(null);
+  }, [isEditing]);
 
   const handleChange = (field: keyof Settings, value: string) => {
     const parsedValue =
@@ -81,6 +89,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
       ...prevSettings,
       [field]: parsedValue,
     }));
+
+    setError(null);
   };
 
   const handleMultiSelectChange = (categories: (number | string)[]) => {
@@ -108,17 +118,18 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 
     setSaving(true);
     if (
-      !settings.homeMaxPhotos ||
-      !settings.galleryMaxPhotos ||
-      !settings.gallerySelectedCategories?.length
+      !changedSettings.homeMaxPhotos ||
+      !changedSettings.galleryMaxPhotos ||
+      !changedSettings.gallerySelectedCategories?.length
     ) {
       setError("All fields must be filled out.");
+      setSaving(false);
       return;
     }
     setError(null);
 
     try {
-      await api.put("/api/admin/settings/put", changedSettings, {
+      await api.put("/api/admin/gallerySettings/put", changedSettings, {
         withCredentials: true,
       });
       setSettings(changedSettings);

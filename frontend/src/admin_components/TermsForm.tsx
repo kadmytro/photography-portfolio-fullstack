@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContextType";
 import api from "../services/api";
-import { AboutMe } from "../../../shared/types/AboutMe";
+import { Terms } from "../../../shared/types/Terms";
 import LoadingWheel from "../components/LoadingWheel";
 import Input from "../base_components/Input";
 import TextArea from "../base_components/TextArea";
 import Button from "../base_components/Button";
 
-interface AboutMeFormProps {
+interface TermsFormProps {
   openPopupCallback?: (content: React.ReactNode, title?: string) => void;
   closePopupCallback?: () => void;
 }
 
-const AboutMeForm: React.FC<AboutMeFormProps> = ({
+const TermsForm: React.FC<TermsFormProps> = ({
   openPopupCallback,
   closePopupCallback,
 }) => {
-  const [aboutMe, setAboutMe] = useState<AboutMe>({ title: "", text: "" });
-  const [changedAboutMe, setChangedAboutMe] = useState<AboutMe>({
+  const [terms, setTerms] = useState<Terms>({ title: "", text: "" });
+  const [changedTerms, setChangedTerms] = useState<Terms>({
     title: "",
     text: "",
   });
@@ -30,18 +30,18 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
   useEffect(() => {
     const fetchAboutMe = async () => {
       try {
-        const response = await api.get("/api/settings/aboutMe");
-        setAboutMe(response.data);
-        setChangedAboutMe(response.data);
+        const response = await api.get("/api/settings/terms");
+        setTerms(response.data);
+        setChangedTerms(response.data);
       } catch (error) {
         const defaultObj = {
-          title: "About me",
+          title: "Terms",
           text: "",
         };
-        setAboutMe(defaultObj);
-        setChangedAboutMe(defaultObj);
-        setError("No about me found in the database");
-        console.error("Failed to fetch aboutMe:", error);
+        setTerms(defaultObj);
+        setChangedTerms(defaultObj);
+        setError("No terms found in the database");
+        console.error("Failed to fetch terms:", error);
       } finally {
         setLoading(false);
       }
@@ -80,8 +80,8 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
     );
   };
 
-  const handleChange = (field: keyof AboutMe, value: string) => {
-    setChangedAboutMe((prevChangedAboutMe) => ({
+  const handleChange = (field: keyof Terms, value: string) => {
+    setChangedTerms((prevChangedAboutMe) => ({
       ...prevChangedAboutMe,
       [field]: value,
     }));
@@ -97,7 +97,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
   };
 
   const handleCancel = () => {
-    setChangedAboutMe(aboutMe);
+    setChangedTerms(terms);
     setIsEditing(false);
   };
 
@@ -106,16 +106,16 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
 
     setSaving(true);
     try {
-      await api.put("/api/admin/aboutMe/put", changedAboutMe, {
+      await api.put("/api/admin/terms/put", changedTerms, {
         withCredentials: true,
       });
-      setAboutMe(changedAboutMe);
+      setTerms(changedTerms);
     } catch (error) {
-      console.error("Failed to update about me:", error);
-      setError("Failed to update about me");
+      console.error("Failed to update terms:", error);
+      setError("Failed to update terms");
       if (openPopupCallback) {
         openPopupCallback(
-          getPopupContent("Failed to update about me!", "error", "red"),
+          getPopupContent("Failed to update terms!", "error", "red"),
           "Something went wrong"
         );
       }
@@ -132,7 +132,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-xl min-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
+      className="max-w-5xl min-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
     >
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
@@ -152,17 +152,17 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
       </div>
       <Input
         label="Block title"
-        placeholder="e.g.: About me"
-        value={changedAboutMe.title}
+        placeholder="e.g.: Terms"
+        value={changedTerms.title}
         readOnly={!isEditing}
-        onChange={(e) => handleChange("title" as keyof AboutMe, e.target.value)}
+        onChange={(e) => handleChange("title" as keyof Terms, e.target.value)}
       />
       <TextArea
-        label="About me text"
-        placeholder="e.g..: Hello, I'm @kadmytro, I'm a professional photographer..."
-        value={changedAboutMe.text}
+        label="Disclaimer text"
+        placeholder="e.g..: Some copyright and legal disclaimers..."
+        value={changedTerms.text}
         readOnly={!isEditing}
-        onChange={(e) => handleChange("text" as keyof AboutMe, e.target.value)}
+        onChange={(e) => handleChange("text" as keyof Terms, e.target.value)}
         className="min-h-200px"
       />
       {isEditing && (
@@ -180,4 +180,4 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
   );
 };
 
-export default AboutMeForm;
+export default TermsForm;

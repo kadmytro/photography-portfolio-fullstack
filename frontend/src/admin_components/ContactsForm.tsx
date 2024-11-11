@@ -11,24 +11,50 @@ interface ContactsFormProps {
   closePopupCallback?: () => void;
 }
 
+const emptyContacts: Contact[] = [
+  {
+    type: "phone",
+    label: "Phone",
+    value: "",
+    displayValue: "",
+  },
+  {
+    type: "location",
+    label: "Location",
+    value: "",
+    displayValue: "",
+  },
+  {
+    type: "email",
+    label: "Email",
+    value: "",
+    displayValue: "",
+  },
+];
+
 const ContactsForm: React.FC<ContactsFormProps> = ({
   openPopupCallback,
   closePopupCallback,
 }) => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [changedContacts, setChangedContacts] = useState<Contact[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>(emptyContacts);
+  const [changedContacts, setChangedContacts] =
+    useState<Contact[]>(emptyContacts);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await api.get("/api/details/contacts/");
+        const response = await api.get("/api/settings/contacts/");
         setContacts(response.data);
         setChangedContacts(response.data);
       } catch (error) {
+        setContacts(emptyContacts);
+        setChangedContacts(emptyContacts);
+        setError(`Failed to fetch contacts. ${error}`);
         console.error("Failed to fetch contacts:", error);
       } finally {
         setLoading(false);
@@ -37,6 +63,10 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
 
     fetchContacts();
   }, []);
+
+  useEffect(() => {
+    setError(null);
+  }, [isEditing]);
 
   const getPopupContent = (
     message: string,
@@ -84,6 +114,8 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
         { ...updatedContacts[index], [field]: value },
       ]);
     }
+
+    setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,6 +129,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
       setContacts(changedContacts);
     } catch (error) {
       console.error("Failed to update contacts:", error);
+      setError("Failed to update contacts");
       if (openPopupCallback) {
         openPopupCallback(
           getPopupContent("Failed to update contacts!", "error", "red"),
@@ -134,6 +167,12 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
       onSubmit={handleSubmit}
       className="p-6 bg-card text-cardText relative rounded shadow min-w-500px max-w-7xl mx-auto"
     >
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+          <strong className="font-bold">Error:</strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
       {saving && (
         <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
           <LoadingWheel />

@@ -6,6 +6,7 @@ import { PhotoCategory } from "./entity/PhotoCategory";
 import { User } from "./entity/User";
 import { Service } from "./entity/Service"
 import { ContactRequest } from "./entity/ContactRequest";
+import { Setting } from "./entity/Setting";
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   synchronize: false,
   logging: true,
-  entities: [Photo, PhotoCategory, User, Service, ContactRequest],
+  entities: [Photo, PhotoCategory, User, Service, ContactRequest, Setting],
   migrations: ["src/migration/**/*.ts"],
   subscribers: [],
 });

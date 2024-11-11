@@ -1,10 +1,10 @@
 import { Router } from "express";
-import fs, { link } from "fs";
+import fs from "fs";
 import path from "path";
 import { AppDataSource } from "../data-source";
 import { PhotoCategory } from "../entity/PhotoCategory";
 import { checkAuth } from "./authMiddleware";
-import { readSettings } from "../helpers/settingsReader";
+import { getSetting } from "../helpers/setttingsService";
 
 const router = Router();
 
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/categoriesToDisplay", async (req, res) => {
-  const settings = await readSettings();
+  const settings = await getSetting("gallerySettings");
   const gallerySelectedCategories = settings?.gallerySelectedCategories;
   try {
     let categories = await AppDataSource.getRepository(PhotoCategory).find({
@@ -104,11 +104,11 @@ router.delete("/:id", checkAuth, async (req, res) => {
       await categoryRepository.save(category);
     }
     const result = await categoryRepository.delete(categoryId);
-    const settings = await readSettings();
+    const settings = await getSetting("gallerySettings");
     const gallerySelectedCategories = settings?.gallerySelectedCategories;
     if (gallerySelectedCategories?.includes(categoryId) && settings) {
       const settingsFilePath = path.join(__dirname, "..", "config", "settings.json");
-      settings.gallerySelectedCategories = gallerySelectedCategories.filter((id) => id != categoryId);
+      settings.gallerySelectedCategories = gallerySelectedCategories.filter((id: number) => id != categoryId);
       
       fs.writeFile(
         settingsFilePath,

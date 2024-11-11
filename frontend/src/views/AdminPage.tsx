@@ -15,6 +15,7 @@ import TagBox from "../base_components/TagBox";
 import { Messages } from "../admin_components/Messages";
 import ChangePasswordForm from "../admin_components/ChangePasswordForm";
 import { Popup } from "../base_components/Popup";
+import TermsForm from "../admin_components/TermsForm";
 
 function AdminPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -210,6 +211,16 @@ function AdminPage() {
         },
         {
           id: 45,
+          title: "Terms",
+          content: (
+            <TermsForm
+              openPopupCallback={onPopupOpen}
+              closePopupCallback={onPopupClose}
+            />
+          ),
+        },
+        {
+          id: 46,
           title: "Account",
           content: (
             <ChangePasswordForm

@@ -10,9 +10,13 @@ function AboutMe() {
   useEffect(() => {
     const fetchAboutMe = async () => {
       try {
-        const response = await api.get("/api/details/aboutMe");
+        const response = await api.get("/api/settings/aboutMe");
         setAboutMe(response.data);
       } catch (error) {
+        setAboutMe({
+          title: "About me",
+          text: 'Here must be the "About me part". Something went wrong',
+        });
         console.error("Failed to fetch about me part:", error);
       } finally {
         setLoading(false);
@@ -22,7 +26,7 @@ function AboutMe() {
     fetchAboutMe();
   }, []);
   return (
-    <div className="aboutMeContainer h-96 bg-secondary text-secondaryText place-content-center">
+    <div className="aboutMeContainer min-h-300px py-24 bg-secondary text-secondaryText place-content-center">
       {loading && <LoadingWheel />}
       {!loading && (
         <h2 className="m-auto pb-4 text-4xl text-center font-title">

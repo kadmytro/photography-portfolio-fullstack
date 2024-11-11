@@ -11,24 +11,35 @@ interface LinksFormProps {
   closePopupCallback?: () => void;
 }
 
+const emptyLinks = {
+  telegramLink: "",
+  instagramLink: "",
+  linkedInLink: "",
+  youTubeLink: "",
+};
+
 const LinksForm: React.FC<LinksFormProps> = ({
   openPopupCallback,
   closePopupCallback,
 }) => {
-  const [links, setLinks] = useState<Links>({});
-  const [changedLinks, setChangedLinks] = useState<Links>({});
+  const [links, setLinks] = useState<Links>(emptyLinks);
+  const [changedLinks, setChangedLinks] = useState<Links>(emptyLinks);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const response = await api.get("/api/details/links");
+        const response = await api.get("/api/settings/links");
         setLinks(response.data);
         setChangedLinks(response.data);
       } catch (error) {
+        setLinks(emptyLinks);
+        setChangedLinks(emptyLinks);
+        setError(`Failed to fetch links. ${error}`);
         console.error("Failed to fetch links:", error);
       } finally {
         setLoading(false);
@@ -37,6 +48,10 @@ const LinksForm: React.FC<LinksFormProps> = ({
 
     fetchLinks();
   }, []);
+
+  useEffect(() => {
+    setError(null);
+  }, [isEditing]);
 
   const getPopupContent = (
     message: string,
@@ -69,6 +84,7 @@ const LinksForm: React.FC<LinksFormProps> = ({
       ...prevChangedLinks,
       [field]: value,
     }));
+    setError(null);
   };
 
   const handleEdit = () => {
@@ -100,6 +116,7 @@ const LinksForm: React.FC<LinksFormProps> = ({
           "Something went wrong"
         );
       }
+      setError("Failed to update contacts");
     } finally {
       setIsEditing(false);
       setSaving(false);
@@ -115,6 +132,12 @@ const LinksForm: React.FC<LinksFormProps> = ({
       onSubmit={handleSubmit}
       className="max-w-xl min-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
     >
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+          <strong className="font-bold">Error:</strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
       {saving && (
         <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
           <LoadingWheel />
