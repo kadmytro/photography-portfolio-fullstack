@@ -24,8 +24,6 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
   const [offsetX, setOffsetX] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const carouselRef = useRef<HTMLDivElement>(null);
-
   const onResize = () => {
     const width = window.innerWidth;
     let newScreenType: ScreenType;
@@ -52,12 +50,15 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
   }, []);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
     if (isTransitioning) return;
     setStartX(e.touches[0].clientX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    e.stopPropagation();
     setIsDragging(true);
+    document.body.style.overflow = "hidden";
     const deltaX = e.touches[0].clientX - startX;
     setOffsetX(deltaX);
   };
@@ -66,6 +67,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
     if (!isDragging) return;
     setIsTransitioning(true);
     setIsDragging(false);
+    document.body.style.overflow = "";
     const containerWidth = window.innerWidth;
     const relativeOffsetX = offsetX / containerWidth;
     const newOffset =
@@ -164,14 +166,13 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
   return (
     <div
       className="fixed top-0 left-0 w-screen h-screen backdrop-blur-lg bg-primary bg-opacity-70 flex justify-center items-center z-50"
-      ref={carouselRef}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <div className="relative flex items-center justify-center h-full w-full z-20">
         <button
-          className="w-1/3 wide:w-1/5 h-full z-20 absolute left-0 text-left pl-3 bg-transparent border-none text-primaryText text-opacity-0 
+          className="w-1/3 wide:w-1/5 h-full z-20 absolute left-0 text-left pl-3 bg-transparent bg-opacity-0 border-none text-primaryText text-opacity-0 
             narrow:text-opacity-60 narrow:hover:text-opacity-100 narrow:hover:text-5xl transition-all text-4xl cursor-pointer select-none"
           onClick={handlePrev}
         >
@@ -206,7 +207,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
           ))}
         </div>
         <button
-          className="w-1/3 wide:w-1/5 h-full z-20 absolute right-0 text-right pe-3 bg-transparent border-none text-primaryText text-opacity-0 
+          className="w-1/3 wide:w-1/5 h-full z-20 absolute right-0 text-right pe-3 bg-transparent bg-opacity-0 border-none text-primaryText text-opacity-0 
             narrow:text-opacity-60 narrow:hover:text-opacity-100 narrow:hover:text-5xl transition-all text-4xl cursor-pointer select-none"
           onClick={handleNext}
         >

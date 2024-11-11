@@ -29,14 +29,14 @@ export const Gallery = ({
   const [columnItems, setColumnItems] = useState<JSX.Element[][]>([]);
 
   const openViewer = (id: number) => {
+    document.body.style.overflow = "hidden";
     setselectedItemId(id);
     setIsViewerOpen(true);
-    document.body.style.overflow = "hidden";
   };
 
   const closeViewer = () => {
-    setIsViewerOpen(false);
     document.body.style.overflow = "";
+    setIsViewerOpen(false);
   };
 
   const getNumberOfColumns = (width: number): number => {

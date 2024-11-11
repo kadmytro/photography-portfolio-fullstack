@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useDrag } from "@use-gesture/react";
-import { animated } from "react-spring";
+import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 
 interface WheelProps {
@@ -8,15 +6,21 @@ interface WheelProps {
   initialItemWidth?: number;
 }
 
+type ScreenType = "wide" | "narrow" | "mobile";
+
 const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
-  const angleStep = 180 / (items.length - 1);
-  const [angle, setAngle] = useState(0);
-  const [velocity, setVelocity] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fade, setFade] = useState(false);
+  const [screenType, setScreenType] = useState<ScreenType>("wide");
+  const [isDragging, setIsDragging] = useState(false);
+  const [startTouch, setStartTouch] = useState<React.Touch | null>(null);
+  const [offsetX, setOffsetX] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(initialItemWidth);
   const [wheelHeight, setWheelHeight] = useState(0);
   const [itemWidth, setItemWidth] = useState<number>(initialItemWidth);
+  const [itemMargin, setItemMargin] = useState<number>(25);
 
-  const inertiaRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -36,209 +40,317 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
   };
 
   useEffect(() => {
-    updateContainerWidth();
-    window.addEventListener("resize", updateContainerWidth);
-
-    return () => {
-      window.removeEventListener("resize", updateContainerWidth);
-    };
-  }, [containerRef.current]);
-
-  useEffect(() => {
-    if (containerWidth <= initialItemWidth + 56) {
-      setItemWidth(containerWidth);
-    } else if (itemWidth !== initialItemWidth) {
+    const itemWithMargin = initialItemWidth + 2 * itemMargin;
+    if (containerWidth <= itemWithMargin) {
+      setItemWidth(Math.min(containerWidth, initialItemWidth));
+    } else {
       setItemWidth(initialItemWidth);
     }
   }, [containerWidth]);
 
   useEffect(() => {
-    updateContainerWidth();
     setTimeout(updateWheelHeight, 100);
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 7000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex]);
+
+  useEffect(() => {
+    updateContainerWidth();
+  }, [containerRef.current]);
 
   useEffect(() => {
     updateWheelHeight();
   }, [items, itemWidth]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      rotateWheel("right");
-    }, 7000);
+  const onResize = () => {
+    const width = window.innerWidth;
+    let newScreenType: ScreenType;
 
-    return () => clearInterval(interval);
-  }, [angle, angleStep]);
-
-  const bind = useDrag(
-    ({
-      movement: [x],
-      memo = angle,
-      velocity: [vx, _],
-      direction: [dx],
-      last,
-    }) => {
-      let newAngle = memo + x * -0.075; // Adjusted sensitivity
-      if (newAngle < 0) {
-        newAngle = 180 + newAngle;
-      } else if (newAngle > 180) {
-        newAngle = newAngle - 180;
-      }
-      setAngle(newAngle);
-      if (last) {
-        setVelocity(vx * dx);
-        inertiaRef.current = requestAnimationFrame(inertiaStep); // Start inertia
-      }
-      return memo;
-    },
-    { axis: "x" }
-  );
+    if (width > 1000) {
+      newScreenType = "wide";
+    } else if (width > 450) {
+      newScreenType = "narrow";
+    } else {
+      newScreenType = "mobile";
+    }
+    setScreenType(newScreenType);
+    updateContainerWidth();
+  };
 
   useEffect(() => {
+    onResize();
+  });
+
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
     return () => {
-      if (inertiaRef.current) {
-        cancelAnimationFrame(inertiaRef.current);
-      }
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
-  const inertiaStep = () => {
-    setAngle((prevAngle) => prevAngle + velocity);
-    setVelocity((prevVelocity) => prevVelocity * 0.96);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    if (isTransitioning) return;
+    setStartTouch(e.touches[0]);
+  };
 
-    if (Math.abs(velocity) > 0.1) {
-      inertiaRef.current = requestAnimationFrame(inertiaStep);
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!startTouch) return;
+
+    const touch = e.touches[0];
+
+    if (
+      !isDragging &&
+      Math.abs(touch.clientX - (startTouch?.clientX ?? 0)) <
+        Math.abs(touch.clientY - (startTouch?.clientY ?? 0))
+    ) {
+      setStartTouch(null);
+      return;
+    }
+
+    e.stopPropagation();
+    document.body.style.overflow = "hidden";
+    setIsDragging(true);
+    const itemFullWidth = itemWidth + 2 * itemMargin;
+    const deltaX = touch.clientX - startTouch.clientX;
+    if (Math.abs(deltaX) > itemFullWidth) {
+      const trueDelta = itemFullWidth * (deltaX / Math.abs(deltaX));
+      setOffsetX(trueDelta);
     } else {
-      const normalizedAngle = angle;
-      const closestAngle = Math.round(normalizedAngle / angleStep) * angleStep;
-      setAngle(closestAngle);
-      setVelocity(0);
+      setOffsetX(deltaX);
     }
   };
 
-  const calculateItemStyle = (index: number) => {
-    const displayNumber =
-      items.length > 4 && containerWidth > 4 * itemWidth ? 5 : 3;
-    let currentAngle = index * angleStep - angle;
+  const handleTouchEnd = () => {
+    document.body.style.overflow = "";
+    if (!isDragging && !fade) return;
+    setStartTouch(null);
+    setIsTransitioning(true);
+    setIsDragging(false);
+    const fullItemWidth = itemWidth + 2 * itemMargin;
+    const relativeOffsetX = offsetX / fullItemWidth;
+    const newOffset =
+      relativeOffsetX < -0.1
+        ? -fullItemWidth
+        : relativeOffsetX > 0.1
+        ? fullItemWidth
+        : 0;
+    setOffsetX(newOffset);
+    const newIndex =
+      relativeOffsetX < -0.1
+        ? (currentIndex + 1) % items.length
+        : relativeOffsetX > 0.1
+        ? (currentIndex - 1 + items.length) % items.length
+        : currentIndex;
+    setTimeout(() => {
+      setCurrentIndex(newIndex);
+      setFade(false);
+      setOffsetX(0);
+      setIsTransitioning(false);
+    }, 500);
+  };
 
-    if (Math.abs(currentAngle / angleStep) > displayNumber / 2) {
-      currentAngle =
-        currentAngle < 0
-          ? (items.length + index) * angleStep - angle
-          : (index - items.length) * angleStep - angle;
+  const getTranslateValue = () => {
+    const width = itemWidth + 2 * itemMargin;
+    const translatePercentage =
+      containerWidth / 2 + offsetX - (visibleItems.length * width) / 2;
+    return translatePercentage;
+  };
+
+  const getVisibleItems = () => {
+    const maxFullItems = containerWidth / itemWidth;
+    const totalItemsNumber = maxFullItems + (maxFullItems % 2 ? 2 : 1);
+    const result = [];
+
+    for (let i = Math.floor(totalItemsNumber / 2); i > 0; i--) {
+      const index = (currentIndex - i + items.length) % items.length;
+      result.push(items[index]);
     }
 
-    const radian = (currentAngle * Math.PI) / 180;
-    const currentPosition = Math.abs(currentAngle / angleStep);
+    result.push(items[currentIndex]);
 
-    const scale =
-      1 - 0.05 * (currentPosition + currentPosition * currentPosition);
-    const x = Math.sin(radian) * ((itemWidth * items.length) / 3);
-    const opacity = currentPosition >= displayNumber / 2 ? 0 : scale;
+    for (let i = 1; i <= Math.floor(totalItemsNumber / 2); i++) {
+      const index = (currentIndex + i) % items.length;
+      result.push(items[index]);
+    }
 
+    return result;
+  };
+
+  const visibleItems = getVisibleItems();
+
+  const handleNext = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.stopPropagation();
+    e?.currentTarget.blur();
+    setIsTransitioning(true);
+    setFade(true);
+    setOffsetX(-(itemWidth + 2 * itemMargin));
+    setTimeout(() => {
+      setCurrentIndex((currentIndex + 1) % items.length);
+      setFade(false);
+      setOffsetX(0);
+      setIsTransitioning(false);
+    }, 200);
+  };
+
+  const handlePrev = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.stopPropagation();
+    e?.currentTarget.blur();
+    setIsTransitioning(true);
+    setFade(true);
+    setOffsetX(itemWidth + 2 * itemMargin);
+    setTimeout(() => {
+      setCurrentIndex((currentIndex - 1 + items.length) % items.length);
+      setFade(false);
+      setOffsetX(0);
+      setIsTransitioning(false);
+    }, 200);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        handlePrev();
+      } else if (event.key === "ArrowRight") {
+        handleNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [currentIndex]);
+
+  const calculateItemStyle = (
+    index: number
+  ): React.CSSProperties | undefined => {
+    const centralItemIndex = Math.floor(visibleItems.length / 2);
+    const fullWidth = itemWidth + itemMargin * 2;
+    const currentCenterIndex = centralItemIndex - offsetX / fullWidth;
+    const angle = (90 / centralItemIndex) * (currentCenterIndex - index);
+    const radian = (angle * Math.PI) / 180;
+    const scale = Math.pow(
+      1 -
+        Math.abs(index - currentCenterIndex) *
+          (screenType === "mobile" ? 0.01 : 0.1),
+      2
+    );
+    const translate =
+      Math.abs(currentCenterIndex - index) * angle * Math.abs(Math.sin(radian));
+    const opacity =
+      Math.abs(currentCenterIndex - index) >= items.length / 2
+        ? 0
+        : 1 - Math.abs(currentCenterIndex - index) * 0.1;
     return {
-      transform: `translateX(${x}px) scale(${scale})`,
-      zIndex: Math.round(scale * 100),
-      opacity: opacity,
       width: `${itemWidth}px`,
-      transition: "all 0.3s ease",
+      marginInline: `${itemMargin}px`,
+      transform: `translateX(${translate}px) scale(${
+        1 - Math.abs(Math.sin(radian)) * 0.3
+      })`,
+      zIndex: `${Math.round(scale * 100) / 10}`,
+      opacity: opacity,
+      transition: `${isDragging || offsetX === 0 ? "none" : "transform 0.15s"}`,
     };
   };
 
-  const rotateWheel = (direction: "left" | "right") => {
-    const step = direction === "right" ? angleStep : -angleStep;
-    let newAngle = angle + step;
+  const calculateItemTranslate = (deltaIndex: number) => {
+    let absDelta = Math.abs(deltaIndex);
+    let totalTranslate = 0;
+    let prevDiff = 0;
 
-    if (newAngle < -0.5) {
-      newAngle = 180;
-    } else if (newAngle > 180.5) {
-      newAngle = 0;
+    for (let i = 0; absDelta > i; i++) {
+      const newDiff = prevDiff ? prevDiff * 2 : 50;
+      totalTranslate += absDelta - i > 1 ? newDiff : newDiff * absDelta - i;
+      prevDiff = newDiff;
     }
-    setAngle(newAngle);
+    return totalTranslate * (deltaIndex / absDelta);
   };
 
-  const rotateToIndex = (index: number) => {
-    const targetAngle = index * angleStep;
-    setAngle(targetAngle);
+  const gotoIndex = (index: number) => {
+    setCurrentIndex(index);
   };
 
   return (
-    <div className="relative w-full min-h-400px overflow-hidden flex flex-col items-center justify-center">
-      <div
-        className="relative w-full h-fit z-10 flex items-center justify-center"
-        style={{ height: `${wheelHeight}px` }}
-      >
+    <div
+      className="relative w-full min-h-400px overflow-hidden flex-col flex justify-center items-center z-10"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div className="relative flex items-center justify-center h-full w-full z-20">
+        {screenType !== "mobile" && (
+          <button
+            className="w-12 h-full z-20 absolute left-0 text-left pl-3 bg-transparent bg-opacity-0 border-none text-primaryText 
+              text-opacity-60 hover:text-opacity-100 hover:text-5xl duration-200 transition-all text-4xl cursor-pointer select-none"
+            onClick={handlePrev}
+          >
+            ‹
+          </button>
+        )}
         <div
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-50 w-10
-                    flex items-center justify-center
-                    hover:backdrop-blur-md hover:bg-primary hover:bg-opacity-10 transition-all duration-300 max-h-full"
-          style={{ height: `${wheelHeight}px` }}
-        >
-          <div className="w-full h-full hover:bg-gradient-to-r hover:from-primary hover:from-20% transition-all items-center duration-300">
-            <button
-              className="h-full w-full hover:scale-125 cursor-pointer duration-300 
-                        font-bold text-4xl text-primaryText text-center justify-center text-opacity-60 hover:text-opacity-100"
-              onClick={() => rotateWheel("left")}
-            >
-              ‹
-            </button>
-          </div>
-        </div>
-        <div
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-50 w-10
-                    flex items-center justify-center
-                    hover:backdrop-blur-md hover:bg-primary hover:bg-opacity-10 transition-all duration-300 max-h-full"
-          style={{ height: `${wheelHeight}px` }}
-        >
-          <div className="w-full h-full bg-primary bg-opacity-0 hover:bg-gradient-to-l hover:from-primary hover:from-20% transition-all items-center duration-300">
-            <button
-              className="h-full w-full hover:scale-125 cursor-pointer 
-                        font-bold text-4xl text-primaryText text-center justify-center text-opacity-60 hover:text-opacity-100 transition-all duration-300"
-              onClick={() => rotateWheel("right")}
-            >
-              ›
-            </button>
-          </div>
-        </div>
-        <div
-          {...bind()}
-          ref={containerRef}
-          className={`relative flex items-center justify-center w-full z-10 h-600px cursor-grab active:cursor-grabbing ${
-            containerWidth <= initialItemWidth + 56 ? " mx-7" : " mx-14"
+          className={`flex w-full h-full items-center ${
+            (offsetX !== 0 && !isDragging) || fade
+              ? " transition-transform ease-in-out"
+              : ""
           }`}
+          ref={containerRef}
+          style={{
+            transform: `translateX(${getTranslateValue()}px)`,
+          }}
         >
-          {Array.isArray(items) && items.map((item, index) => (
-            <animated.div
+          {visibleItems.map((item, index) => (
+            <div
               key={index}
-              ref={(el) => (itemsRef.current[index] = el)}
+              className="flex-shrink-0 content-center h-full w-full transition-opacity"
               style={calculateItemStyle(index)}
-              className={classNames(
-                "absolute",
-                "flex items-center justify-center",
-                "transition-transform duration-200"
-              )}
+              ref={(el) => (itemsRef.current[index] = el)}
             >
               {item}
-            </animated.div>
+            </div>
           ))}
         </div>
-      </div>
-
-      <div className="flex space-x-2 my-5">
-        {Array.isArray(items) && items.map((_, index) => (
+        {screenType !== "mobile" && (
           <button
-            key={index}
-            className={classNames(
-              "w-3 h-3 rounded-full",
-              Math.abs(index * angleStep - angle) < angleStep / 2
-                ? "bg-blue-500"
-                : "bg-gray-300"
-            )}
-            onClick={() => rotateToIndex(index)}
-          />
-        ))}
+            className="w-12 h-full z-20 absolute right-0 text-right pe-3 bg-transparent bg-opacity-0 border-none text-primaryText 
+            text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
+            onClick={handleNext}
+          >
+            ›
+          </button>
+        )}
+      </div>
+      <div className="flex space-x-2 my-5">
+        {Array.isArray(items) &&
+          items.map((_, index) => (
+            <button
+              key={index}
+              className={classNames(
+                "w-3 h-3 rounded-full",
+                (Math.round(
+                  currentIndex - offsetX / (2 * itemMargin + itemWidth)
+                ) +
+                  items.length) %
+                  items.length ===
+                  index
+                  ? "bg-blue-500"
+                  : "bg-gray-300"
+              )}
+              onClick={() => gotoIndex(index)}
+            />
+          ))}
       </div>
     </div>
   );
 };
+
+Wheel.propTypes = {};
 
 export default Wheel;
