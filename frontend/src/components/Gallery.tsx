@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { PhotoCard, PhotoCardProps } from "./PhotoCard";
 import FullscreenImageViewer from "./FullScreenImageViewer";
 import ExtendedPhotoCard from "../admin_components/ExtendedPhotoCard";
+import useResizeObserver from "../base_components/useResizeObserver";
 
 interface GalleryProps {
   initialWidth: number;
@@ -22,11 +23,21 @@ export const Gallery = ({
 }: GalleryProps) => {
   const [columns, setColumns] = useState<number>(3);
   const [columnWidth, setColumnWidth] = useState<number>(300);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerRef, size] = useResizeObserver();
 
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [selectedItemId, setselectedItemId] = useState(0);
   const [columnItems, setColumnItems] = useState<JSX.Element[][]>([]);
+
+  useEffect(() => {
+    const containerWidth = size.width;
+    let numColumns = Math.round(containerWidth / 500) || 1;
+    let width = containerWidth / numColumns - getRemSize();
+
+    if (columnWidth !== width || numColumns !== columns) {
+      calculateColumnsAndWidth();
+    }
+  }, [size]);
 
   const openViewer = (id: number) => {
     document.body.style.overflow = "hidden";
@@ -37,10 +48,6 @@ export const Gallery = ({
   const closeViewer = () => {
     document.body.style.overflow = "";
     setIsViewerOpen(false);
-  };
-
-  const getNumberOfColumns = (width: number): number => {
-    return Math.round(width / 500) || 1;
   };
 
   const getRemSize = () => {
@@ -108,14 +115,6 @@ export const Gallery = ({
 
     setColumnItems(updatedColumnItems);
   };
-
-  useEffect(() => {
-    calculateColumnsAndWidth();
-    window.addEventListener("resize", calculateColumnsAndWidth);
-    return () => {
-      window.removeEventListener("resize", calculateColumnsAndWidth);
-    };
-  }, []);
 
   useEffect(() => {
     distributeItems();

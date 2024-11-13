@@ -261,19 +261,6 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
     };
   };
 
-  const calculateItemTranslate = (deltaIndex: number) => {
-    let absDelta = Math.abs(deltaIndex);
-    let totalTranslate = 0;
-    let prevDiff = 0;
-
-    for (let i = 0; absDelta > i; i++) {
-      const newDiff = prevDiff ? prevDiff * 2 : 50;
-      totalTranslate += absDelta - i > 1 ? newDiff : newDiff * absDelta - i;
-      prevDiff = newDiff;
-    }
-    return totalTranslate * (deltaIndex / absDelta);
-  };
-
   const gotoIndex = (index: number) => {
     setCurrentIndex(index);
   };
@@ -284,6 +271,7 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      style={isDragging ? { touchAction: "none" } : {}}
     >
       <div className="relative flex items-center justify-center h-full w-full z-20">
         {screenType !== "mobile" && (

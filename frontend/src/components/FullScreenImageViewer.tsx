@@ -58,7 +58,6 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
   const handleTouchMove = (e: React.TouchEvent) => {
     e.stopPropagation();
     setIsDragging(true);
-    document.body.style.overflow = "hidden";
     const deltaX = e.touches[0].clientX - startX;
     setOffsetX(deltaX);
   };
@@ -67,7 +66,6 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
     if (!isDragging) return;
     setIsTransitioning(true);
     setIsDragging(false);
-    document.body.style.overflow = "";
     const containerWidth = window.innerWidth;
     const relativeOffsetX = offsetX / containerWidth;
     const newOffset =
@@ -169,6 +167,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      style={{ touchAction: "none" }}
     >
       <div className="relative flex items-center justify-center h-full w-full z-20">
         <button
@@ -192,7 +191,6 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
             <div
               key={image.id}
               className="flex-shrink-0 content-center h-full w-full"
-              style={{ touchAction: "none" }}
             >
               <img
                 src={image.image}
