@@ -11,6 +11,7 @@ interface GalleryProps {
   refreshData?: () => void;
   openPopupCallback?: (content: React.ReactNode, title?: string) => void;
   closePopupCallback?: () => void;
+  containerDimensions?: { width: number; height: number };
 }
 
 export const Gallery = ({
@@ -20,6 +21,7 @@ export const Gallery = ({
   refreshData,
   openPopupCallback,
   closePopupCallback,
+  containerDimensions,
 }: GalleryProps) => {
   const [columns, setColumns] = useState<number>(3);
   const [columnWidth, setColumnWidth] = useState<number>(300);
@@ -121,11 +123,14 @@ export const Gallery = ({
   }, [items, columns]);
 
   return (
-    <div ref={containerRef} className={"flex flex-wrap" + ` px-${2 * columns}`}>
+    <div
+      ref={containerRef}
+      className={"flex flex-wrap" + ` narrow:px-${2 * columns}`}
+    >
       {Array.from({ length: columns }).map((_, colIndex) => (
         <div
           key={colIndex}
-          className="flex-1 mx-4"
+          className="flex-1 mx-2 narrow:mx-4"
           style={{ width: `${columnWidth}px` }}
         >
           {columnItems[colIndex]}

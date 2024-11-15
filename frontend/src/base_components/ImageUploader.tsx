@@ -106,8 +106,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     <div
       onDrop={handleDrop}
       onDragOver={handleDragOver}
-      className={`flex-1 mb-4 p-4 ${
-        editing ? "border-dashed border-2 border-gray-400 rounded-md" : ""
+      className={`flex-1 wide:mb-4 p-4 wide:p-4 ${
+        editing ? "border-dashed pb-4 border-2 border-gray-400 rounded-md" : " pb-0"
       } ${!imagePreview && " cursor-pointer"}`}
       onClick={() => editing && !imagePreview && fileInputRef.current?.click()}
     >

@@ -20,6 +20,7 @@ module.exports = {
     screens: {
       mobile: "100px",
       narrow: "450px",
+      meduim: "750px",
       wide: "1000px",
     },
     extend: {

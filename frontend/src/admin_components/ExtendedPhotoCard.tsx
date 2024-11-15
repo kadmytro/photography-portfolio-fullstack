@@ -44,9 +44,9 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
     onCancelCallback: React.MouseEventHandler<HTMLButtonElement> | undefined
   ): React.ReactNode => {
     return (
-      <div className="px-4 pb-12 pt-4 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+      <div className="px-4 pb-12 pt-4 min-h-200px narrow:min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
         <p className="max-w-md">{message}</p>
-        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+        <div className="narrow:w-80 w-4/5 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
           <Button
             buttonType="default"
             text="Yes"
@@ -70,7 +70,7 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
     iconColor: string
   ): React.ReactNode => {
     return (
-      <div className="px-4 pb-4 pt-12 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+      <div className="px-4 pb-4 pt-12 min-h-200px narrow:min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
         <div
           className={
             "svg-mask h-20 w-20 bg-opacity-70 mx-auto absolute top-3 left-1/2 -translate-x-1/2 " +
@@ -165,7 +165,7 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
 
       {showEditPopup && (
         <div className="fixed inset-0 w-screen h-screen overflow-auto flex items-center justify-center backdrop-blur bg-primary bg-opacity-30 z-50">
-          <div className="rounded shadow-lg">
+          <div className="rounded shadow-lg max-w-full max-h-full">
             <PhotoEditForm
               photo={photoDetails}
               onUpdate={handlePhotoUpdate}

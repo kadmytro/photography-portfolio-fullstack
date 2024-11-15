@@ -66,7 +66,11 @@ export const Messages: React.FC<MessagesProps> = ({
   useEffect(() => {
     const messagesCopy = initialMessages.map((object) => ({ ...object }));
     setMessages(messagesCopy);
-    setDetailedMessage(null);
+    setDetailedMessage((prevDetailedMessage) =>
+      prevDetailedMessage && initialMessages.includes(prevDetailedMessage)
+        ? prevDetailedMessage
+        : null
+    );
   }, [initialMessages]);
 
   useEffect(() => {
@@ -305,9 +309,11 @@ export const Messages: React.FC<MessagesProps> = ({
   const MessageContentComponent = ({
     items,
     refreshData,
+    containerDimensions,
   }: {
     items: IMessage[];
     refreshData: () => void;
+    containerDimensions?: { width: number; height: number };
   }) => {
     return (
       <>
@@ -321,14 +327,15 @@ export const Messages: React.FC<MessagesProps> = ({
               toggleSelect(message.id);
             }}
             onClick={(e) => {
+              markAs("isRead", true, [message.id]);
               setPrevScrollPosition(window.scrollY);
               setDetailedMessage(message);
               window.scrollTo({
                 top: 0,
               });
-              markAs("isRead", true, [message.id]);
             }}
             onChange={markAs}
+            containerDimensions={containerDimensions}
           />
         ))}
       </>
@@ -336,8 +343,8 @@ export const Messages: React.FC<MessagesProps> = ({
   };
 
   return (
-    <div className="w-full h-full flex flex-col relative">
-      <div className="pb-5 pt-4 px-8 border-b border-primaryText border-opacity-30 sticky top-36 w-full bg-primary z-20">
+    <div className="flex-1 w-full h-full flex flex-col relative">
+      <div className="pb-5 pt-4 px-4 narrow:px-8 border-b border-primaryText border-opacity-30 sticky top-36 w-full bg-primary z-30">
         <div className="flex gap-5 w-fit">
           {detailedMessage != null ? (
             <div
@@ -453,27 +460,34 @@ export const Messages: React.FC<MessagesProps> = ({
         </div>
       </div>
       {messagesType === "deleted" && !detailedMessage && (
-        <div className="bg-red-500 bg-opacity-30 w-full p-4 mb-2 text-center text-primaryText text-opacity-80">
+        <div className="bg-red-500 bg-opacity-30 w-full p-4 text-center text-primaryText text-opacity-80">
           Messages that have been in Trash more than 30 days will be
           automatically deleted
         </div>
       )}
-      <div className="w-full flex-1 flex flex-col gap-1 select-text ">
+      <div className="w-full h-full flex-1 flex flex-col gap-1 select-text ">
         {detailedMessage != null ? (
           <div className="p-4 shadow bg-card text-cardText relative">
-            <div className="absolute right-6 top-6 text-cardText text-opacity-70">
-              {new Date(detailedMessage.date).toLocaleString()}
-            </div>
-            <h3 className="text-3xl mb-3 mr-36 font-semibold font-title">
+            <h3 className="text-xl narrow:text-3xl font-semibold font-title">
               {detailedMessage.subject}
             </h3>
-            <div className="text-xs align-middle mb-5">
+            <div className="text-cardText text-opacity-70">
+              {new Date(detailedMessage.date).toLocaleString()}
+            </div>
+            <div className="text-xs align-middle mb-2 pb-3 border-b-2 border-primaryText border-opacity-20">
               <span className="font-bold text-base">
                 {detailedMessage.name}
               </span>{" "}
-              {"<" + detailedMessage.email + ">"}
+              <a
+                href={`mailto:${detailedMessage.email}`}
+                className="cursor-pointer hover:underline"
+              >
+                {"< " + detailedMessage.email + " >"}
+              </a>
             </div>
-            <p className="min-h-400px">{detailedMessage.message}</p>
+            <p className="min-h-400px p-2 narrow:p-4 wide:p-8">
+              {detailedMessage.message}
+            </p>
           </div>
         ) : messages.length ? (
           <Pager

@@ -132,7 +132,7 @@ const TermsForm: React.FC<TermsFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-5xl min-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
+      className="min-w-200px w-full max-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
     >
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
@@ -163,7 +163,7 @@ const TermsForm: React.FC<TermsFormProps> = ({
         value={changedTerms.text}
         readOnly={!isEditing}
         onChange={(e) => handleChange("text" as keyof Terms, e.target.value)}
-        className="min-h-200px"
+        className="min-h-200px mobile:min-h-400px narrow:min-h-300px"
       />
       {isEditing && (
         <div className="items-center text-center w-full justify-end flex space-x-2">

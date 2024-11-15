@@ -43,9 +43,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
     onCancelCallback: React.MouseEventHandler<HTMLButtonElement> | undefined
   ): React.ReactNode => {
     return (
-      <div className="px-4 pb-12 pt-4 min-h-200px min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
+      <div className="px-4 pb-12 pt-4 min-h-200px narrow:min-w-400px max-w-lg text-center border-t-1 border-primaryText border-opacity-30 relative content-center">
         <p className="max-w-md">{message}</p>
-        <div className="w-80 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
+        <div className="narrow:w-80 w-4/5 absolute right-1/2 translate-x-1/2 bottom-2 flex gap-4 justify-around">
           <Button
             buttonType="default"
             text="Yes"
@@ -129,7 +129,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="w-full narrow:max-w-2xl mx-auto p-1 narrow:p-4">
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
           <strong className="font-bold">Error:</strong>

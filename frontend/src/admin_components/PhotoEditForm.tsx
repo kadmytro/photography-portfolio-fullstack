@@ -105,9 +105,9 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative flex gap-4 max-w-5xl mx-auto p-4 bg-card text-cardText rounded shadow"
+      className="relative flex flex-col mobile:pt-10 wide:pt-4 wide:flex-row gap-4 narrow:max-w-lg wide:max-w-4xl mx-auto p-4 bg-card text-cardText rounded shadow"
     >
-      <div className="flex-1 min-w-400px max-h-800px">
+      <div className="flex-1 min-w-300px mobile:min-w-200px narrow:max-w-md">
         <ImageUploader
           editing={true}
           initialSource={photo.image}

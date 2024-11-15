@@ -103,7 +103,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
     <li
       key={category.id}
       className={
-        "p-4 relative rounded shadow min-w-500px bg-card text-cardText"
+        "p-4 relative rounded shadow min-w-300px wide:min-w-500px bg-card text-cardText"
       }
     >
       <>

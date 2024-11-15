@@ -1,9 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import LoadingWheel from "./LoadingWheel";
 import api from "../services/api";
+import useResizeObserver from "../base_components/useResizeObserver";
 
 interface PagerProps<T> {
-  contentComponent: React.FC<{ items: T[]; refreshData: () => void }>;
+  contentComponent: React.FC<{
+    items: T[];
+    refreshData: () => void;
+    containerDimensions?: { width: number; height: number };
+  }>;
   mapDataToItems?: (data: any) => T[];
   endpoint?: string;
   itemsPerPage: number;
@@ -28,6 +33,7 @@ const Pager = <T,>({
   const [loading, setLoading] = useState(!items);
   const [pageNumbers, setPageNumbers] = useState<(string | number)[]>([]);
   const [currentItems, setCurrentItems] = useState<T[]>([]);
+  const [pagerRef, size] = useResizeObserver();
 
   const fetchData = async () => {
     if (endpoint && mapDataToItems) {
@@ -163,7 +169,7 @@ const Pager = <T,>({
         <button
           key={index}
           onClick={() => handlePageClick(page)}
-          className={`px-4 py-2 rounded ${
+          className={`px-2 narrow:px-4 py-1 narrow:py-2 rounded ${
             currentPage === page
               ? "bg-blue-500 text-white"
               : "bg-secondary text-secondaryText hover:bg-blue-400 hover:bg-opacity-50"
@@ -184,23 +190,26 @@ const Pager = <T,>({
   }
 
   return (
-    <div className="w-full h-full px-4 pt-4 pb-14 relative">
-      <ContentComponent items={currentItems} refreshData={refreshCallback} />
-      <div className="flex justify-center mt-4 space-x-2 absolute bottom-0 left-1/2 -translate-x-1/2">
+    <div
+      className="w-full h-full box-border narrow:px-4 pt-4 pb-14 relative"
+      ref={pagerRef}
+    >
+      <ContentComponent items={currentItems} refreshData={refreshCallback} containerDimensions={size}/>
+      <div className="flex justify-center my-2 narrow:my-4 space-x-2 absolute bottom-0 left-1/2 -translate-x-1/2">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${
+          className={`px-2 narrow:px-4 py-1 narrow:py-2 narrow:w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${
             totalPages() < 2 ? "hidden" : ""
           }`}
         >
-          Previous
+          Prev
         </button>
         {renderPageNumbers()}
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages()}
-          className={`px-4 py-2 w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${
+          className={`px-2 narrow:px-4 py-1 narrow:py-2 narrow:w-24 bg-secondary hover:bg-blue-400 hover:bg-opacity-50 text-secondaryText rounded disabled:opacity-50 disabled:bg-secondary ${
             totalPages() < 2 ? "hidden" : ""
           }`}
         >

@@ -91,7 +91,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
     <div className="relative">
       <form
         onSubmit={handleSubmit}
-        className="min-w-500px max-w-500px mx-auto p-4 bg-card text-cardText rounded shadow relative"
+        className="min-w-200px w-full max-w-500px mx-auto p-4 bg-card text-cardText rounded shadow relative"
       >
         <div className="w-full h-full flex gap-4 items-center">
           <div className="flex-1">

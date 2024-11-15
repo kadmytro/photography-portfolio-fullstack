@@ -1,16 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import api from "../services/api";
 import LoadingWheel from "./../components/LoadingWheel"; // Import the LoadingWheel component
 import Input from "../base_components/Input";
 import ImageUploader from "../base_components/ImageUploader";
 import Button from "../base_components/Button";
 import TagBox from "../base_components/TagBox";
-
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-}
 
 const PhotoUploadForm: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -65,17 +58,6 @@ const PhotoUploadForm: React.FC = () => {
     };
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileChange(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
   const handleRemoveFile = () => {
     setFile(null);
     setWidth(null);
@@ -123,10 +105,6 @@ const PhotoUploadForm: React.FC = () => {
     formData.append("categories", JSON.stringify(selectedCategories));
 
     try {
-      const response = await api.post("/api/photos", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
       resetForm();
     } catch (error) {
       console.error("Failed to upload photo:", error);
@@ -139,10 +117,10 @@ const PhotoUploadForm: React.FC = () => {
     <div className="relative">
       <form
         onSubmit={handleSubmit}
-        className="max-w-4xl min-w-fit mx-auto p-4 bg-card text-cardText rounded shadow relative"
+        className="w-full narrow:max-w-lg wide:max-w-4xl min-w-fit mx-auto p-4 bg-card text-cardText rounded shadow relative"
       >
-        <div className="w-full h-full flex gap-4 items-center">
-          <div className="flex-1 min-w-300px">
+        <div className="w-full h-full flex flex-col wide:flex-row gap-4 items-center">
+          <div className="flex-1 min-w-300px mobile:min-w-200px narrow:max-w-md">
             <ImageUploader
               editing={true}
               imageChangeCallback={handleFileChange}
@@ -150,7 +128,7 @@ const PhotoUploadForm: React.FC = () => {
               initialSource={file ?? null}
             />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             <Input
               label="Caption"
               type="text"

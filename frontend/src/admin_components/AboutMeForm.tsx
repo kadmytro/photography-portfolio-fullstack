@@ -132,7 +132,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-xl min-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
+      className="min-w-200px w-full max-w-500px mx-auto px-4 py-6 bg-card text-cardText relative rounded shadow"
     >
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">

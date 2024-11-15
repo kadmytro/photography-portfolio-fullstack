@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { IMessage as IMessage } from "@shared/types/IMessage";
-import { IMessageChanges } from "@shared/types/IMessageChanges";
 
 interface MessageProps {
   isSelected: boolean;
@@ -12,6 +11,7 @@ interface MessageProps {
     fieldValue: boolean,
     messageIds: number[]
   ) => void;
+  containerDimensions?: { width: number; height: number };
 }
 
 export const Message: React.FC<MessageProps> = ({
@@ -20,6 +20,7 @@ export const Message: React.FC<MessageProps> = ({
   onToggleSelect,
   onClick,
   onChange,
+  containerDimensions,
 }) => {
   const {
     id,
@@ -32,16 +33,22 @@ export const Message: React.FC<MessageProps> = ({
     isArchived,
     isDeleted,
   } = messageObject;
+  const maxMobileWidth = 600;
+  const displayMobile = containerDimensions && containerDimensions.width < maxMobileWidth;
+
   return (
     <div
-      className={
-        "w-full relative mb-1 flex gap-2 flex-inline py-4 pl-14 pr-4 hover:pr-32 rounded-lg shadow hover:bg-blue-500 hover:bg-opacity-40 cursor-pointer parent_display_on_parent_hover " +
-        (isSelected
+      className={`w-full relative mb-1 pl-14 pr-4 rounded-lg shadow hover:bg-blue-500 hover:bg-opacity-40 cursor-pointer ${
+        isSelected
           ? " bg-blue-500 bg-opacity-20"
           : isRead
           ? " bg-card text-cardText"
-          : " bg-gray-400 bg-opacity-30")
-      }
+          : " bg-gray-400 bg-opacity-30"
+      } ${
+        displayMobile
+          ? "py-2"
+          : "flex flex-inline parent_display_on_parent_hover py-4"
+      }`}
       onClick={onClick}
     >
       <div className="absolute h-full top-0 left-4 content-center">
@@ -62,108 +69,113 @@ export const Message: React.FC<MessageProps> = ({
       >
         {name}
       </div>
-      <div className="flex-1 h-6 min-w-200px overflow-hidden text-ellipsis select-text">
+      <div
+        className="flex-1 h-6 min-w-200px overflow-hidden text-ellipsis select-text"
+        style={displayMobile ? {} : { maxWidth: "calc(100% - 270px)" }}
+      >
         <span className={isRead ? "" : " font-bold"}>{subject}</span> -{" "}
         <span className="opacity-70">{message}</span>
       </div>
-      <div className="w-24 hide_on_parent_hover">
+      <div className="w-24 text-center hide_on_parent_hover">
         {new Date(date).toLocaleDateString()}
       </div>
-      <div className="absolute flex h-full top-0 right-4 gap-4 content-center display_on_parent_hover">
-        <div
-          data-tooltip={isRead ? "Mark as unread" : "Mark as read"}
-          onClick={(e) => {
-            e.stopPropagation();
-            onChange("isRead", !isRead, [id]);
-          }}
-          className="h-fit self-center"
-        >
+      {!displayMobile && (
+        <div className="absolute flex h-full top-0 right-4 gap-4 content-center display_on_parent_hover">
           <div
-            className={
-              "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all " +
-              (isRead ? " message-unread-icon" : " message-read-icon")
-            }
-          />
+            data-tooltip={isRead ? "Mark as unread" : "Mark as read"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onChange("isRead", !isRead, [id]);
+            }}
+            className="h-fit self-center"
+          >
+            <div
+              className={
+                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all " +
+                (isRead ? " message-unread-icon" : " message-read-icon")
+              }
+            />
+          </div>
+          {isDeleted ? null : isArchived ? (
+            <div
+              data-tooltip="Restore from Archive"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("isArchived", false, [id]);
+              }}
+              className="h-fit self-center"
+            >
+              <div
+                className={
+                  "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all unarchive-icon"
+                }
+              />
+            </div>
+          ) : (
+            <div
+              data-tooltip="Archive"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("isArchived", true, [id]);
+              }}
+              className="h-fit self-center"
+            >
+              <div
+                className={
+                  "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all archive-icon"
+                }
+              />
+            </div>
+          )}
+          {isDeleted ? (
+            <>
+              <div
+                data-tooltip="Restore"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange("isDeleted", false, [id]);
+                }}
+                className="h-fit self-center"
+              >
+                <div
+                  className={
+                    "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all restore-icon"
+                  }
+                />
+              </div>
+              <div
+                data-tooltip="Delete forever"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange("isForeverDeleted", true, [id]);
+                }}
+                className="h-fit self-center"
+              >
+                <div
+                  className={
+                    "cursor-pointer svg-mask w-6 h-6 bg-red-600 transition-all delete-icon"
+                  }
+                />
+              </div>
+            </>
+          ) : (
+            <div
+              data-tooltip="Move to trash"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("isDeleted", true, [id]);
+              }}
+              className="h-fit self-center"
+            >
+              <div
+                className={
+                  "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all delete-icon"
+                }
+              />
+            </div>
+          )}
         </div>
-        {isDeleted ? null : isArchived ? (
-          <div
-            data-tooltip="Restore from Archive"
-            onClick={(e) => {
-              e.stopPropagation();
-              onChange("isArchived", false, [id]);
-            }}
-            className="h-fit self-center"
-          >
-            <div
-              className={
-                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all unarchive-icon"
-              }
-            />
-          </div>
-        ) : (
-          <div
-            data-tooltip="Archive"
-            onClick={(e) => {
-              e.stopPropagation();
-              onChange("isArchived", true, [id]);
-            }}
-            className="h-fit self-center"
-          >
-            <div
-              className={
-                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all archive-icon"
-              }
-            />
-          </div>
-        )}
-        {isDeleted ? (
-          <>
-            <div
-              data-tooltip="Restore"
-              onClick={(e) => {
-                e.stopPropagation();
-                onChange("isDeleted", false, [id]);
-              }}
-              className="h-fit self-center"
-            >
-              <div
-                className={
-                  "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all restore-icon"
-                }
-              />
-            </div>
-            <div
-              data-tooltip="Delete forever"
-              onClick={(e) => {
-                e.stopPropagation();
-                onChange("isForeverDeleted", true, [id]);
-              }}
-              className="h-fit self-center"
-            >
-              <div
-                className={
-                  "cursor-pointer svg-mask w-6 h-6 bg-red-600 transition-all delete-icon"
-                }
-              />
-            </div>
-          </>
-        ) : (
-          <div
-            data-tooltip="Move to trash"
-            onClick={(e) => {
-              e.stopPropagation();
-              onChange("isDeleted", true, [id]);
-            }}
-            className="h-fit self-center"
-          >
-            <div
-              className={
-                "cursor-pointer svg-mask w-6 h-6 bg-cardText transition-all delete-icon"
-              }
-            />
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };

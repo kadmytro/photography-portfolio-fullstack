@@ -88,12 +88,12 @@ const TagBox = <T extends TagItem>({
   };
 
   return (
-    <div ref={dropdownRef} className="relative min-w-400px">
+    <div ref={dropdownRef} className="relative mobile:w-full wide:min-w-400px wide:w-fit narrow:max-w-lg wide:max-w-full">
       {label && <label className="block text-cardText font-bold mb-2 pl-1">
         {label}:
       </label>}
       <div
-        className={"p-2 h-fit flex flex-wrap gap-3 border bg-input text-inputText text-opacity-80 border-primaryText border-opacity-20 rounded focus:outline-none cursor-pointer " + (dropdownOpen ? "border-blue-500 border-opacity-100" : "")}
+        className={"p-1 narrow:p-2 h-fit flex flex-wrap gap-1 narrow:gap-3 border bg-input text-inputText text-opacity-80 border-primaryText border-opacity-20 rounded focus:outline-none cursor-pointer " + (dropdownOpen ? "border-blue-500 border-opacity-100" : "")}
         onClick={() => !readOnly && setDropdownOpen(!dropdownOpen)}
       >
         {selectedItems.length === 0 ? (
@@ -103,15 +103,15 @@ const TagBox = <T extends TagItem>({
             <span
               key={itemId}
               className={
-                "inline-flex items-center py-1 h-10 bg-blue-500 bg-opacity-20 drop-shadow text-cardText rounded-full" +
-                (readOnly ? " px-6" : " pl-6")
+                "inline-flex items-center narrow:py-1 narrow:h-10 bg-blue-500 bg-opacity-20 drop-shadow text-cardText rounded-full" +
+                (readOnly ? " px-4 narrow:px-6" : " pl-4 narrow:pl-6")
               }
             >
               {items.find((item) => item.id === itemId)?.name}
               {!readOnly && (
                 <button
                   type="button"
-                  className="px-4 text-center align-middle text-2xl font-bold text-red-500 hover:scale-125 transition-all"
+                  className="px-2 narrow:px-4 text-center align-middle text-2xl font-bold text-red-500 hover:scale-125 transition-all"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleRemoveTag(items.find((item) => item.id === itemId)!);

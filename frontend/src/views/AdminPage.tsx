@@ -68,10 +68,15 @@ function AdminPage() {
         {
           id: 12,
           title: "Manage photos",
+          onSelectionChanged: () => {
+            setSelectedCategories([]);
+          },
           content: (
             <>
-              <div className="flex mx-10">
-                <div className="px-5 text-center self-center">Categories:</div>
+              <div className="flex flex-col narrow:flex-row mx-4 narrow:mx-10">
+                <div className="pr-2 narrow:px-5 w-full narrow:w-fit narrow:text-center self-center">
+                  Categories:
+                </div>
                 <TagBox
                   dataSource="/api/categories"
                   initialSelection={selectedCategories}
@@ -234,7 +239,7 @@ function AdminPage() {
   ];
 
   return (
-    <div className="Content relative text-primaryText w-full contentMinHeight">
+    <div className="Content relative text-primaryText w-full contentHeight">
       <HorizontalDrawer groups={groups} />
       <Popup
         key="adminPopup"
@@ -242,7 +247,7 @@ function AdminPage() {
         title={popupTitle}
         onClose={onPopupClose}
         containerClassName="mt-20"
-        className="-top-10 min-w-fit"
+        className="-top-10 w-fit"
       >
         {popupContent}
       </Popup>

@@ -33,7 +33,7 @@ export const Popup: React.FC<PopupProps> = ({
     >
       <div
         className={
-          "relative w-fit min-w-300px bg-card p-4 text-cardText rounded-lg shadow-lg " +
+          "relative w-fit  max-w-full narrow:min-w-300px bg-card p-4 text-cardText rounded-lg shadow-lg " +
           (className != undefined ? className : "")
         }
         style={style}

@@ -5,6 +5,7 @@ import { Contact } from "../../../shared/types/Contact";
 import LoadingWheel from "../components/LoadingWheel";
 import Input from "../base_components/Input";
 import Button from "../base_components/Button";
+import useResizeObserver from "../base_components/useResizeObserver";
 
 interface ContactsFormProps {
   openPopupCallback?: (content: React.ReactNode, title?: string) => void;
@@ -44,6 +45,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+  const [containerRef, size] = useResizeObserver();
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -163,86 +165,91 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
     (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>;
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-6 bg-card text-cardText relative rounded shadow min-w-500px max-w-7xl mx-auto"
-    >
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-          <strong className="font-bold">Error:</strong>
-          <span className="block sm:inline">{error}</span>
-        </div>
-      )}
-      {saving && (
-        <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
-          <LoadingWheel />
-        </div>
-      )}
-      <div className="absolute right-4 top-4 flex gap-2 z-10">
-        <div data-tooltip="Edit the contacts" onClick={handleEdit}>
-          <div className="cursor-pointer svg-mask edit-icon w-7 h-7 bg-cardText right-0 hover:scale-125 transition-all" />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-8">
-        {contacts.map((contact, index) => (
-          <div
-            key={contact.type}
-            className="mb-6 min-w-400px max-w-xl w-full mx-auto"
-          >
-            <h3 className="text-lg font-semibold mb-2 text-cardText text-opacity-60 border-cardText border-opacity-20 border-b-2">
-              {capitalize(contact.type)}
-            </h3>
-            <Input
-              label={`${capitalize(contact.type)} label`}
-              id={`label-${contact.type}`}
-              value={
-                changedContacts.find((c) => c.type === contact.type)?.label
-              }
-              onChange={(e) => handleChange(index, "label", e.target.value)}
-              required={true}
-              readOnly={!isEditing}
-              placeholder={`e.g.: ${capitalize(contact.type)}`}
-            />
-            <Input
-              label={`${capitalize(contact.type)} value`}
-              id={`value-${contact.type}`}
-              value={
-                changedContacts.find((c) => c.type === contact.type)?.value
-              }
-              onChange={(e) => handleChange(index, "value", e.target.value)}
-              required={true}
-              readOnly={!isEditing}
-              placeholder={`(no ${contact.type} value)`}
-            />
-            <Input
-              label={`${capitalize(contact.type)} display value`}
-              id={`displayValue-${contact.type}`}
-              value={
-                changedContacts.find((c) => c.type === contact.type)
-                  ?.displayValue
-              }
-              onChange={(e) =>
-                handleChange(index, "displayValue", e.target.value)
-              }
-              required={true}
-              readOnly={!isEditing}
-              placeholder={`(no ${contact.type} display value)`}
-            />
+    <div className="w-full min-h-full flex min-w-200px" ref={containerRef}>
+      <form
+        onSubmit={handleSubmit}
+        className={`flex-1 px-4 py-6 bg-card text-cardText relative rounded shadow mx-auto ${
+          size.width < 1080 ? "max-w-500px" : "max-w-1000px"
+        }`}
+      >
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <strong className="font-bold">Error:</strong>
+            <span className="block sm:inline">{error}</span>
           </div>
-        ))}
-      </div>
-      {isEditing && (
-        <div className="items-center text-center w-full justify-end flex space-x-2">
-          <Button
-            buttonType="normal"
-            type="button"
-            onClick={handleCancel}
-            text="Cancel"
-          />
-          <Button type="submit" disabled={!user} text="Save" />
+        )}
+        {saving && (
+          <div className="absolute z-20 inset-0 bg-primary bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
+            <LoadingWheel />
+          </div>
+        )}
+        <div className="absolute right-4 top-4 flex gap-2 z-10">
+          <div data-tooltip="Edit the contacts" onClick={handleEdit}>
+            <div className="cursor-pointer svg-mask edit-icon w-7 h-7 bg-cardText right-0 hover:scale-125 transition-all" />
+          </div>
         </div>
-      )}
-    </form>
+        <div
+          className={`grid gap-x-8 w-full ${
+            size.width > 1080 ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
+          {contacts.map((contact, index) => (
+            <div key={contact.type} className="mb-6 w-full mx-auto">
+              <h3 className="text-lg font-semibold mb-2 text-cardText text-opacity-60 border-cardText border-opacity-20 border-b-2">
+                {capitalize(contact.type)}
+              </h3>
+              <Input
+                label={`${capitalize(contact.type)} label`}
+                id={`label-${contact.type}`}
+                value={
+                  changedContacts.find((c) => c.type === contact.type)?.label
+                }
+                onChange={(e) => handleChange(index, "label", e.target.value)}
+                required={true}
+                readOnly={!isEditing}
+                placeholder={`e.g.: ${capitalize(contact.type)}`}
+              />
+              <Input
+                label={`${capitalize(contact.type)} value`}
+                id={`value-${contact.type}`}
+                value={
+                  changedContacts.find((c) => c.type === contact.type)?.value
+                }
+                onChange={(e) => handleChange(index, "value", e.target.value)}
+                required={true}
+                readOnly={!isEditing}
+                placeholder={`(no ${contact.type} value)`}
+              />
+              <Input
+                label={`${capitalize(contact.type)} display value`}
+                id={`displayValue-${contact.type}`}
+                value={
+                  changedContacts.find((c) => c.type === contact.type)
+                    ?.displayValue
+                }
+                onChange={(e) =>
+                  handleChange(index, "displayValue", e.target.value)
+                }
+                required={true}
+                readOnly={!isEditing}
+                placeholder={`(no ${contact.type} display value)`}
+              />
+            </div>
+          ))}
+        </div>
+        {isEditing && (
+          <div className="items-center text-center w-full justify-end flex space-x-2">
+            <Button
+              buttonType="normal"
+              type="button"
+              onClick={handleCancel}
+              text="Cancel"
+            />
+            <Button type="submit" disabled={!user} text="Save" />
+          </div>
+        )}
+      </form>
+    </div>
   );
 };
 

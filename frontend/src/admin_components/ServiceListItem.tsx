@@ -124,7 +124,7 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
   return (
     <li
       key={service.id}
-      className="p-4 rounded relative shadow bg-card text-cardText"
+      className={`p-4 narrow:max-w-lg wide:max-w-4xl rounded relative shadow bg-card text-cardText ${isEditingService ? "pt-10" : ""}`}
     >
       {
         <>
@@ -139,15 +139,15 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
               <LoadingWheel />
             </div>
           )}
-          <div className="flex justify-between gap-2 items-center">
+          <div className="flex mobile:flex-col wide:flex-row justify-between narrow:gap-2 items-center">
             <ImageUploader
               initialSource={isNewService ? null : getImageUrl(service.id)}
               editing={!!editingService}
               imageChangeCallback={imageChangedCallback}
             />
-            <div className="flex-1 space-y-2 relative">
+            <div className="flex-1 space-y-2 w-full px-4">
               {!isNewService && (
-                <div className="absolute right-0 flex gap-2 z-10">
+                <div className="absolute top-2 right-2 flex gap-2 z-10">
                   <div onClick={handleEdit} data-tooltip="Edit the service">
                     <div className="svg-mask edit-icon w-7 h-7 bg-cardText right-0 cursor-pointer hover:scale-125 transition-all" />
                   </div>
@@ -197,17 +197,17 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
               <div className="mb-4">
                 <input
                   type="checkbox"
-                  className={!editingService ? "cursor-pointer" : ""}
+                  className={isEditingService ? "cursor-pointer" : ""}
                   checked={
                     editingService ? editingService?.isActive : service.isActive
                   }
-                  readOnly={!editingService}
+                  readOnly={!isEditingService}
                   onChange={handleToggleActive}
                   id="isActive"
                 />
                 <label
                   htmlFor="isActive"
-                  className={editingService ? "ml-2 cursor-pointer" : "ml-2"}
+                  className={isEditingService ? "ml-2 cursor-pointer" : "ml-2"}
                 >
                   Active
                 </label>
