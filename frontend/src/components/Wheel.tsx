@@ -9,12 +9,12 @@ interface WheelProps {
 type ScreenType = "wide" | "narrow" | "mobile";
 
 const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [fade, setFade] = useState(false);
   const [screenType, setScreenType] = useState<ScreenType>("wide");
   const [isDragging, setIsDragging] = useState(false);
   const [startTouch, setStartTouch] = useState<React.Touch | null>(null);
-  const [offsetX, setOffsetX] = useState(0);
+  const [offsetX, setOffsetX] = useState<number>(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [containerWidth, setContainerWidth] = useState(initialItemWidth);
   const [wheelHeight, setWheelHeight] = useState(0);
@@ -52,13 +52,13 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
     setTimeout(updateWheelHeight, 100);
   });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      handleNext();
-    }, 7000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     handleNext();
+  //   }, 7000);
 
-    return () => clearInterval(interval);
-  }, [currentIndex]);
+  //   return () => clearInterval(interval);
+  // }, [currentIndex]);
 
   useEffect(() => {
     updateContainerWidth();
