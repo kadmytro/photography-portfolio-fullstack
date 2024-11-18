@@ -243,14 +243,15 @@ export function Navbar({
               )}
             </div>
           )}
-          <a
+          <Link
             className={`text-headerText font-bold text-xl cursor-pointer svg-mask logo-image bg-primaryText h-10 hover:scale-110 transition-all absolute ${
               screenType === "mobile"
                 ? " right-28 w-1/2"
                 : " left-1/2 -translate-x-1/2 w-56"
             }`}
-            href={homeUrl}
-          ></a>
+            to={homeUrl}
+          >
+          </Link>
           {screenType !== "wide" && (
             <div
               className={`svg-mask h-7 w-7 bg-headerText  hover:scale-110 transition-all cursor-pointer absolute right-16 ${
@@ -269,12 +270,12 @@ export function Navbar({
                 onClick={toggleTheme}
               />
               <li>
-                <a
+                <Link
                   className="text-headerText text-opacity-90 hover:text-opacity-100 hover:underline cursor-pointer"
-                  href={pricesUrl}
+                  to={pricesUrl}
                 >
                   {pricesText}
-                </a>
+                </Link>
               </li>
               {(location.pathname === "/" || location.pathname == "/home") && (
                 <li>

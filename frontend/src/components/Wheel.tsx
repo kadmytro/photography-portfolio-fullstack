@@ -274,7 +274,11 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      style={isDragging ? { touchAction: "none" } : {}}
+      style={
+        isDragging
+          ? { touchAction: "none", WebkitTapHighlightColor: "transparent" }
+          : { touchAction: "pan-y", WebkitTapHighlightColor: "transparent" }
+      }
     >
       <div className="relative flex items-center justify-center h-full w-full z-20">
         {screenType !== "mobile" && (
@@ -282,6 +286,10 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
             className="w-12 h-full z-20 absolute left-0 text-left pl-3 bg-transparent bg-opacity-0 border-none text-primaryText 
               text-opacity-60 hover:text-opacity-100 hover:text-5xl duration-200 transition-all text-4xl cursor-pointer select-none"
             onClick={handlePrev}
+            style={{
+              WebkitTapHighlightColor: "transparent",
+              userSelect: "none",
+            }}
           >
             ‹
           </button>
@@ -313,6 +321,10 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
             className="w-12 h-full z-20 absolute right-0 text-right pe-3 bg-transparent bg-opacity-0 border-none text-primaryText 
             text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
             onClick={handleNext}
+            style={{
+              WebkitTapHighlightColor: "transparent",
+              userSelect: "none",
+            }}
           >
             ›
           </button>

@@ -4,6 +4,7 @@ import Input from "../base_components/Input";
 import ImageUploader from "../base_components/ImageUploader";
 import Button from "../base_components/Button";
 import TagBox from "../base_components/TagBox";
+import api from "../services/api";
 
 const PhotoUploadForm: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -105,6 +106,7 @@ const PhotoUploadForm: React.FC = () => {
     formData.append("categories", JSON.stringify(selectedCategories));
 
     try {
+      await api.post("/api/photos", formData);
       resetForm();
     } catch (error) {
       console.error("Failed to upload photo:", error);

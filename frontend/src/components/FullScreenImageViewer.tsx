@@ -167,13 +167,14 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      style={{ touchAction: "none" }}
+      style={{ touchAction: "none", WebkitTapHighlightColor: "transparent" }}
     >
       <div className="relative flex items-center justify-center h-full w-full z-20">
         <button
           className="w-1/3 wide:w-1/5 h-full z-20 absolute left-0 text-left pl-3 bg-transparent bg-opacity-0 border-none text-primaryText text-opacity-0 
             narrow:text-opacity-60 narrow:hover:text-opacity-100 narrow:hover:text-5xl transition-all text-4xl cursor-pointer select-none"
           onClick={handlePrev}
+          style={{ WebkitTapHighlightColor: "transparent", userSelect: "none" }}
         >
           ‹
         </button>
@@ -208,6 +209,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
           className="w-1/3 wide:w-1/5 h-full z-20 absolute right-0 text-right pe-3 bg-transparent bg-opacity-0 border-none text-primaryText text-opacity-0 
             narrow:text-opacity-60 narrow:hover:text-opacity-100 narrow:hover:text-5xl transition-all text-4xl cursor-pointer select-none"
           onClick={handleNext}
+          style={{ WebkitTapHighlightColor: "transparent", userSelect: "none" }}
         >
           ›
         </button>
@@ -215,6 +217,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
       <button
         className="w-9 h-9 z-50 narrow:w-16 narrow:h-16 absolute text-center top-1 right-1 bg-transparent border-none text-primaryText text-opacity-60 hover:text-opacity-100 hover:text-5xl transition-all text-4xl cursor-pointer select-none"
         onClick={onClose}
+        style={{ WebkitTapHighlightColor: "transparent", userSelect: "none" }}
       >
         ×
       </button>

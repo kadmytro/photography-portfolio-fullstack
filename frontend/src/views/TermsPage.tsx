@@ -27,8 +27,11 @@ function TermsPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: "calc(100vh - 528px)" }}>
-      <div className="min-h-300px py-24 bg-primary text-primaryText place-content-center">
+    <div
+      className="content-center justify-center align-middle"
+      style={{ minHeight: "calc(100vh - 224px)" }}
+    >
+      <div className="h-full py-24 bg-primary text-primaryText">
         {loading && <LoadingWheel />}
         {!loading && (
           <h2 className="m-auto pb-4 text-4xl text-center font-title">
