@@ -52,13 +52,13 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
     setTimeout(updateWheelHeight, 100);
   });
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     handleNext();
-  //   }, 7000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 7000);
 
-  //   return () => clearInterval(interval);
-  // }, [currentIndex]);
+    return () => clearInterval(interval);
+  }, [currentIndex, items]);
 
   useEffect(() => {
     updateContainerWidth();
@@ -186,13 +186,15 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
   const visibleItems = getVisibleItems();
 
   const handleNext = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (!items.length) return;
     e?.stopPropagation();
     e?.currentTarget.blur();
     setIsTransitioning(true);
     setFade(true);
     setOffsetX(-(itemWidth + 2 * itemMargin));
     setTimeout(() => {
-      setCurrentIndex((currentIndex + 1) % items.length);
+      let newIndex = (currentIndex + 1) % items.length;
+      setCurrentIndex(newIndex);
       setFade(false);
       setOffsetX(0);
       setIsTransitioning(false);
@@ -200,6 +202,7 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
   };
 
   const handlePrev = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (!items.length) return;
     e?.stopPropagation();
     e?.currentTarget.blur();
     setIsTransitioning(true);
