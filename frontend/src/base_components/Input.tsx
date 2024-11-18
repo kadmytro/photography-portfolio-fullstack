@@ -82,12 +82,12 @@ const Input: React.FC<InputProps> = ({
         className={
           "w-full px-3 py-2 bg-input text-inputText text-opacity-80 placeholder:text-inputText placeholder:text-opacity-30 border-primaryText border-opacity-20 border rounded focus:outline-none " +
           (readOnly
-            ? "cursor-default "
-            : "cursor-text focus:border-blue-500 ") +
-          (className != undefined ? className : "") +
+            ? " cursor-default "
+            : " cursor-text focus:border-blue-500 ") +
+          (className != undefined ? className : " ") +
           (type === "number"
-            ? "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            : "")
+            ? " [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            : " ")
         }
         style={style}
         placeholder={placeholder ?? label}

@@ -156,6 +156,7 @@ const TermsForm: React.FC<TermsFormProps> = ({
         value={changedTerms.title}
         readOnly={!isEditing}
         onChange={(e) => handleChange("title" as keyof Terms, e.target.value)}
+        className="mobile:w-full"
       />
       <TextArea
         label="Disclaimer text"
@@ -163,7 +164,7 @@ const TermsForm: React.FC<TermsFormProps> = ({
         value={changedTerms.text}
         readOnly={!isEditing}
         onChange={(e) => handleChange("text" as keyof Terms, e.target.value)}
-        className="min-h-200px mobile:min-h-400px narrow:min-h-300px"
+        className="min-h-200px mobile:min-h-400px narrow:min-h-300px mobile:w-full"
       />
       {isEditing && (
         <div className="items-center text-center w-full justify-end flex space-x-2">

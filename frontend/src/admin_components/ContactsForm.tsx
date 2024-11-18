@@ -208,6 +208,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
                 required={true}
                 readOnly={!isEditing}
                 placeholder={`e.g.: ${capitalize(contact.type)}`}
+                className="mobile:w-full"
               />
               <Input
                 label={`${capitalize(contact.type)} value`}
@@ -219,6 +220,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
                 required={true}
                 readOnly={!isEditing}
                 placeholder={`(no ${contact.type} value)`}
+                className="mobile:w-full"
               />
               <Input
                 label={`${capitalize(contact.type)} display value`}
@@ -233,6 +235,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
                 required={true}
                 readOnly={!isEditing}
                 placeholder={`(no ${contact.type} display value)`}
+                className="mobile:w-full"
               />
             </div>
           ))}

@@ -155,7 +155,6 @@ router.put("/:id", checkAuth, upload.single("photo"), async (req, res) => {
   const data = req.file?.buffer;
   const [maxWidth, maxHeight] = [2500, 1600];
   const photoRepository = await AppDataSource.getRepository(Photo);
-  const categoryRepository = await AppDataSource.getRepository(PhotoCategory);
 
   try {
     const photo = await photoRepository.findOne({

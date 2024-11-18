@@ -156,6 +156,7 @@ const LinksForm: React.FC<LinksFormProps> = ({
           value={(changedLinks as any)[key]}
           readOnly={!isEditing}
           onChange={(e) => handleChange(key as keyof Links, e.target.value)}
+          className="mobile:w-full"
         />
       ))}
       {isEditing && (

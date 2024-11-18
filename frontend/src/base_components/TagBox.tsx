@@ -14,6 +14,7 @@ interface TagBoxProps<T extends TagItem> {
   initialSelection?: (number | string)[];
   placeholder?: string;
   readOnly?: boolean;
+  className?: string;
 }
 
 const TagBox = <T extends TagItem>({
@@ -23,6 +24,7 @@ const TagBox = <T extends TagItem>({
   initialSelection = [],
   placeholder = "Select items",
   readOnly = false,
+  className,
 }: TagBoxProps<T>) => {
   const [items, setItems] = useState<T[]>(
     typeof dataSource === "string" ? [] : dataSource
@@ -88,12 +90,22 @@ const TagBox = <T extends TagItem>({
   };
 
   return (
-    <div ref={dropdownRef} className="relative mobile:w-full wide:min-w-400px wide:w-fit narrow:max-w-lg wide:max-w-full">
-      {label && <label className="block text-cardText font-bold mb-2 pl-1">
-        {label}:
-      </label>}
+    <div
+      ref={dropdownRef}
+      className={`relative mobile:w-full wide:min-w-400px narrow:max-w-lg wide:max-w-full ${
+        className != undefined ? className : " "
+      }`}
+    >
+      {label && (
+        <label className="block text-cardText font-bold mb-2 pl-1">
+          {label}:
+        </label>
+      )}
       <div
-        className={"p-1 narrow:p-2 h-fit flex flex-wrap gap-1 narrow:gap-3 border bg-input text-inputText text-opacity-80 border-primaryText border-opacity-20 rounded focus:outline-none cursor-pointer " + (dropdownOpen ? "border-blue-500 border-opacity-100" : "")}
+        className={
+          "p-1 narrow:p-2 h-fit flex flex-wrap gap-1 narrow:gap-3 border bg-input text-inputText text-opacity-80 border-primaryText border-opacity-20 rounded focus:outline-none cursor-pointer " +
+          (dropdownOpen ? "border-blue-500 border-opacity-100" : "")
+        }
         onClick={() => !readOnly && setDropdownOpen(!dropdownOpen)}
       >
         {selectedItems.length === 0 ? (

@@ -84,6 +84,7 @@ function AdminPage() {
                   onSelectionChange={(categories) =>
                     setSelectedCategories(categories)
                   }
+                  className="wide:w-fit"
                 />
               </div>
               <Pager

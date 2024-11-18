@@ -154,6 +154,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
         label="Block title"
         placeholder="e.g.: About me"
         value={changedAboutMe.title}
+        className="mobile:w-full"
         readOnly={!isEditing}
         onChange={(e) => handleChange("title" as keyof AboutMe, e.target.value)}
       />
@@ -163,7 +164,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
         value={changedAboutMe.text}
         readOnly={!isEditing}
         onChange={(e) => handleChange("text" as keyof AboutMe, e.target.value)}
-        className="min-h-200px"
+        className="min-h-200px mobile:w-full"
       />
       {isEditing && (
         <div className="items-center text-center w-full justify-end flex space-x-2">

@@ -132,12 +132,14 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
           label="Caption"
           value={caption}
           onChange={handleInputChange(setCaption, "caption")}
+          className="mobile:w-full"
         />
         <Input
           id="location"
           label="Location"
           value={location}
           onChange={handleInputChange(setLocation, "location")}
+          className="mobile:w-full"
         />
         <Input
           id="date"
@@ -145,6 +147,7 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
           type="date"
           value={date}
           onChange={handleInputChange(setDate, "date")}
+          className="mobile:w-full"
         />
         <div className="mb-4">
           <label

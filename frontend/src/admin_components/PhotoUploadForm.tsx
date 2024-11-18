@@ -138,6 +138,7 @@ const PhotoUploadForm: React.FC = () => {
               id="caption"
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
+              className="mobile:w-full"
             />
             <Input
               label="Location"
@@ -145,6 +146,7 @@ const PhotoUploadForm: React.FC = () => {
               id="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
+              className="mobile:w-full"
             />
             <Input
               label="Date"
@@ -152,6 +154,7 @@ const PhotoUploadForm: React.FC = () => {
               id="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              className="mobile:w-full"
             />
             <div className="mb-4">
               <label
