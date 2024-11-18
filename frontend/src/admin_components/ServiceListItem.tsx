@@ -124,7 +124,9 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
   return (
     <li
       key={service.id}
-      className={`p-4 narrow:max-w-lg wide:max-w-4xl rounded relative shadow bg-card text-cardText ${isEditingService ? "pt-10" : ""}`}
+      className={`p-4 narrow:max-w-lg wide:max-w-4xl rounded relative shadow bg-card text-cardText ${
+        isEditingService ? "pt-10" : ""
+      }`}
     >
       {
         <>
@@ -144,6 +146,7 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
               initialSource={isNewService ? null : getImageUrl(service.id)}
               editing={!!editingService}
               imageChangeCallback={imageChangedCallback}
+              maxFileSize={10}
             />
             <div className="flex-1 space-y-2 w-full px-4">
               {!isNewService && (

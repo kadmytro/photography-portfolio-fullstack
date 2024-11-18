@@ -16,11 +16,11 @@ export class Photo {
   @Column("bytea")
   photo!: Buffer;
 
-  @Column("bytea")
-  photoMobile!: Buffer;
+  @Column("bytea", { nullable: true })
+  photoMobile!: Buffer | null;
 
-  @Column("bytea")
-  photoBlurred!: Buffer;
+  @Column("bytea", { nullable: true })
+  photoBlurred!: Buffer | null;
 
   @ManyToMany(() => PhotoCategory, (category) => category.photos, {
     cascade: true,

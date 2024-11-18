@@ -8,7 +8,8 @@ import TagBox from "../base_components/TagBox";
 interface PhotoEditFormProps {
   photo: Omit<PhotoCardProps, "id">;
   onUpdate: (
-    updatedPhoto: Partial<Omit<PhotoCardProps, "id">>
+    updatedPhoto: Partial<Omit<PhotoCardProps, "id">>,
+    formData: FormData
   ) => Promise<void>;
   onClose: () => void;
 }
@@ -73,33 +74,41 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const updatedPhoto: Partial<Omit<PhotoCardProps, "id">> = {};
+    const formData = new FormData();
 
     if (file) {
       updatedPhoto.image = URL.createObjectURL(file);
+      formData.append("photo", file);
     }
 
     if (changedFields.includes("caption")) {
       updatedPhoto.caption = caption;
+      formData.append("caption", caption);
     }
 
     if (changedFields.includes("location")) {
       updatedPhoto.location = location;
+      formData.append("location", location);
     }
 
     if (changedFields.includes("date")) {
       updatedPhoto.date = date;
+      formData.append("date", date);
     }
 
     if (changedFields.includes("file")) {
       updatedPhoto.width = updatedDimensions.width;
       updatedPhoto.height = updatedDimensions.height;
+      formData.append("width", updatedDimensions.width.toFixed());
+      formData.append("height", updatedDimensions.height.toFixed());
     }
 
     if (changedFields.includes("categories")) {
       updatedPhoto.categoriesIds = selectedCategories;
+      formData.append("categories", JSON.stringify(selectedCategories));
     }
 
-    onUpdate(updatedPhoto);
+    onUpdate(updatedPhoto, formData);
   };
 
   return (
@@ -114,6 +123,7 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
           showFileDetails={true}
           imageChangeCallback={handleFileChange}
           hideDeleteButton={true}
+          maxFileSize={10}
         />
       </div>
       <div className="flex-1 self-center">

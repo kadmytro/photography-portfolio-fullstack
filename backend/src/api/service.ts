@@ -3,6 +3,7 @@ import { AppDataSource } from "../data-source";
 import { Service } from "../entity/Service";
 import { checkAuth } from "./authMiddleware";
 import multer from "multer";
+import { optimizeImage } from "../helpers/imageOptimizer";
 
 const router = Router();
 const storage = multer.memoryStorage(); // Store files in memory
@@ -54,11 +55,16 @@ router.get("/image/:id", async (req, res) => {
 
 router.put("/:id", upload.single("image"), checkAuth, async (req, res) => {
   const serviceRepository = await AppDataSource.getRepository(Service);
+  const data = req.file?.buffer;
   const service = await serviceRepository.findOneBy({
     id: parseInt(req.params.id),
   });
 
   if (service) {
+    let optimizedImage = service.image;
+    if (data) {
+      optimizedImage = await optimizeImage(data, 1024, undefined, 80);
+    }
     const updatedData = {
       ...req.body,
       ordinal:
@@ -69,6 +75,7 @@ router.put("/:id", upload.single("image"), checkAuth, async (req, res) => {
         req.body.isActive !== undefined
           ? JSON.parse(req.body.isActive)
           : undefined,
+      image: optimizedImage,
     };
     serviceRepository.merge(service, updatedData);
     await serviceRepository.save(service);
@@ -100,11 +107,13 @@ router.post("/", checkAuth, upload.single("image"), async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
+    const optimizedImage = await optimizeImage(data, 1024, undefined, 80);
+
     const service = new Service();
     service.title = title;
     service.description = description;
     service.price = price;
-    service.image = data;
+    service.image = optimizedImage;
     service.isActive = JSON.parse(isActive);
     service.ordinal = ordinal === "" ? null : ordinal;
 

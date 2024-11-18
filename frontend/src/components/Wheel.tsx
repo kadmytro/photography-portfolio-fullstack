@@ -136,16 +136,16 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
     const fullItemWidth = itemWidth + 2 * itemMargin;
     const relativeOffsetX = offsetX / fullItemWidth;
     const newOffset =
-      relativeOffsetX < -0.1
+      relativeOffsetX < -0.025
         ? -fullItemWidth
-        : relativeOffsetX > 0.1
+        : relativeOffsetX > 0.025
         ? fullItemWidth
         : 0;
     setOffsetX(newOffset);
     const newIndex =
-      relativeOffsetX < -0.1
+      relativeOffsetX < -0.05
         ? (currentIndex + 1) % items.length
-        : relativeOffsetX > 0.1
+        : relativeOffsetX > 0.05
         ? (currentIndex - 1 + items.length) % items.length
         : currentIndex;
     setTimeout(() => {

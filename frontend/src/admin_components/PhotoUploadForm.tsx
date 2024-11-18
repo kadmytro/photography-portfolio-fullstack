@@ -128,6 +128,7 @@ const PhotoUploadForm: React.FC = () => {
               imageChangeCallback={handleFileChange}
               showFileDetails={true}
               initialSource={file ?? null}
+              maxFileSize={10}
             />
           </div>
           <div className="flex-1 w-full">

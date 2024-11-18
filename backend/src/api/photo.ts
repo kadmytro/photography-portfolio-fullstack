@@ -7,6 +7,7 @@ import sharp from "sharp";
 import { PhotoCategory } from "../entity/PhotoCategory";
 import { In } from "typeorm";
 import { getSetting } from "../helpers/setttingsService";
+import { optimizeImage } from "../helpers/imageOptimizer";
 
 const router = Router();
 const storage = multer.memoryStorage(); // Store files in memory
@@ -148,8 +149,8 @@ router.get("/date/:date", async (req, res) => {
   res.json(photos);
 });
 
-router.put("/:id", checkAuth, async (req, res) => {
-  const { caption, location, date, categoriesIds, mimeType, height, width } =
+router.put("/:id", checkAuth, upload.single("photo"), async (req, res) => {
+  const { caption, location, date, categories, mimeType, height, width } =
     req.body;
   const data = req.file?.buffer;
   const [maxWidth, maxHeight] = [2500, 1600];
@@ -166,14 +167,13 @@ router.put("/:id", checkAuth, async (req, res) => {
       return res.status(404).send("Photo not found");
     }
 
-    if (categoriesIds && Array.isArray(categoriesIds)) {
-      const categories = await categoryRepository.find({
-        where: { id: In(categoriesIds) },
-      });
-      if (!categories.length && categoriesIds.length) {
-        return res.status(400).send("Some categories were not found");
-      }
-      photo.categories = categories;
+    if (categories) {
+      const categoryIds = JSON.parse(categories);
+      const photoCategories = await AppDataSource.getRepository(PhotoCategory)
+        .createQueryBuilder("category")
+        .where("category.id IN (:...categoryIds)", { categoryIds })
+        .getMany();
+      photo.categories = photoCategories;
     }
 
     photo.caption = caption ?? photo.caption;
@@ -207,37 +207,47 @@ router.put("/:id", checkAuth, async (req, res) => {
             .toBuffer();
 
       const highQualityImageMetadata = await sharp(highQualityImage).metadata();
-
-      const mobileOptimizedImage = await sharp(data)
-        .resize({
-          width: isLandscape ? 1024 : undefined,
-          height: !isLandscape ? 1024 : undefined,
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .jpeg({ quality: 80 })
-        .toBuffer();
-
-      const blurredCoverImage = await sharp(data)
-        .resize({
-          width: isLandscape ? 100 : undefined,
-          height: !isLandscape ? 100 : undefined,
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .blur()
-        .jpeg({ quality: 30 })
-        .toBuffer();
-
       photo.photo = highQualityImage;
-      photo.photoMobile = mobileOptimizedImage;
-      photo.photoBlurred = blurredCoverImage;
+      photo.photoMobile = null;
+      photo.photoBlurred = null;
       photo.height = highQualityImageMetadata.height ?? height;
       photo.width = highQualityImageMetadata.width ?? width;
-    }
 
-    await photoRepository.save(photo);
-    res.json("Successfully updated the photo");
+      await photoRepository.save(photo);
+
+      process.nextTick(async () => {
+        try {
+          // Mobile version
+          const mobileOptimizedImage = await optimizeImage(
+            data,
+            isLandscape ? 1024 : undefined,
+            !isLandscape ? 1024 : undefined,
+            80
+          );
+          photo.photoMobile = mobileOptimizedImage;
+
+          // Thumbnail version
+          const blurredCoverImage = await optimizeImage(
+            data,
+            isLandscape ? 100 : undefined,
+            !isLandscape ? 100 : undefined,
+            30,
+            true
+          );
+          photo.photoBlurred = blurredCoverImage;
+
+          // Update photo record with mobile and blurred images
+          await photoRepository.save(photo);
+        } catch (err) {
+          console.error("Error optimizing mobile/thumbnail images:", err);
+        }
+      });
+
+      res.json("Successfully updated the photo");
+    } else {
+      await photoRepository.save(photo);
+      res.json("Successfully updated the photo");
+    }
   } catch (error) {
     console.error("Failed to update the photo:", error);
     res.status(500).json({ error: "Failed to update the photo" });
@@ -286,7 +296,6 @@ router.post("/", checkAuth, upload.single("photo"), async (req, res) => {
     }
 
     const metadata = await sharp(data).metadata();
-
     const isLandscape =
       metadata.width && metadata.height && metadata.width > metadata.height;
 
@@ -297,51 +306,50 @@ router.post("/", checkAuth, upload.single("photo"), async (req, res) => {
       );
     };
 
-    // Resizing logic for high quality image
     const highQualityImage = !shouldResize()
       ? data
-      : await sharp(data)
-          .resize({
-            width: isLandscape ? 2500 : undefined,
-            height: !isLandscape ? 1600 : undefined,
-            fit: "inside",
-            withoutEnlargement: true,
-          })
-          .jpeg({ quality: 80 })
-          .toBuffer();
+      : await optimizeImage(
+          data,
+          isLandscape ? 2500 : undefined,
+          !isLandscape ? 1600 : undefined,
+          80
+        );
 
     const highQualityImageMetadata = await sharp(highQualityImage).metadata();
 
-    const mobileOptimizedImage = await sharp(data)
-      .resize({
-        width: isLandscape ? 1024 : undefined,
-        height: !isLandscape ? 1024 : undefined,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .jpeg({ quality: 80 })
-      .toBuffer();
-
-    // Resizing logic for blurred cover image
-    const blurredCoverImage = await sharp(data)
-      .resize({
-        width: isLandscape ? 100 : undefined,
-        height: !isLandscape ? 100 : undefined,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .blur()
-      .jpeg({ quality: 30 })
-      .toBuffer();
-
-    // Store the three versions in the database
     photo.photo = highQualityImage;
-    photo.photoMobile = mobileOptimizedImage;
-    photo.photoBlurred = blurredCoverImage;
     photo.height = highQualityImageMetadata.height ?? height;
     photo.width = highQualityImageMetadata.width ?? width;
     const photoRepository = AppDataSource.getRepository(Photo);
     await photoRepository.save(photo);
+
+    process.nextTick(async () => {
+      try {
+        // Mobile version
+        const mobileOptimizedImage = await optimizeImage(
+          data,
+          isLandscape ? 1024 : undefined,
+          !isLandscape ? 1024 : undefined,
+          80
+        );
+        photo.photoMobile = mobileOptimizedImage;
+
+        // Thumbnail version
+        const blurredCoverImage = await optimizeImage(
+          data,
+          isLandscape ? 100 : undefined,
+          !isLandscape ? 100 : undefined,
+          30,
+          true
+        );
+        photo.photoBlurred = blurredCoverImage;
+
+        // Update photo record with mobile and blurred images
+        await photoRepository.save(photo);
+      } catch (err) {
+        console.error("Error optimizing mobile/thumbnail images:", err);
+      }
+    });
 
     res.status(201).json(photo.id);
   } catch (error) {

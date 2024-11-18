@@ -69,16 +69,16 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
     const containerWidth = window.innerWidth;
     const relativeOffsetX = offsetX / containerWidth;
     const newOffset =
-      relativeOffsetX < -0.2
+      relativeOffsetX < -0.025
         ? -containerWidth
-        : relativeOffsetX > 0.2
+        : relativeOffsetX > 0.025
         ? containerWidth
         : 0;
     setOffsetX(newOffset);
     const newIndex =
-      relativeOffsetX < -0.2
+      relativeOffsetX < -0.025
         ? (currentIndex + 1) % items.length
-        : relativeOffsetX > 0.2
+        : relativeOffsetX > 0.025
         ? (currentIndex - 1 + items.length) % items.length
         : currentIndex;
     setTimeout(() => {

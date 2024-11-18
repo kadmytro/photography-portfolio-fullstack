@@ -7,6 +7,8 @@ interface ImageUploaderProps {
   editing?: boolean | undefined;
   showFileDetails?: boolean;
   hideDeleteButton?: boolean;
+  /** maximum size of the file in MB */
+  maxFileSize?: number; /// max File size in MB
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -15,6 +17,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   editing,
   showFileDetails = false,
   hideDeleteButton = false,
+  maxFileSize = null,
 }) => {
   const init = !initialSource
     ? null
@@ -37,6 +40,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     if (file === undefined) {
       resetUploader();
     } else {
+      if (maxFileSize && file.size > maxFileSize * (1024 * 1024)) {
+        alert(`File size should not exceed ${maxFileSize}MB`);
+        resetUploader();
+        return;
+      }
       setImagePreview(URL.createObjectURL(file!));
       setMimeType(file.type);
       setFile(file);
@@ -107,7 +115,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       className={`flex-1 wide:mb-4 p-4 wide:p-4 ${
-        editing ? "border-dashed pb-4 border-2 border-gray-400 rounded-md" : " pb-0"
+        editing
+          ? "border-dashed pb-4 border-2 border-gray-400 rounded-md"
+          : " pb-0"
       } ${!imagePreview && " cursor-pointer"}`}
       onClick={() => editing && !imagePreview && fileInputRef.current?.click()}
     >
