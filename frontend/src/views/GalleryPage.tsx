@@ -7,6 +7,7 @@ import {
   getPhotoUrl,
 } from "../services/galleryApi";
 import LoadingWheel from "../components/LoadingWheel";
+import { Helmet } from "react-helmet";
 
 function GalleryPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,6 +58,7 @@ function GalleryPage() {
 
   return (
     <div className="Content" style={{ minHeight: "calc(100vh - 224px)" }}>
+      <Helmet> <title>Gallery</title> </Helmet>
       {(!loading && <TabView tabs={tabs} hasBanner={false}></TabView>) || (
         <LoadingWheel style={{ height: "calc(100vh - 224px)" }} />
       )}

@@ -75,7 +75,7 @@ function Footer() {
       }`}
     >
       {loading ? (
-        <div></div>
+        <div className="flex-1 h-fit"></div>
       ) : (
         <div className="flex-1 py-2 flex gap-4 h-fit justify-center">
           {Object.entries(links).map(([key, value]) =>

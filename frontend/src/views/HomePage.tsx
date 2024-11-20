@@ -4,6 +4,7 @@ import AboutMe from "../components/AboutMe";
 import Contacts from "../components/Contacts";
 import { getPhotoUrl, getRecentPhotos } from "../services/galleryApi";
 import LoadingWheel from "../components/LoadingWheel";
+import { Helmet } from "react-helmet";
 
 function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,6 +43,7 @@ function HomePage() {
       className="Content relative text-primaryText"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
+      <Helmet> <title>Home</title> </Helmet>
       <div className="m-auto font-normal text-4xl tracking-wider my-8 w-fit font-title">
         Latest works
       </div>

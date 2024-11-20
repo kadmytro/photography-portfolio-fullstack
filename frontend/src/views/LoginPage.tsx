@@ -3,6 +3,7 @@ import Login from "../components/Login";
 import { Popup } from "../base_components/Popup";
 import Button from "../base_components/Button";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 function LoginPage() {
   const [popupOpened, setPopupOpened] = useState(false);
@@ -19,6 +20,7 @@ function LoginPage() {
 
   return (
     <>
+      <Helmet> <title>Login</title> </Helmet>
       <Login
         openPopupCallback={onPopupOpen}
         closePopupCallback={onPopupClose}

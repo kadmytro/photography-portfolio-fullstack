@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Terms as ITerms } from "@shared/types/Terms";
 import api from "../services/api";
 import LoadingWheel from "../components/LoadingWheel";
+import { Helmet } from "react-helmet";
 
 function TermsPage() {
   const [terms, setTerms] = useState<ITerms>();
@@ -31,6 +32,7 @@ function TermsPage() {
       className="content-center justify-center align-middle"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
+      <Helmet> <title>Terms & Conditions</title> </Helmet>
       <div className="h-full py-24 bg-primary text-primaryText">
         {loading && <LoadingWheel />}
         {!loading && (
