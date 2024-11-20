@@ -30,7 +30,12 @@ export const getRecentPhotos = async () => {
 
 //Function to get the photo url by ID
 export const getPhotoUrl = (id: number) => {
-  return `${API_URL}/api/photos/${id}`;
+  const width = window.innerWidth;
+  if (width > 1000) {
+    return `${API_URL}/api/photos/${id}`;
+  } else {
+    return `${API_URL}/api/photos/${id}/mobile`;
+  }
 };
 
 // Function to get photos by category ID

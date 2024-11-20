@@ -115,7 +115,9 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
     }
 
     e.stopPropagation();
-    document.body.style.overflow = "hidden";
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth; 
+    document.body.style.overflow = "hidden"; 
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
     setIsDragging(true);
     const itemFullWidth = itemWidth + 2 * itemMargin;
     const deltaX = touch.clientX - startTouch.clientX;
@@ -129,6 +131,7 @@ const Wheel: React.FC<WheelProps> = ({ items, initialItemWidth = 300 }) => {
 
   const handleTouchEnd = () => {
     document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
     if (!isDragging && !fade) return;
     setStartTouch(null);
     setIsTransitioning(true);

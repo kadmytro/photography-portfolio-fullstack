@@ -127,7 +127,7 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
 
   const handlePhotoUpdate = async (
     updatedPhoto: Partial<Omit<PhotoCardProps, "id">>,
-    formData: FormData,
+    formData: FormData
   ) => {
     try {
       await api.put(`/api/photos/${props.id}`, formData);

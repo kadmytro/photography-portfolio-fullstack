@@ -32,6 +32,9 @@ export function Navbar({
   const topNavHeight: number = 80;
   const [topNavOpacity, setTopNavOpacity] = useState(0);
   const [displayBannerImage, setDisplayBannerImage] = useState(true);
+  const [mustHaveBannerImage, setMustHaveBannerImage] = useState(
+    mustHaveBanner()
+  );
   const { user, logout } = useAuth() || { user: null, logout: null };
   const containerRef = useRef<HTMLInputElement>(null);
   const [screenType, setScreenType] = useState<ScreenType>("wide");
@@ -48,9 +51,9 @@ export function Navbar({
 
   const handleTopNavOpacity = () => {
     const offset = window.scrollY;
-    const topNavBannerHeight: number = displayBannerImage ? 384 : 0;
+    const topNavBannerHeight: number = (displayBannerImage && mustHaveBannerImage) ? 384 : 0;
     let opacity = 0;
-    if (!displayBannerImage || offset > topNavBannerHeight - topNavHeight) {
+    if (!(displayBannerImage && mustHaveBannerImage) || offset > topNavBannerHeight - topNavHeight) {
       opacity = 50;
     } else {
       opacity = (offset * 50) / (topNavBannerHeight - topNavHeight);
@@ -69,8 +72,8 @@ export function Navbar({
     };
   }, []);
 
-  const mustHaveBanner = () => {
-    let mustHaveBanner = !(
+  function mustHaveBanner() {
+    return !(
       location.pathname == "/gallery" ||
       location.pathname == "/login" ||
       location.pathname == "/forgot-password" ||
@@ -79,12 +82,10 @@ export function Navbar({
       location.pathname == "/terms" ||
       location.pathname.includes("/admin")
     );
-
-    return mustHaveBanner;
-  };
+  }
 
   useEffect(() => {
-    setDisplayBannerImage(mustHaveBanner());
+    setMustHaveBannerImage(mustHaveBanner());
     window.scrollTo({
       top: 0,
     });
@@ -94,7 +95,7 @@ export function Navbar({
 
   useEffect(() => {
     handleTopNavOpacity();
-  }, [displayBannerImage]);
+  }, [displayBannerImage, mustHaveBannerImage]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -128,20 +129,18 @@ export function Navbar({
   const onResize = () => {
     const containerWidth = containerRef.current?.clientWidth || 1024;
     let newScreenType: ScreenType;
-    let hasBanner = displayBannerImage;
+    let displayBanner = false;
 
     if (containerWidth > 1000) {
       newScreenType = "wide";
-      hasBanner = mustHaveBanner();
+      displayBanner = true;
     } else if (containerWidth > 450) {
       newScreenType = "narrow";
-      hasBanner = false;
     } else {
       newScreenType = "mobile";
-      hasBanner = false;
     }
     setScreenType(newScreenType);
-    setDisplayBannerImage(hasBanner);
+    setDisplayBannerImage(displayBanner);
   };
 
   useEffect(() => {
@@ -162,13 +161,13 @@ export function Navbar({
   return (
     <nav
       className={
-        "w-full bg-header font-title" + (!displayBannerImage ? " h-20" : "")
+        "w-full bg-header font-title" + ((displayBannerImage && mustHaveBannerImage) ? "" : " h-20")
       }
       ref={containerRef}
     >
       <div
         className={`w-full fixed top-0 h-20 content-center py-5 bg-header z-50 backdrop-blur-${
-          !displayBannerImage
+          !(displayBannerImage && mustHaveBannerImage)
             ? "xl"
             : topNavOpacity < 10
             ? "none"
@@ -179,7 +178,7 @@ export function Navbar({
             : topNavOpacity < 40
             ? "lg"
             : "xl"
-        } bg-opacity-${displayBannerImage ? topNavOpacity : 50} ${
+        } bg-opacity-${(displayBannerImage && mustHaveBannerImage) ? topNavOpacity : 50} ${
           menuOpen ? " border-b-1 border-headerText border-opacity-40" : ""
         }`}
         style={{ minWidth: "325px" }}
@@ -209,7 +208,7 @@ export function Navbar({
             <div className="relative w-9 h-7 content-center+" ref={menuRef}>
               <li
                 className={
-                  "fixed left-4 top-1/2 -translate-y-1/2 inset-0 svg-mask h-9 w-9 bg-headerText cursor-pointer hover:scale-110 transition-all menu-icon"
+                  "absolute -left-6 narrow:-left-10 top-1/2 -translate-y-1/2 inset-0 svg-mask h-9 w-9 bg-headerText cursor-pointer hover:scale-110 transition-all menu-icon"
                 }
                 onClick={toggleMenu}
               />
@@ -250,8 +249,7 @@ export function Navbar({
                 : " left-1/2 -translate-x-1/2 w-56"
             }`}
             to={homeUrl}
-          >
-          </Link>
+          ></Link>
           {screenType !== "wide" && (
             <div
               className={`svg-mask h-7 w-7 bg-headerText  hover:scale-110 transition-all cursor-pointer absolute right-16 ${
@@ -299,7 +297,7 @@ export function Navbar({
           )}
         </div>
       </div>
-      {displayBannerImage && (
+      {(displayBannerImage && mustHaveBannerImage) && (
         <div
           className="h-96 transition-all"
           style={{

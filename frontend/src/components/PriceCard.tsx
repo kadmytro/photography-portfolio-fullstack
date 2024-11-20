@@ -27,8 +27,8 @@ const PriceCard: React.FC<PriceCardProps> = ({
         className="w-full h-80 object-cover rounded-lg mb-4"
         draggable="false"
       />
-      <h2 className="text-3xl font-bold text-center mb-2 font-title">{title}</h2>
-      <ul className="text-lg mb-2">
+      <h2 className="text-3xl font-bold text-center text-primaryText mb-2 font-title">{title}</h2>
+      <ul className="text-lg mb-2 text-cardText text-opacity-90">
         {description.split("\n").map((line, index) => (
           <li key={index} className="flex items-start">
             <span className="mr-2">•</span> {/* Custom marker */}
@@ -40,7 +40,7 @@ const PriceCard: React.FC<PriceCardProps> = ({
       {openPopupCallback && (
         <Button
           text="Contact us"
-          className="w-full"
+          className="w-full text-lg font-bold"
           onClick={() =>
             openPopupCallback(
               <ContactUsForm
