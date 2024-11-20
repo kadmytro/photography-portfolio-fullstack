@@ -114,9 +114,9 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative flex flex-col mobile:pt-10 wide:pt-4 wide:flex-row gap-4 narrow:max-w-lg wide:max-w-4xl mx-auto p-4 bg-card text-cardText rounded shadow"
+      className="relative flex flex-col wide:flex-row gap-4 narrow:max-w-lg wide:max-w-4xl mx-auto p-4 bg-card text-cardText rounded shadow"
     >
-      <div className="flex-1 min-w-300px mobile:min-w-200px narrow:max-w-md">
+      <div className="flex-1 min-w-300px narrow:max-w-md">
         <ImageUploader
           editing={true}
           initialSource={photo.image}
@@ -126,7 +126,7 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
           maxFileSize={10}
         />
       </div>
-      <div className="flex-1 self-center">
+      <div className="flex-1 w-full self-center">
         <Input
           id="caption"
           label="Caption"
@@ -171,10 +171,6 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
           type="submit"
           text="Save changes"
           className="font-bold w-full"
-        />
-        <div
-          className="absolute top-2 right-1 svg-mask close-icon w-7 h-7 bg-cardText cursor-pointer hover:scale-125 transition-all"
-          onClick={onClose}
         />
       </div>
     </form>

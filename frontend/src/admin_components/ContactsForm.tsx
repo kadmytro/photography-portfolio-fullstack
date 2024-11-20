@@ -158,7 +158,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   const capitalize = <T extends string>(s: T) =>
@@ -208,7 +208,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
                 required={true}
                 readOnly={!isEditing}
                 placeholder={`e.g.: ${capitalize(contact.type)}`}
-                className="mobile:w-full"
+                inputClassName="mobile:w-full"
               />
               <Input
                 label={`${capitalize(contact.type)} value`}
@@ -220,7 +220,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
                 required={true}
                 readOnly={!isEditing}
                 placeholder={`(no ${contact.type} value)`}
-                className="mobile:w-full"
+                inputClassName="mobile:w-full"
               />
               <Input
                 label={`${capitalize(contact.type)} display value`}
@@ -235,7 +235,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
                 required={true}
                 readOnly={!isEditing}
                 placeholder={`(no ${contact.type} display value)`}
-                className="mobile:w-full"
+                inputClassName="mobile:w-full"
               />
             </div>
           ))}

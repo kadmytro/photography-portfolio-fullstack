@@ -27,7 +27,16 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
   }, [props]);
 
   const handleEditClick = () => {
-    setShowEditPopup(true);
+    if (props.openPopupCallback) {
+      props.openPopupCallback(
+        <PhotoEditForm
+          photo={photoDetails}
+          onUpdate={handlePhotoUpdate}
+          onClose={closePopup}
+        />,
+        "Edit photo"
+      );
+    }
   };
 
   useEffect(() => {
@@ -122,7 +131,9 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
   };
 
   const closePopup = () => {
-    setShowEditPopup(false);
+    if (props.closePopupCallback) {
+      props.closePopupCallback();
+    }
   };
 
   const handlePhotoUpdate = async (
@@ -160,18 +171,6 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
           </div>
           <div data-tooltip="Delete the photo" onClick={handleDeleteClick}>
             <div className="svg-mask delete-icon w-7 h-7 bg-red-700 right-6 top-0 cursor-pointer hover:scale-125 transition-all" />
-          </div>
-        </div>
-      )}
-
-      {showEditPopup && (
-        <div className="fixed inset-0 w-screen h-screen overflow-auto flex items-center justify-center backdrop-blur bg-primary bg-opacity-30 z-50">
-          <div className="rounded shadow-lg max-w-full max-h-full">
-            <PhotoEditForm
-              photo={photoDetails}
-              onUpdate={handlePhotoUpdate}
-              onClose={closePopup}
-            />
           </div>
         </div>
       )}

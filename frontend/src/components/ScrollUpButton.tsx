@@ -63,7 +63,7 @@ export const ScrollUpButton = () => {
         ${isVisible ? "block" : "hidden"}`}
       data-tooltip="Scroll up"
     >
-      <div className="svg-mask mx-auto arrow-up-icon bg-primaryText h-6 w-6"/>
+      <div className="svg-mask mx-auto my-auto arrow-up-icon bg-primaryText h-6 w-6"/>
     </div>
     </div>
   );

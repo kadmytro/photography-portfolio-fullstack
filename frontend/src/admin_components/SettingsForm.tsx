@@ -148,7 +148,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   return (
@@ -180,7 +180,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
         value={changedSettings.galleryMaxPhotos}
         readOnly={!isEditing}
         onChange={(e) => handleChange("galleryMaxPhotos", e.target.value)}
-        className="mobile:w-full"
+        inputClassName="mobile:w-full"
       />
       <Input
         label="Home max photos"
@@ -190,7 +190,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
         value={changedSettings.homeMaxPhotos}
         readOnly={!isEditing}
         onChange={(e) => handleChange("homeMaxPhotos", e.target.value)}
-        className="mobile:w-full"
+        inputClassName="mobile:w-full"
       />
       <div className="mb-4">
         <TagBox

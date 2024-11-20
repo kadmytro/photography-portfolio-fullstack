@@ -208,8 +208,9 @@ export function Navbar({
             <div className="relative w-9 h-7 content-center+" ref={menuRef}>
               <li
                 className={
-                  "absolute -left-6 narrow:-left-10 top-1/2 -translate-y-1/2 inset-0 svg-mask h-9 w-9 bg-headerText cursor-pointer hover:scale-110 transition-all menu-icon"
+                  "absolute -left-6 narrow:-left-10 top-3.5 -translate-y-1/2 inset-0 svg-mask h-9 w-9 bg-headerText cursor-pointer hover:scale-110 transition-all menu-icon"
                 }
+                style={{top: "50%"}}
                 onClick={toggleMenu}
               />
               {menuOpen && (

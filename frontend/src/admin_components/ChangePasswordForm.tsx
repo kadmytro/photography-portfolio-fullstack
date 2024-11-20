@@ -102,7 +102,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
               autocomplete="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              className="mobile:w-full"
+              inputClassName="mobile:w-full"
             />
             <Input
               label="New password"
@@ -112,7 +112,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
               autocomplete="new-password"
               placeholder="Enter the new password"
               onChange={(e) => setNewPassword1(e.target.value)}
-              className="mobile:w-full"
+              inputClassName="mobile:w-full"
             />
             <Input
               label="Repeat new password"
@@ -122,7 +122,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
               autocomplete="new-password"
               placeholder="Enter the new password"
               onChange={(e) => setNewPassword2(e.target.value)}
-              className="mobile:w-full"
+              inputClassName="mobile:w-full"
             />
             {error && <p className="text-red-500 h-9 text-center">{error}</p>}
           </div>

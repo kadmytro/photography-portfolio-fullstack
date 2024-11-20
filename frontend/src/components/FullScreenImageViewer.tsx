@@ -191,7 +191,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
           {visibleImages.map((image, idx) => (
             <div
               key={image.id}
-              className="flex-shrink-0 content-center h-full w-full"
+              className="flex flex-shrink-0 items-center justify-center h-full w-full"
             >
               <img
                 src={image.image}

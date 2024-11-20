@@ -17,6 +17,8 @@ interface InputProps {
   placeholder?: string;
   className?: string;
   style?: React.CSSProperties | undefined;
+  inputClassName?: string;
+  inputStyle?: React.CSSProperties | undefined;
   autocomplete?: string;
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -33,7 +35,9 @@ const Input: React.FC<InputProps> = ({
   required = false,
   placeholder,
   className,
-  style,
+  style = {},
+  inputClassName,
+  inputStyle,
   autocomplete,
   onChange,
 }) => {
@@ -65,7 +69,10 @@ const Input: React.FC<InputProps> = ({
     <div className="mb-4 relative">
       <label
         htmlFor={`${name}`}
-        className="block text-cardText font-bold mb-2 pl-1"
+        className={`block text-cardText font-bold mb-2 pl-1 ${
+          className ? className : ""
+        }`}
+        style={style}
       >
         {label}:
       </label>
@@ -84,12 +91,12 @@ const Input: React.FC<InputProps> = ({
           (readOnly
             ? " cursor-default "
             : " cursor-text focus:border-blue-500 ") +
-          (className != undefined ? className : " ") +
+          (inputClassName != undefined ? inputClassName : " ") +
           (type === "number"
             ? " [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             : " ")
         }
-        style={style}
+        style={inputStyle}
         placeholder={placeholder ?? label}
       />
       {isPassword && (

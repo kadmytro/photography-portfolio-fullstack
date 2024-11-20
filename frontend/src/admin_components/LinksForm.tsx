@@ -124,7 +124,7 @@ const LinksForm: React.FC<LinksFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   return (
@@ -156,7 +156,7 @@ const LinksForm: React.FC<LinksFormProps> = ({
           value={(changedLinks as any)[key]}
           readOnly={!isEditing}
           onChange={(e) => handleChange(key as keyof Links, e.target.value)}
-          className="mobile:w-full"
+          inputClassName="mobile:w-full"
         />
       ))}
       {isEditing && (

@@ -126,7 +126,7 @@ const TermsForm: React.FC<TermsFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   return (
@@ -156,7 +156,7 @@ const TermsForm: React.FC<TermsFormProps> = ({
         value={changedTerms.title}
         readOnly={!isEditing}
         onChange={(e) => handleChange("title" as keyof Terms, e.target.value)}
-        className="mobile:w-full"
+        inputClassName="mobile:w-full"
       />
       <TextArea
         label="Disclaimer text"

@@ -126,7 +126,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   return (
@@ -154,7 +154,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
         label="Block title"
         placeholder="e.g.: About me"
         value={changedAboutMe.title}
-        className="mobile:w-full"
+        inputClassName="mobile:w-full"
         readOnly={!isEditing}
         onChange={(e) => handleChange("title" as keyof AboutMe, e.target.value)}
       />

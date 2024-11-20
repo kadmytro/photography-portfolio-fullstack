@@ -254,8 +254,7 @@ function AdminPage() {
         isOpen={popupOpened}
         title={popupTitle}
         onClose={onPopupClose}
-        containerClassName="mt-20"
-        className="-top-10 w-fit"
+        className="w-fit"
       >
         {popupContent}
       </Popup>
