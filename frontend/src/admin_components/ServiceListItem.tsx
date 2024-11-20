@@ -142,12 +142,14 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
             </div>
           )}
           <div className="flex mobile:flex-col wide:flex-row justify-between narrow:gap-2 items-center">
-            <ImageUploader
-              initialSource={isNewService ? null : getImageUrl(service.id)}
-              editing={!!editingService}
-              imageChangeCallback={imageChangedCallback}
-              maxFileSize={10}
-            />
+            <div className="flex-1 w-full min-w-200px">
+              <ImageUploader
+                initialSource={isNewService ? null : getImageUrl(service.id)}
+                editing={!!editingService}
+                imageChangeCallback={imageChangedCallback}
+                maxFileSize={10}
+              />
+            </div>
             <div className="flex-1 space-y-2 w-full px-4">
               {!isNewService && (
                 <div className="absolute top-2 right-2 flex gap-2 z-10">

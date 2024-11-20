@@ -87,20 +87,22 @@ function AdminPage() {
                   className="wide:w-fit"
                 />
               </div>
-              <Pager
-                contentComponent={(props) => (
-                  <Gallery
-                    {...props}
-                    initialWidth={initialWidth}
-                    admin={true}
-                    openPopupCallback={onPopupOpen}
-                    closePopupCallback={onPopupClose}
-                  />
-                )}
-                mapDataToItems={mapDataToGalleryItems}
-                endpoint={getEndPoint()}
-                itemsPerPage={10}
-              />
+              <div className="flex-1 flex flex-col">
+                <Pager
+                  contentComponent={(props) => (
+                    <Gallery
+                      {...props}
+                      initialWidth={initialWidth}
+                      admin={true}
+                      openPopupCallback={onPopupOpen}
+                      closePopupCallback={onPopupClose}
+                    />
+                  )}
+                  mapDataToItems={mapDataToGalleryItems}
+                  endpoint={getEndPoint()}
+                  itemsPerPage={10}
+                />
+              </div>
             </>
           ),
         },
@@ -240,7 +242,10 @@ function AdminPage() {
   ];
 
   return (
-    <div className="Content relative text-primaryText w-full contentHeight">
+    <div
+      className="Content relative text-primaryText w-full"
+      style={{ minHeight: "calc(100vh - 224px)" }}
+    >
       <HorizontalDrawer groups={groups} />
       <Popup
         key="adminPopup"

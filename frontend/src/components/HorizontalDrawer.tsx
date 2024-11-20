@@ -200,7 +200,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
         <div
           ref={contentRef}
           className={`${
-            screenType === "mobile" ? "absolute w-full left-0 " : ""
+            screenType === "mobile" ? "absolute w-full left-0 flex flex-col" : "flex-1 "
           } ${
             screenType === "mobile" && !isOpen
               ? ""
@@ -208,6 +208,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
               ? "h-full overflow-hidden"
               : ""
           }`}
+          style={screenType === "mobile" ? {minHeight: "calc(100vh - 224px)"} : {}}
         >
           <div
             className={
@@ -220,7 +221,7 @@ const HorizontalDrawer: React.FC<HorizontalDrawerProps> = ({ groups }) => {
               : "Select an item to view its content"}
           </div>
           <div
-            className={`flex flex-col min-h-full ${
+            className={`flex flex-1 flex-col min-h-full ${
               selectedItem?.stickyTitle ? "mt-12" : ""
             } mobile:p-2 narrow:p-4`}
           >

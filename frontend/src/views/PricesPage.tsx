@@ -38,6 +38,14 @@ const PricesPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (popupOpened) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [popupOpened]);
+
+  useEffect(() => {
     const items = services.map((item, index) => (
       <PriceCard
         key={index}
@@ -66,7 +74,7 @@ const PricesPage: React.FC = () => {
 
   return (
     <div
-      className=" max-w-full box-border py-8 w-full"
+      className="max-w-full box-border py-8 w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
       <h1 className="text-3xl pb-6 text-primaryText font-bold text-center font-title">
@@ -79,8 +87,7 @@ const PricesPage: React.FC = () => {
         isOpen={popupOpened}
         title={popupTitle}
         onClose={onPopupClose}
-        containerClassName="mt-20"
-        className="-top-10 mobile:w-full narrow:w-full narrow:max-w-500px"
+        className="mobile:w-full narrow:w-full narrow:max-w-500px"
       >
         {popupContent}
       </Popup>

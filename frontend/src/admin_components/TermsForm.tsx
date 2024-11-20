@@ -126,7 +126,7 @@ const TermsForm: React.FC<TermsFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel />;
+    return <LoadingWheel className="flex-1"/>;
   }
 
   return (

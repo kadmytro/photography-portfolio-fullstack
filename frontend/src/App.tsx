@@ -27,23 +27,28 @@ function App() {
       <Router>
         <AuthProvider>
           <Navbar {...navbarProps} />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/forgot-password" element={<LoginPage />} />
-            <Route
-              path="/admin"
-              element={<PrivateRoute element={<AdminPage />} />}
-            />
-            <Route path="reset-password/:resetToken" element={<LoginPage />} />
-            <Route path="prices" element={<PricesPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <div style={{ minHeight: "calc(100vh - 224px)" }}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/gallery" element={<GalleryPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/forgot-password" element={<LoginPage />} />
+              <Route
+                path="/admin"
+                element={<PrivateRoute element={<AdminPage />} />}
+              />
+              <Route
+                path="reset-password/:resetToken"
+                element={<LoginPage />}
+              />
+              <Route path="prices" element={<PricesPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </div>
         </AuthProvider>
-        <Footer></Footer>
+        <Footer />
         <ScrollUpButton />
       </Router>
     </div>

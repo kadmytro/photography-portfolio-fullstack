@@ -26,14 +26,14 @@ export const Popup: React.FC<PopupProps> = ({
   return (
     <div
       className={
-        "fixed inset-0 z-50 flex items-center justify-center bg-primary bg-opacity-20 backdrop-blur " +
+        "fixed inset-0 max-h-full z-50 flex justify-center bg-primary bg-opacity-20 backdrop-blur overflow-auto " +
         (containerClassName != undefined ? containerClassName : "")
       }
       style={containerStyle}
     >
       <div
         className={
-          "relative w-fit  max-w-full narrow:min-w-300px bg-card p-4 text-cardText rounded-lg shadow-lg " +
+          "relative w-fit max-w-full my-auto h-fit narrow:min-w-300px bg-card p-4 text-cardText rounded-lg shadow-lg " +
           (className != undefined ? className : "")
         }
         style={style}

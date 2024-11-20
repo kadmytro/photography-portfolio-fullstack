@@ -158,7 +158,7 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel />;
+    return <LoadingWheel className="flex-1"/>;
   }
 
   const capitalize = <T extends string>(s: T) =>

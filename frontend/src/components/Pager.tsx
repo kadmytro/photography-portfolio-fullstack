@@ -186,7 +186,7 @@ const Pager = <T,>({
   };
 
   if (loading) {
-    return <LoadingWheel />;
+    return <LoadingWheel className="flex-1"/>;
   }
 
   return (
@@ -194,7 +194,11 @@ const Pager = <T,>({
       className="w-full h-full box-border narrow:px-4 pt-4 pb-14 relative"
       ref={pagerRef}
     >
-      <ContentComponent items={currentItems} refreshData={refreshCallback} containerDimensions={size}/>
+      <ContentComponent
+        items={currentItems}
+        refreshData={refreshCallback}
+        containerDimensions={size}
+      />
       <div className="flex justify-center my-2 narrow:my-4 space-x-2 absolute bottom-0 left-1/2 -translate-x-1/2">
         <button
           onClick={handlePreviousPage}

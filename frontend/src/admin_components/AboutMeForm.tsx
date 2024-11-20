@@ -126,7 +126,7 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel />;
+    return <LoadingWheel className="flex-1"/>;
   }
 
   return (

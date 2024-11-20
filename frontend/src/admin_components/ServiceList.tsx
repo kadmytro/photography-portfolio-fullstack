@@ -125,7 +125,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel />;
+    return <LoadingWheel className="flex-1"/>;
   }
 
   return (
