@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Login from "../components/Login";
 import { Popup } from "../base_components/Popup";
-import Button from "../base_components/Button";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 
 function LoginPage() {
   const [popupOpened, setPopupOpened] = useState(false);
@@ -20,7 +18,7 @@ function LoginPage() {
 
   return (
     <>
-      <Helmet> <title>Login</title> </Helmet>
+      <HelmetProvider> <title>Login</title> </HelmetProvider>
       <Login
         openPopupCallback={onPopupOpen}
         closePopupCallback={onPopupClose}

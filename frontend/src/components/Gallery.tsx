@@ -103,8 +103,8 @@ export const Gallery = ({
               <ExtendedPhotoCard
                 {...item}
                 refreshData={refreshData}
-                openPopupCallback={openPopupCallback}
-                closePopupCallback={closePopupCallback}
+                // openPopupCallback={openPopupCallback}
+                // closePopupCallback={closePopupCallback}
               />
             ) : (
               <PhotoCard {...item} />

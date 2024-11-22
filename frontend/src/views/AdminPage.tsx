@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Gallery } from "../components/Gallery";
 import { getPhotoUrl } from "../services/galleryApi";
 import PhotoUploadForm from "../admin_components/PhotoUploadForm";
@@ -16,7 +16,7 @@ import { Messages } from "../admin_components/Messages";
 import ChangePasswordForm from "../admin_components/ChangePasswordForm";
 import { Popup } from "../base_components/Popup";
 import TermsForm from "../admin_components/TermsForm";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 
 function AdminPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -247,7 +247,7 @@ function AdminPage() {
       className="Content relative text-primaryText w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <Helmet> <title>Admin page</title> </Helmet>
+      <HelmetProvider> <title>Admin page</title> </HelmetProvider>
       <HorizontalDrawer groups={groups} />
       <Popup
         key="adminPopup"

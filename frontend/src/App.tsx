@@ -11,6 +11,7 @@ import PrivateRoute from "./views/PrivateRoute";
 import { AuthProvider } from "./context/AuthContextType";
 import PricesPage from "./views/PricesPage";
 import TermsPage from "./views/TermsPage";
+import { PopupProvider } from "./context/PopupContext";
 
 const navbarProps: NavbarProps = {
   homeText: "Home",
@@ -36,7 +37,7 @@ function App() {
               <Route path="/forgot-password" element={<LoginPage />} />
               <Route
                 path="/admin"
-                element={<PrivateRoute element={<AdminPage />} />}
+                element={<PrivateRoute element={<PopupProvider><AdminPage /></PopupProvider>} />}
               />
               <Route
                 path="reset-password/:resetToken"

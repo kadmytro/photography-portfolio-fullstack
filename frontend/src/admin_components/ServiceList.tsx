@@ -19,6 +19,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
   const [loading, setLoading] = useState(true);
   const [newService, setNewService] = useState<ServiceItem | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cacheInvalidationKey, setCacheInvalidationKey] = useState(new Date().getTime());
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -70,6 +71,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
       ? services.map((s) => (s.id === service.id ? service : s))
       : [...services, service];
 
+    setCacheInvalidationKey(new Date().getTime());
     setServices(updatedServices);
   }
 
@@ -125,7 +127,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   return (
@@ -146,6 +148,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
             setEditingServiceId={setEditingServiceId}
             updateService={updateService}
             cancelCallback={handleCancel}
+            cacheInvalidationKey={cacheInvalidationKey}
           />
         ))}
 
@@ -157,6 +160,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
             setEditingServiceId={setEditingServiceId}
             updateService={updateService}
             cancelCallback={handleCancel}
+            cacheInvalidationKey={cacheInvalidationKey}
           />
         )}
       </ul>

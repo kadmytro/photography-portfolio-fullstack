@@ -9,6 +9,7 @@ export interface PhotoCardProps {
   date?: string;
   height: number;
   width: number;
+  cacheInvalidationKey?: number;
   imageLoadedCallback?: () => void;
 }
 
@@ -17,12 +18,14 @@ export const PhotoCard = ({
   height,
   width,
   caption,
+  cacheInvalidationKey,
   imageLoadedCallback,
 }: PhotoCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageHeight, setImageHeight] = useState(0);
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const key = cacheInvalidationKey ? `?t=${cacheInvalidationKey}` : ""
 
   const updateImageHeight = () => {
     if (containerRef.current) {
@@ -77,7 +80,7 @@ export const PhotoCard = ({
     >
       <img
         ref={imgRef}
-        src={image}
+        src={`${image}${key}`}
         alt={caption}
         onLoad={handleImageLoad}
         loading="lazy"

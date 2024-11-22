@@ -6,6 +6,7 @@ const api = axios.create({
 });
 
 ///Function to get the service image url by service ID
-export const getImageUrl = (id: number) => {
-  return `${API_URL}/api/services/image/${id}`;
+export const getImageUrl = (id: number, cacheInvalidationKey?: number) => {
+  let key = cacheInvalidationKey ? `?t=${cacheInvalidationKey}` : ""
+  return `${API_URL}/api/services/image/${id}${key}`;
 };

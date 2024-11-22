@@ -32,6 +32,7 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
     height: photo.height,
   });
   const [changedFields, setChangedFields] = useState<string[]>([]);
+  let key = photo.cacheInvalidationKey ? `?t=${photo.cacheInvalidationKey}` : ""
 
   useEffect(() => {
     if (file) {
@@ -119,7 +120,7 @@ const PhotoEditForm: React.FC<PhotoEditFormProps> = ({
       <div className="flex-1 min-w-300px narrow:max-w-md">
         <ImageUploader
           editing={true}
-          initialSource={photo.image}
+          initialSource={`${photo.image}${key}`}
           showFileDetails={true}
           imageChangeCallback={handleFileChange}
           hideDeleteButton={true}

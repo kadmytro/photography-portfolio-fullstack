@@ -3,17 +3,20 @@ import { PhotoCard, PhotoCardProps } from "../components/PhotoCard";
 import api from "../services/api";
 import PhotoEditForm from "./PhotoEditForm";
 import Button from "../base_components/Button";
+import { usePopup } from "../context/PopupContext";
 
 interface ExtendedPhotoCardProps extends PhotoCardProps {
   refreshData?: (keepPage?: boolean) => void;
-  openPopupCallback?: (content: React.ReactNode, title?: string) => void;
-  closePopupCallback?: () => void;
 }
 
 const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [photoDetails, setPhotoDetails] = useState(props);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { openPopup, closePopup } = usePopup();
+  const [cacheInvalidationKey, setCacheInvalidationKey] = useState(
+    new Date().getTime()
+  );
 
   useEffect(() => {
     setPhotoDetails((prevProps) => {
@@ -26,17 +29,18 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
     });
   }, [props]);
 
-  const handleEditClick = () => {
-    if (props.openPopupCallback) {
-      props.openPopupCallback(
-        <PhotoEditForm
-          photo={photoDetails}
-          onUpdate={handlePhotoUpdate}
-          onClose={closePopup}
-        />,
-        "Edit photo"
-      );
-    }
+  const handleEditClick = (cacheInvalidationKey?: number) => {
+    openPopup(
+      <PhotoEditForm
+        photo={{
+          ...photoDetails,
+          cacheInvalidationKey: cacheInvalidationKey,
+        }}
+        onUpdate={handlePhotoUpdate}
+        onClose={closePopup}
+      />,
+      "Edit photo"
+    );
   };
 
   useEffect(() => {
@@ -92,7 +96,7 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
             buttonType="default"
             text="Ok"
             className="w-1/2 left-1/2 -translate-x-/2"
-            onClick={props.closePopupCallback}
+            onClick={closePopup}
           />
         </div>
       </div>
@@ -106,34 +110,20 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
         if (props.refreshData) {
           props.refreshData(true);
         }
-
-        if (props.closePopupCallback) {
-          props.closePopupCallback();
-        }
       } catch (error) {
         console.error("Failed to delete photo:", error);
       } finally {
-        if (props.closePopupCallback) {
-          props.closePopupCallback();
-        }
+        closePopup();
       }
     };
 
     const popupContent = getPopupContent(
       "Are you sure you want to delete this photo?",
       deleteCallback,
-      props.closePopupCallback
+      closePopup
     );
 
-    if (props.openPopupCallback) {
-      props.openPopupCallback(popupContent, "Please confirm the action");
-    }
-  };
-
-  const closePopup = () => {
-    if (props.closePopupCallback) {
-      props.closePopupCallback();
-    }
+    openPopup(popupContent, "Please confirm the action");
   };
 
   const handlePhotoUpdate = async (
@@ -146,27 +136,35 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
         ...prevDetails,
         ...updatedPhoto,
       }));
+      setCacheInvalidationKey(new Date().getTime());
       setShowEditPopup(false);
+      closePopup();
       if (props.refreshData) {
         props.refreshData(true);
       }
     } catch (error) {
       console.error("Failed to update the photo:", error);
-      if (props.openPopupCallback) {
-        props.openPopupCallback(
-          getAlertContent("Failed to update the photo!", "error", "red"),
-          "Something went wrong"
-        );
-      }
+      openPopup(
+        getAlertContent("Failed to update the photo!", "error", "red"),
+        "Something went wrong"
+      );
     }
   };
 
   return (
     <div className="relative h-fit">
-      <PhotoCard {...photoDetails} />
+      <PhotoCard
+        {...photoDetails}
+        cacheInvalidationKey={cacheInvalidationKey}
+      />
       {imageLoaded && (
         <div className="absolute top-1 right-1 flex gap-2 bg-primary bg-opacity-30 p-3 hover:bg-opacity-50 rounded-xl">
-          <div data-tooltip="Edit the photo" onClick={handleEditClick}>
+          <div
+            data-tooltip="Edit the photo"
+            onClick={() => {
+              handleEditClick(cacheInvalidationKey);
+            }}
+          >
             <div className="svg-mask edit-icon w-7 h-7 bg-cardText right-0 cursor-pointer hover:scale-125 transition-all" />
           </div>
           <div data-tooltip="Delete the photo" onClick={handleDeleteClick}>
