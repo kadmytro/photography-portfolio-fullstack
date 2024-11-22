@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Login from "../components/Login";
 import { Popup } from "../base_components/Popup";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
 
 function LoginPage() {
   const [popupOpened, setPopupOpened] = useState(false);
@@ -18,7 +18,7 @@ function LoginPage() {
 
   return (
     <>
-      <HelmetProvider> <title>Login</title> </HelmetProvider>
+      <Helmet> <title>Login</title> </Helmet>
       <Login
         openPopupCallback={onPopupOpen}
         closePopupCallback={onPopupClose}

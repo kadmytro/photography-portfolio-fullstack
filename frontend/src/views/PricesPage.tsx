@@ -5,7 +5,7 @@ import api from "../services/api";
 import { getImageUrl } from "../services/servicesApi";
 import LoadingWheel from "../components/LoadingWheel";
 import { Popup } from "../base_components/Popup";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
 
 interface ServiceItem {
   id: number;
@@ -80,10 +80,9 @@ const PricesPage: React.FC = () => {
       className="max-w-full box-border py-8 w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <HelmetProvider>
-        {" "}
-        <title>Prices</title>{" "}
-      </HelmetProvider>
+      <Helmet>
+        <title>Prices</title>
+      </Helmet>
       <h1 className="text-3xl pb-6 text-primaryText font-bold text-center font-title">
         Our Prices
       </h1>

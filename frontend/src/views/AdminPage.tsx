@@ -16,7 +16,7 @@ import { Messages } from "../admin_components/Messages";
 import ChangePasswordForm from "../admin_components/ChangePasswordForm";
 import { Popup } from "../base_components/Popup";
 import TermsForm from "../admin_components/TermsForm";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
 
 function AdminPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -247,7 +247,7 @@ function AdminPage() {
       className="Content relative text-primaryText w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <HelmetProvider> <title>Admin page</title> </HelmetProvider>
+      <Helmet> <title>Admin page</title> </Helmet>
       <HorizontalDrawer groups={groups} />
       <Popup
         key="adminPopup"
