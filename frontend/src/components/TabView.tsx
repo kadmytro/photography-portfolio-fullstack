@@ -83,19 +83,28 @@ export function TabView({ tabs, title, hasBanner }: TabViewProps) {
           </div>
         )}
         <div className="flex py-2 mt-1 w-fit px-1 narrow:px-4 gap-1 backdrop-blur-sm place-content-center bg-primary bg-opacity-30 hover:bg-opacity-80 rounded-xl hover:duration-700">
-          {Array.isArray(tabs) && tabs.map((tab, index) => (
-            <button
-              key={index}
-              className={`px-2 narrow:px-8 py-2 text-center text-lg cursor-pointer transition-colors rounded-full font-semibold narrow:min-w-150px w-fit ${
-                index === activeTab
-                  ? "bg-tabSelected bg-opacity-40 text-tabSelectedText min-w-150px"
-                  : "bg-transparent text-tabRegularText text-opacity-70 hover:text-opacity-100  hover:bg-blue-500 hover:bg-opacity-20"
-              }`}
-              onClick={() => switchToTab(index)}
-            >
-              {tab.title}
+          <button className="narrow:hidden pr-2 flex-1 min-w-100px text-center overflow-hidden text-ellipsis align-middle text-tabRegularText text-opacity-70 text-lg rounded-full font-semibold"
+                onClick={() => switchToTab((activeTab + tabs.length - 1) % tabs.length)}>
+            {tabs[(activeTab + tabs.length - 1) % tabs.length].title}
+          </button>
+          {Array.isArray(tabs) &&
+            tabs.map((tab, index) => (
+              <button
+                key={index}
+                className={`px-2 narrow:px-8 py-2 text-center text-lg cursor-pointer transition-colors rounded-full font-semibold min-w-150px w-fit ${
+                  index === activeTab
+                    ? "bg-tabSelected bg-opacity-40 text-tabSelectedText min-w-150px"
+                    : "hidden narrow:block bg-transparent text-tabRegularText text-opacity-70 hover:text-opacity-100  hover:bg-blue-500 hover:bg-opacity-20"
+                }`}
+                onClick={() => switchToTab(index)}
+              >
+                {tab.title}
+              </button>
+            ))}
+            <button className="narrow:hidden pl-2 flex-1 min-w-100px text-center overflow-hidden text-ellipsis align-middle text-tabRegularText text-opacity-70 text-lg rounded-full font-semibold" 
+                onClick={() => switchToTab((activeTab + tabs.length + 1) % tabs.length)}>
+              {tabs[(activeTab + tabs.length + 1) % tabs.length].title}
             </button>
-          ))}
         </div>
       </div>
       <div className={"tabContent" + (title ? " py-4 " : "")}>

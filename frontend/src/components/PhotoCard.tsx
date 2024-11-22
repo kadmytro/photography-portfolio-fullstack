@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { getPhotoThumbnailUrl } from "../services/galleryApi";
 
 export interface PhotoCardProps {
   id: number;
@@ -14,6 +15,7 @@ export interface PhotoCardProps {
 }
 
 export const PhotoCard = ({
+  id,
   image,
   height,
   width,
@@ -25,7 +27,7 @@ export const PhotoCard = ({
   const [imageHeight, setImageHeight] = useState(0);
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const key = cacheInvalidationKey ? `?t=${cacheInvalidationKey}` : ""
+  const key = cacheInvalidationKey ? `?t=${cacheInvalidationKey}` : "";
 
   const updateImageHeight = () => {
     if (containerRef.current) {
@@ -73,7 +75,7 @@ export const PhotoCard = ({
         imageLoaded
           ? {}
           : {
-              backgroundImage: `url(${image}/small)`,
+              backgroundImage: `url(${getPhotoThumbnailUrl(id)})`,
               height: `${imageHeight}px`,
             }
       }

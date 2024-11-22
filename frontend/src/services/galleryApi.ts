@@ -42,6 +42,10 @@ export const getPhotoUrl = (id: number) => {
   }
 };
 
+export const getPhotoThumbnailUrl = (id: number) => {
+  return `${API_URL}/api/photos/${id}/small`;
+}
+
 // Function to get photos by category ID
 export const getPhotosByCategoryId = async (categoryId: number) => {
   try {
