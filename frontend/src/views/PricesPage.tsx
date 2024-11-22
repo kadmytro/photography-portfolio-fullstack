@@ -29,7 +29,9 @@ const PricesPage: React.FC = () => {
         const response = await api.get("api/services/active");
         setServices(response.data);
       } catch (error) {
-        console.error("Failed to fetch services:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch services:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -78,7 +80,10 @@ const PricesPage: React.FC = () => {
       className="max-w-full box-border py-8 w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <HelmetProvider> <title>Prices</title> </HelmetProvider>
+      <HelmetProvider>
+        {" "}
+        <title>Prices</title>{" "}
+      </HelmetProvider>
       <h1 className="text-3xl pb-6 text-primaryText font-bold text-center font-title">
         Our Prices
       </h1>

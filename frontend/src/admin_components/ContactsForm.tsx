@@ -57,7 +57,10 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
         setContacts(emptyContacts);
         setChangedContacts(emptyContacts);
         setError(`Failed to fetch contacts. ${error}`);
-        console.error("Failed to fetch contacts:", error);
+
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch contacts:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -130,7 +133,9 @@ const ContactsForm: React.FC<ContactsFormProps> = ({
       });
       setContacts(changedContacts);
     } catch (error) {
-      console.error("Failed to update contacts:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update contacts:", error);
+      }
       setError("Failed to update contacts");
       if (openPopupCallback) {
         openPopupCallback(

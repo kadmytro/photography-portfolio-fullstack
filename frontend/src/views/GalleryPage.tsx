@@ -47,7 +47,9 @@ function GalleryPage() {
 
         setTabs(newTabs);
       } catch (error) {
-        console.error("Error fetching data for tabs", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching data for tabs", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -58,7 +60,10 @@ function GalleryPage() {
 
   return (
     <div className="Content" style={{ minHeight: "calc(100vh - 224px)" }}>
-      <HelmetProvider> <title>Gallery</title> </HelmetProvider>
+      <HelmetProvider>
+        {" "}
+        <title>Gallery</title>{" "}
+      </HelmetProvider>
       {(!loading && <TabView tabs={tabs} hasBanner={false}></TabView>) || (
         <LoadingWheel style={{ height: "calc(100vh - 224px)" }} />
       )}

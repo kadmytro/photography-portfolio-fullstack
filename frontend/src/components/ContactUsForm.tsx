@@ -68,7 +68,9 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({
         openPopupCallback(getPopupContent("Message sent!"), "Success!");
       }
     } catch (error) {
-      console.error("Failed to send message:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to send message:", error);
+      }
       setError("Failed to send the message");
     } finally {
       setSaving(false);

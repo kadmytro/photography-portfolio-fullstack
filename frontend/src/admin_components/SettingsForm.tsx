@@ -66,7 +66,9 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
       } catch (error) {
         setSettings(emptySettings);
         setChangedSettings(emptySettings);
-        console.error("Failed to fetch settings:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch settings:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -134,7 +136,9 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
       });
       setSettings(changedSettings);
     } catch (error) {
-      console.error("Failed to update settings:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update settings:", error);
+      }
       if (openPopupCallback) {
         openPopupCallback(
           getPopupContent("Failed to update settings!", "error", "red"),

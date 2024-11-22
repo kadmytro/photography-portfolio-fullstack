@@ -41,7 +41,9 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
         setAboutMe(defaultObj);
         setChangedAboutMe(defaultObj);
         setError("No about me found in the database");
-        console.error("Failed to fetch aboutMe:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch aboutMe:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -111,7 +113,9 @@ const AboutMeForm: React.FC<AboutMeFormProps> = ({
       });
       setAboutMe(changedAboutMe);
     } catch (error) {
-      console.error("Failed to update about me:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update about me:", error);
+      }
       setError("Failed to update about me");
       if (openPopupCallback) {
         openPopupCallback(

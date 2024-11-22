@@ -91,7 +91,9 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
       }
     } catch (error) {
       setError(`${error}`);
-      console.error("Failed to update category:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update category:", error);
+      }
     } finally {
       setIsLoading(false);
       setEditingCategory(null);

@@ -17,7 +17,9 @@ function Contacts() {
         setContacts(response.data);
       } catch (error) {
         setContacts([]);
-        console.error("Failed to fetch contacts:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch contacts:", error);
+        }
       } finally {
         setLoading(false);
       }

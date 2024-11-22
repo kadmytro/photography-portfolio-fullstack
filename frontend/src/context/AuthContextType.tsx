@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import api from '../services/api';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import api from "../services/api";
 
 interface AuthContextType {
   user: any;
@@ -11,13 +17,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
     try {
-      const response = await api.get('auth/verify-token');
+      const response = await api.get("auth/verify-token");
       setUser(response.data.user);
     } catch (error) {
       setUser(null);
@@ -28,10 +36,12 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post('auth/logout', {});
+      await api.post("auth/logout", {});
       setUser(null);
     } catch (error) {
-      console.error('Error during logout', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error during logout", error);
+      }
     }
   };
 
@@ -49,7 +59,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

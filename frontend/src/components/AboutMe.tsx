@@ -17,7 +17,9 @@ function AboutMe() {
           title: "About me",
           text: 'Here must be the "About me part". Something went wrong',
         });
-        console.error("Failed to fetch about me part:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch about me part:", error);
+        }
       } finally {
         setLoading(false);
       }

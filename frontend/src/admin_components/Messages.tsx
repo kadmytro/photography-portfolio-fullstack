@@ -122,7 +122,9 @@ export const Messages: React.FC<MessagesProps> = ({
       const response = await api.get(`api/contactUs/${messagesType}`);
       setInitialMessages(response.data);
     } catch (error) {
-      console.error("Failed to fetch services:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to fetch services:", error);
+      }
     } finally {
       setLoading(false);
     }
@@ -141,7 +143,9 @@ export const Messages: React.FC<MessagesProps> = ({
       setInitialMessages(messages);
       setChanges([]);
     } catch (error) {
-      console.error("Failed to update the messages:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update the messages:", error);
+      }
       if (openPopupCallback) {
         openPopupCallback(
           getPopupContent("Failed to update the messages", "error", "red"),

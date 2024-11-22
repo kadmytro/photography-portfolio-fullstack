@@ -40,7 +40,10 @@ const LinksForm: React.FC<LinksFormProps> = ({
         setLinks(emptyLinks);
         setChangedLinks(emptyLinks);
         setError(`Failed to fetch links. ${error}`);
-        console.error("Failed to fetch links:", error);
+
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch links:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -109,7 +112,9 @@ const LinksForm: React.FC<LinksFormProps> = ({
       });
       setLinks(changedLinks);
     } catch (error) {
-      console.error("Failed to update links:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update links:", error);
+      }
       if (openPopupCallback) {
         openPopupCallback(
           getPopupContent("Failed to update links!", "error", "red"),

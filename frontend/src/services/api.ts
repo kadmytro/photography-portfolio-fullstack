@@ -10,7 +10,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (!error.response || [500, 503].includes(error.response.status)) {
-      console.error("Server is down or unavailable", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Server is down or unavailable", error);
+      }
     } else if (error.response && error.response.status === 401) {
       localStorage.removeItem("authToken");
 

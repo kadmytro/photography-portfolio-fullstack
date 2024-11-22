@@ -18,7 +18,9 @@ function Footer() {
         setLinks(response.data);
       } catch (error) {
         setLinks({});
-        console.error("Failed to fetch the links:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch the links:", error);
+        }
       } finally {
         setLoading(false);
       }

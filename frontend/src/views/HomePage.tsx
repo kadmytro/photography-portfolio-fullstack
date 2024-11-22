@@ -30,7 +30,9 @@ function HomePage() {
 
         setItems(items);
       } catch (error) {
-        console.error("Error fetching data for tabs", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching data for tabs", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -43,7 +45,10 @@ function HomePage() {
       className="Content relative text-primaryText"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <HelmetProvider> <title>Home</title> </HelmetProvider>
+      <HelmetProvider>
+        {" "}
+        <title>Home</title>{" "}
+      </HelmetProvider>
       <div className="m-auto font-normal text-4xl tracking-wider my-8 w-fit font-title">
         Latest works
       </div>

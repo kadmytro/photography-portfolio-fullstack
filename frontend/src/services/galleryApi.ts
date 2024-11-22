@@ -12,7 +12,9 @@ export const getPhotos = async () => {
     const response = await api.get("/photos");
     return response.data;
   } catch (error) {
-    console.error("Error fetching photos", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error fetching photos", error);
+    }
     return [];
   }
 };
@@ -23,7 +25,9 @@ export const getRecentPhotos = async () => {
     const response = await api.get("/photos/recent");
     return response.data;
   } catch (error) {
-    console.error("Error fetching recent photos", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error fetching recent photos", error);
+    }
     return [];
   }
 };
@@ -44,10 +48,12 @@ export const getPhotosByCategoryId = async (categoryId: number) => {
     const response = await api.get(`/photos/byCategory/${categoryId}`);
     return response.data;
   } catch (error) {
-    console.error(
-      `Error fetching recent photos with the categoryId: ${categoryId}`,
-      error
-    );
+    if (process.env.NODE_ENV === "development") {
+      console.error(
+        `Error fetching recent photos with the categoryId: ${categoryId}`,
+        error
+      );
+    }
     return [];
   }
 };
@@ -57,8 +63,10 @@ export const getPhotoCategoriesToDisplay = async () => {
     const response = await api.get(`/categories/categoriesToDisplay`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching photo categories", error);
-    return [];
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error fetching photo categories", error);
+      return [];
+    }
   }
 };
 
@@ -68,8 +76,10 @@ export const getPhotoById = async (id: number) => {
     const response = await api.get(`/photos/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching photo with ID ${id}`, error);
-    throw error;
+    if (process.env.NODE_ENV === "development") {
+      console.error(`Error fetching photo with ID ${id}`, error);
+      throw error;
+    }
   }
 };
 
@@ -79,7 +89,9 @@ export const getPhotosByDate = async (date: string) => {
     const response = await api.get(`/photos/date/${date}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching photos for date ${date}`, error);
+    if (process.env.NODE_ENV === "development") {
+      console.error(`Error fetching photos for date ${date}`, error);
+    }
     return [];
   }
 };

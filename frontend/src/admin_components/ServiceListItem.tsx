@@ -115,7 +115,9 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
         updateService(editingService);
       }
     } catch (error) {
-      console.error("Failed to update service:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update service:", error);
+      }
     } finally {
       setSaving(false);
       setEditingService(null);
@@ -146,7 +148,11 @@ const ServiceListItem: React.FC<ServiceListItemProps> = ({
           <div className="flex mobile:flex-col wide:flex-row justify-between narrow:gap-2 items-center">
             <div className="flex-1 w-full min-w-200px">
               <ImageUploader
-                initialSource={isNewService ? null : getImageUrl(service.id, cacheInvalidationKey)}
+                initialSource={
+                  isNewService
+                    ? null
+                    : getImageUrl(service.id, cacheInvalidationKey)
+                }
                 editing={!!editingService}
                 imageChangeCallback={imageChangedCallback}
                 maxFileSize={10}

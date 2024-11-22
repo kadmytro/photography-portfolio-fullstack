@@ -84,12 +84,16 @@ const PhotoUploadForm: React.FC = () => {
     event.preventDefault();
 
     if (!file) {
-      console.error("No file selected");
+      if (process.env.NODE_ENV === "development") {
+        console.error("No file selected");
+      }
       return;
     }
 
     if (width === null || height === null) {
-      console.error("Image dimensions not available");
+      if (process.env.NODE_ENV === "development") {
+        console.error("Image dimensions not available");
+      }
       return;
     }
 
@@ -109,7 +113,9 @@ const PhotoUploadForm: React.FC = () => {
       await api.post("/api/photos", formData);
       resetForm();
     } catch (error) {
-      console.error("Failed to upload photo:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to upload photo:", error);
+      }
     } finally {
       setLoading(false);
     }

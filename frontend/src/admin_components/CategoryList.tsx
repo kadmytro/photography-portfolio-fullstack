@@ -28,7 +28,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
         const response = await api.get("api/categories");
         setItems(response.data);
       } catch (error) {
-        console.error("Failed to fetch items:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch items:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -86,7 +88,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
         await api.delete(`api/categories/${id}`);
         setItems(items.filter((item) => item.id !== id));
       } catch (error) {
-        console.error("Failed to delete category:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to delete category:", error);
+        }
       } finally {
         if (closePopupCallback) {
           closePopupCallback();
@@ -125,7 +129,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   return (

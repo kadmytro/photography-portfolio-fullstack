@@ -44,7 +44,9 @@ const Pager = <T,>({
         setData(mappedData);
         setCurrentPage(1);
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch data:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -186,7 +188,7 @@ const Pager = <T,>({
   };
 
   if (loading) {
-    return <LoadingWheel className="flex-1"/>;
+    return <LoadingWheel className="flex-1" />;
   }
 
   return (

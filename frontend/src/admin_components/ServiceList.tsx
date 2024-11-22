@@ -19,7 +19,9 @@ const ServiceList: React.FC<ServiceListProps> = ({
   const [loading, setLoading] = useState(true);
   const [newService, setNewService] = useState<ServiceItem | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [cacheInvalidationKey, setCacheInvalidationKey] = useState(new Date().getTime());
+  const [cacheInvalidationKey, setCacheInvalidationKey] = useState(
+    new Date().getTime()
+  );
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -27,7 +29,9 @@ const ServiceList: React.FC<ServiceListProps> = ({
         const response = await api.get("api/services");
         setServices(response.data);
       } catch (error) {
-        console.error("Failed to fetch services:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch services:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -81,7 +85,9 @@ const ServiceList: React.FC<ServiceListProps> = ({
         await api.delete(`api/services/${id}`);
         setServices(services.filter((item) => item.id !== id));
       } catch (error) {
-        console.error("Failed to delete service:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to delete service:", error);
+        }
       } finally {
         if (closePopupCallback) {
           closePopupCallback();

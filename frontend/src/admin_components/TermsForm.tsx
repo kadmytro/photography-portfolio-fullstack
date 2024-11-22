@@ -41,7 +41,9 @@ const TermsForm: React.FC<TermsFormProps> = ({
         setTerms(defaultObj);
         setChangedTerms(defaultObj);
         setError("No terms found in the database");
-        console.error("Failed to fetch terms:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch terms:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -111,7 +113,9 @@ const TermsForm: React.FC<TermsFormProps> = ({
       });
       setTerms(changedTerms);
     } catch (error) {
-      console.error("Failed to update terms:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update terms:", error);
+      }
       setError("Failed to update terms");
       if (openPopupCallback) {
         openPopupCallback(

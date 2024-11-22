@@ -18,7 +18,9 @@ function TermsPage() {
           title: "Terms",
           text: "Something went wrong",
         });
-        console.error("Failed to fetch about me part:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch about me part:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -32,7 +34,10 @@ function TermsPage() {
       className="content-center justify-center align-middle"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <HelmetProvider> <title>Terms & Conditions</title> </HelmetProvider>
+      <HelmetProvider>
+        {" "}
+        <title>Terms & Conditions</title>{" "}
+      </HelmetProvider>
       <div className="h-full py-24 bg-primary text-primaryText">
         {loading && <LoadingWheel />}
         {!loading && (

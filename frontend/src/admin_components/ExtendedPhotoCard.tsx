@@ -111,7 +111,9 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
           props.refreshData(true);
         }
       } catch (error) {
-        console.error("Failed to delete photo:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to delete photo:", error);
+        }
       } finally {
         closePopup();
       }
@@ -143,7 +145,9 @@ const ExtendedPhotoCard: React.FC<ExtendedPhotoCardProps> = (props) => {
         props.refreshData(true);
       }
     } catch (error) {
-      console.error("Failed to update the photo:", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to update the photo:", error);
+      }
       openPopup(
         getAlertContent("Failed to update the photo!", "error", "red"),
         "Something went wrong"
