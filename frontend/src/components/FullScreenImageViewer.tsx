@@ -69,21 +69,21 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
     const containerWidth = window.innerWidth;
     const relativeOffsetX = offsetX / containerWidth;
     const newOffset =
-      relativeOffsetX < -0.025
+      relativeOffsetX < -0.05
         ? -containerWidth
-        : relativeOffsetX > 0.025
+        : relativeOffsetX > 0.05
         ? containerWidth
         : 0;
     setOffsetX(newOffset);
     const newIndex =
-      relativeOffsetX < -0.025
+      relativeOffsetX < -0.05
         ? (currentIndex + 1) % items.length
-        : relativeOffsetX > 0.025
+        : relativeOffsetX > 0.05
         ? (currentIndex - 1 + items.length) % items.length
         : currentIndex;
     setTimeout(() => {
-      setCurrentIndex(newIndex);
       setOffsetX(0);
+      setCurrentIndex(newIndex);
       setIsTransitioning(false);
     }, 200);
   };
@@ -124,6 +124,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
     }
   };
   const handleNext = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (isTransitioning) return;
     e?.stopPropagation();
     setFade(true);
     setTimeout(() => {
@@ -133,6 +134,7 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
   };
 
   const handlePrev = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (isTransitioning) return;
     e?.stopPropagation();
     setFade(true);
     setTimeout(() => {
@@ -173,7 +175,11 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
         <button
           className="w-1/3 wide:w-1/5 h-full z-20 absolute left-0 text-left pl-3 bg-transparent bg-opacity-0 border-none text-primaryText text-opacity-0 
             narrow:text-opacity-60 narrow:hover:text-opacity-100 narrow:hover:text-5xl transition-all text-4xl cursor-pointer select-none"
-          onClick={handlePrev}
+          onClick={() => {
+            if (offsetX === 0 && !isDragging) {
+              handlePrev();
+            }
+          }}
           style={{ WebkitTapHighlightColor: "transparent", userSelect: "none" }}
         >
           ‹
@@ -208,7 +214,11 @@ const FullscreenImageViewer: React.FC<FullscreenImageViewerProps> = ({
         <button
           className="w-1/3 wide:w-1/5 h-full z-20 absolute right-0 text-right pe-3 bg-transparent bg-opacity-0 border-none text-primaryText text-opacity-0 
             narrow:text-opacity-60 narrow:hover:text-opacity-100 narrow:hover:text-5xl transition-all text-4xl cursor-pointer select-none"
-          onClick={handleNext}
+            onClick={() => {
+              if (offsetX === 0 && !isDragging) {
+                handleNext();
+              }
+            }}
           style={{ WebkitTapHighlightColor: "transparent", userSelect: "none" }}
         >
           ›
