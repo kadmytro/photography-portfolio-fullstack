@@ -5,7 +5,6 @@ import { Photo } from "../entity/Photo";
 import { checkAuth } from "./authMiddleware";
 import sharp from "sharp";
 import { PhotoCategory } from "../entity/PhotoCategory";
-import { In } from "typeorm";
 import { getSetting } from "../helpers/setttingsService";
 import { optimizeImage } from "../helpers/imageOptimizer";
 
@@ -31,7 +30,9 @@ router.get("/recent", async (req, res) => {
     const photos = await AppDataSource.getRepository(Photo)
       .createQueryBuilder("photo")
       .leftJoinAndSelect("photo.categories", "category")
-      .orderBy("photo.id", "DESC")
+      .orderBy("CASE WHEN photo.date IS NULL THEN 1 ELSE 0 END", "ASC")
+      .addOrderBy("photo.date", "DESC")
+      .addOrderBy("photo.id", "DESC")
       .limit(homeMaxPhotos)
       .getMany();
 
@@ -46,7 +47,9 @@ router.get("/all", async (req, res) => {
   const photos = await AppDataSource.getRepository(Photo)
     .createQueryBuilder("photo")
     .leftJoinAndSelect("photo.categories", "category")
-    .orderBy("photo.id", "DESC")
+    .orderBy("CASE WHEN photo.date IS NULL THEN 1 ELSE 0 END", "ASC")
+    .addOrderBy("photo.date", "DESC")
+    .addOrderBy("photo.id", "DESC")
     .getMany();
   res.json(photos.map((p) => p.getPhotoMetadata()));
 });
@@ -61,6 +64,9 @@ router.get("/byCategories/:categoryIds", async (req, res) => {
       .createQueryBuilder("category")
       .leftJoinAndSelect("category.photos", "photo")
       .where("category.id IN (:...categoryIds)", { categoryIds })
+      .orderBy("CASE WHEN photo.date IS NULL THEN 1 ELSE 0 END", "ASC")
+      .addOrderBy("photo.date", "DESC")
+      .addOrderBy("photo.id", "DESC")
       .getMany();
 
     const photos = categories.flatMap((category) => category.photos);
@@ -82,6 +88,9 @@ router.get("/byCategory/:categoryId", async (req, res) => {
       .createQueryBuilder("category")
       .leftJoinAndSelect("category.photos", "photo")
       .where("category.id = :categoryId", { categoryId })
+      .orderBy("CASE WHEN photo.date IS NULL THEN 1 ELSE 0 END", "ASC")
+      .addOrderBy("photo.date", "DESC")
+      .addOrderBy("photo.id", "DESC")
       .getOne();
 
     if (!category) {

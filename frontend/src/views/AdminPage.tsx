@@ -55,6 +55,7 @@ function AdminPage() {
       image: getPhotoUrl(photo.id),
       caption: photo.caption,
       location: photo.location,
+      date: photo.date,
       categoriesIds: photo.categoriesIds,
       height: photo.height,
       width: photo.width,
@@ -247,7 +248,10 @@ function AdminPage() {
       className="Content relative text-primaryText w-full"
       style={{ minHeight: "calc(100vh - 224px)" }}
     >
-      <Helmet> <title>Admin page</title> </Helmet>
+      <Helmet>
+        {" "}
+        <title>Admin page</title>{" "}
+      </Helmet>
       <HorizontalDrawer groups={groups} />
       <Popup
         key="adminPopup"
