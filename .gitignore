@@ -22,3 +22,7 @@ backend/hints.txt
 backend/app-config.production.json
 backend/hints.txt
 backend/src/scripts/repairDB.ts
+
+# build directories
+backend/dist
+frontend/build
