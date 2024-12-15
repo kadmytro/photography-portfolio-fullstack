@@ -214,7 +214,7 @@ export function Navbar({
                 onClick={toggleMenu}
               />
               {menuOpen && (
-                <ul className="bg-header min-w-300px w-1/3 backdrop-blur-xl bg-opacity-20 fixed text-headerText top-20 left-0 p-2 font-title underline-offset-4">
+                <ul className="bg-header min-w-300px w-1/3 backdrop-blur-xl bg-opacity-80 fixed text-headerText top-20 left-0 p-2 font-title underline-offset-4">
                   <li
                     className="p-4 w-full text-opacity-90 hover:text-opacity-100 hover:underline cursor-pointer"
                     onClick={() => {
